@@ -1,0 +1,1467 @@
+/* The homepage: seven sheets of a type specimen.
+
+   Base rules are the no-JS and reduced-motion layout: every sheet is normal flow and its .still is the
+   visual. `html.motion` turns the pinned sheets into viewport-high pages whose anchors sit exactly where
+   the GPU word lands, and stacks the states that take turns in one place (the two lines of the Sheet 02
+   H2, the numerals, the cards) in one grid cell. On phones the word is a fixed column at the left, so
+   under motion every sheet moves its copy into the right 72vw.
+
+   Everything is scoped to .home or a sheet id: Next keeps this stylesheet loaded after navigating away. */
+
+.home {
+  /* the phone column's font size (§4.2): 8 slots at a .8em pitch fill 6.6em of the height */
+  --fsc: min(24.6vw, calc((88svh - 64px) / 6.6));
+  position: relative;
+  z-index: 1;
+  overflow-x: clip; /* metric lines and crop marks run past the page; clip is not a scroll container */
+}
+/* above the fixed stage (z 0), so copy always reads over the solids and hover targets stay live */
+.home section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- shared sheet furniture ---------- */
+
+.leaf {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-content: start;
+  min-height: 100svh;
+  padding: calc(var(--header) + 20px) var(--margin) clamp(40px, 7svh, 88px);
+}
+.leaf > * {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+.leaf > .kicker {
+  margin-bottom: clamp(16px, 3svh, 32px);
+}
+.home .h2 {
+  font: 320 var(--fs-h2) / 0.98 var(--f-text);
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+}
+.home .h2-sm {
+  font: 320 clamp(32px, 4vw, 56px) / 1 var(--f-text);
+  letter-spacing: -0.02em;
+}
+.home .sub {
+  max-width: 44ch;
+  color: var(--ink-2);
+}
+
+/* ================================================================
+   Sheet 01 · V: rain (the hero, not pinned)
+   ================================================================ */
+
+#v {
+  --fs: var(--fs-display);
+  --base: calc(64svh - var(--header)); /* the baseline, from the top of the sheet: 64svh of the viewport */
+  --wx: calc((100% - 5.2 * var(--fs)) / 2); /* left edge of the word, centred on the sheet */
+  min-height: calc(100svh - var(--header));
+}
+#v .word {
+  display: block;
+  font: 900 var(--fs) / 1 var(--f-display);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* one advance per slot: with the metric overrides in layout.tsx the baseline is top + .82em */
+#v .slot {
+  display: inline-block;
+  width: 0.65em;
+  height: 1em;
+  line-height: 1;
+  vertical-align: top;
+}
+#v .spec-label,
+#v .v-note,
+#v .folio-b,
+#v .place {
+  font: 500 var(--fs-run) / 1.3 var(--f-mono);
+  font-stretch: 75%;
+  letter-spacing: 0.06em;
+  color: var(--ink-2);
+}
+#v .spec-label {
+  color: var(--ink);
+}
+#v .spec-label span {
+  color: var(--ink-2);
+}
+#v :is(.v-note, .folio-b, .place) {
+  text-transform: uppercase;
+}
+#v .etym {
+  font: italic 400 20px/1.35 var(--f-text);
+  color: var(--ink-2);
+}
+#v .etym i {
+  font-style: normal; /* roman inside italic */
+  color: var(--ink);
+}
+#v .lede {
+  max-width: 30ch;
+  font: 400 var(--fs-lede) / 1.35 var(--f-text);
+  letter-spacing: -0.005em;
+}
+#v .ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.home .clock {
+  font-variant-numeric: tabular-nums;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .home .clock-c {
+    animation: blink 2s linear infinite;
+  }
+}
+
+/* the type case: crop brackets on each cell, guide lines at cap and baseline */
+#v .case {
+  position: absolute;
+  top: calc(var(--base) - 0.7 * var(--fs));
+  left: var(--wx);
+  width: calc(5.2 * var(--fs));
+  height: calc(0.7 * var(--fs));
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  pointer-events: none;
+}
+#v .case path {
+  transition: translate 0.3s var(--ease-p3);
+}
+#v .case-line {
+  position: absolute;
+  right: var(--margin);
+  left: var(--margin);
+  height: 1px;
+  background: var(--ink-3);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+#v .case-line.base {
+  top: var(--base);
+}
+#v .case-line.cap {
+  top: calc(var(--base) - 0.7 * var(--fs) - 1px);
+}
+
+/* intro, CSS half: from first paint, independent of hydration. The lede and the CTAs are never hidden. */
+html.intro #v .case-line {
+  animation: draw-x 0.7s cubic-bezier(0.87, 0, 0.13, 1) 0.1s both;
+}
+html.intro #v .case-line.cap {
+  animation-delay: 0.18s;
+}
+html.intro #v .case path {
+  animation: draw-path 0.3s var(--ease-out) calc(0.25s + var(--n) * 0.04s) backwards;
+}
+/* the ticks wait 8px out (32 units at hero size) and tighten onto the case once the rain is in */
+html.intro:not(.inked) #v .case path {
+  translate: 0 calc(var(--dy) * 32px);
+}
+html.intro #v :is(.spec-label, .etym, .v-note) {
+  animation: fade-in 0.6s var(--ease) 0.3s both;
+}
+/* the rain paints the name; the DOM word is only a failsafe until a stage owns it */
+html.intro #v .word {
+  color: transparent;
+  animation: word-show 0s 1.4s forwards;
+}
+html:is(.stage-gpu, .stage-css) #v .word {
+  color: transparent;
+  animation: none;
+}
+
+/* ================================================================
+   Sheet 02 · the quarter turn
+   ================================================================ */
+
+#turn .turn-anchor {
+  position: absolute;
+  top: 46svh;
+  left: 14%;
+  width: 72%;
+  translate: 0 -50%; /* cap centre on 46svh */
+  visibility: hidden;
+  pointer-events: none;
+}
+#turn .turn-still {
+  /* CSSWord's still is 6.64em wide (8 slots at the breathed 830-unit pitch) and sizes from this */
+  --cs-size: min(calc((100vw - 2 * var(--margin)) / 7), 20svh);
+}
+#turn .still-lines {
+  font: 900 clamp(22px, 2.4vw, 34px) / 1.05 var(--f-display);
+  letter-spacing: 0;
+}
+#turn .still-lines span {
+  display: block;
+}
+#turn .still-lines .sig {
+  color: var(--signal);
+}
+#turn :is(.cap-note, .i-callout) {
+  font: italic 400 20px/1.35 var(--f-text);
+}
+#turn .cap-note {
+  color: var(--ink-2);
+}
+#turn .i-callout {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+#turn .leader {
+  flex: none;
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: var(--ink);
+  transform-origin: 0 0;
+}
+#turn .caption {
+  max-width: 46ch;
+  color: var(--ink-2);
+}
+
+/* ================================================================
+   The manifest (part of Sheet 02)
+   ================================================================ */
+
+#manifest {
+  padding: clamp(64px, 12svh, 140px) var(--margin) clamp(64px, 14svh, 160px);
+}
+.mf {
+  width: 100%;
+  margin-top: clamp(20px, 3svh, 36px);
+  border-collapse: collapse;
+}
+.mf :is(th, td) {
+  font-weight: inherit;
+  text-align: left;
+}
+.mf thead th {
+  padding: 0 20px 10px 0;
+  border-bottom: 1px solid var(--ink);
+  font: 500 var(--fs-run) / 1.3 var(--f-mono);
+  font-stretch: 75%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.mf thead th:last-child {
+  padding-right: 0;
+}
+.mf-row > * {
+  padding: 16px 20px 17px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: baseline;
+}
+.mf-row > :last-child {
+  padding-right: 0;
+}
+.mf-no {
+  width: 3.4em;
+  font: 900 18px/1 var(--f-display);
+  font-variant-numeric: tabular-nums;
+}
+.mf-name {
+  font: 500 20px/1.25 var(--f-text);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.mf-what {
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.5;
+}
+.mf-where {
+  font: 400 12px/1.4 var(--f-mono);
+  font-stretch: 87.5%;
+  white-space: nowrap;
+}
+.mf-where a {
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--rule);
+  text-decoration: none;
+}
+.mf-where a:hover {
+  border-color: currentColor;
+  color: var(--signal);
+}
+.mf-row:hover > * {
+  background: var(--paper-hi);
+}
+/* brand swatches: the only place product colours appear, and only when you point at the row */
+.sws {
+  display: inline-flex;
+  gap: 3px;
+  margin-left: 10px;
+  vertical-align: 0.05em;
+}
+.sw {
+  width: 12px;
+  height: 12px;
+  background: var(--c);
+  opacity: 0;
+  translate: -6px 0;
+}
+.mf-row:is(:hover, :focus-within) .sw {
+  opacity: 1;
+  translate: 0 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sw {
+    transition:
+      opacity 0.15s,
+      translate 0.15s var(--ease-out);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sw {
+    translate: none;
+    transition: opacity 0.15s;
+  }
+}
+@media (hover: none) {
+  .sw {
+    opacity: 1;
+    translate: none;
+  }
+}
+.st {
+  margin-left: 10px;
+  padding: 2px 5px;
+  border: 1px solid currentColor;
+  font: 500 10px/1 var(--f-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: 0.2em;
+}
+.st-live {
+  color: var(--signal);
+}
+.st-building {
+  color: var(--ink-2);
+}
+
+/* ================================================================
+   Sheet 03 · VAR: declared
+   ================================================================ */
+
+.home .code {
+  padding: 18px 20px;
+  background: var(--paper-2);
+  font: 400 var(--fs-mono) / 1.75 var(--f-mono);
+  font-stretch: 87.5%;
+  overflow-x: auto;
+  white-space: pre;
+}
+.home .code [data-m="line"] {
+  display: block;
+}
+.home .code .kw {
+  color: var(--signal);
+}
+.home .code .cm {
+  color: var(--ink-2);
+}
+#var .nums > div {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+}
+#var .num {
+  font: 900 min(var(--fs-num), 19vw) / 1 var(--f-display);
+  letter-spacing: 0;
+}
+#var .nums dd {
+  max-width: 40ch;
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+/* ================================================================
+   Sheet 04 · A…I: the middle
+   ================================================================ */
+
+#ai .ai-a,
+#ai .ai-i {
+  position: relative;
+}
+#ai .pipe {
+  position: relative;
+}
+#ai .pipe-art {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+#ai .pipe-line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+}
+/* the still shows the pipeline done: every station filled */
+#ai .station {
+  color: var(--signal);
+}
+#ai .station path {
+  fill: var(--signal);
+}
+#ai .token {
+  fill: var(--signal);
+  visibility: hidden; /* it only means something while it moves */
+}
+#ai .stations {
+  font: 500 var(--fs-run) / 1.25 var(--f-mono);
+  font-stretch: 75%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+#ai figcaption {
+  font: italic 400 16px/1.4 var(--f-text);
+  color: var(--ink-2);
+}
+#ai .cards article {
+  padding-top: 16px;
+  border-top: 1px solid var(--ink);
+}
+#ai .cards h3 {
+  font: 500 24px/1.15 var(--f-text);
+  letter-spacing: -0.01em;
+}
+#ai .cards p {
+  max-width: 46ch;
+  margin-top: 10px;
+  color: var(--ink-2);
+}
+
+/* ================================================================
+   Sheet 05 · SH: shell
+   ================================================================ */
+
+#sh .sh-anchor {
+  position: relative;
+}
+/* an underscore prompt caret, one letter wide (560 of the 1300-unit word) and one bar high (170 of 700),
+   one chamfer (90) after the H. Upright it would read as an I, and "SHI" is a letter from the guarded run */
+#sh .caret {
+  position: absolute;
+  bottom: 0;
+  left: calc(100% + 6.92%);
+  width: 43.08%;
+  height: 24.29%;
+  background: var(--signal);
+}
+#sh .caret.on {
+  animation: blink 1.06s linear infinite;
+}
+/* line-height 1: the rig in sheets-b wraps this number in a 1em clip and rolls it */
+#sh .sh-no {
+  color: var(--g-ink);
+  font: 900 min(var(--fs-num), 26svh) / 1 var(--f-display);
+  letter-spacing: 0;
+}
+#sh .more {
+  display: inline-block;
+  margin-top: 24px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid currentColor;
+  font: 500 13px/1 var(--f-mono);
+}
+#sh .more:hover {
+  color: var(--signal);
+}
+
+/* ================================================================
+   Sheet 06 · T: type
+   ================================================================ */
+
+#t .t-stage {
+  --em: calc(72vw / 5.2);
+  position: relative;
+}
+#t .t-stage .glyphs {
+  color: var(--ink);
+}
+#t .metric-labels {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0;
+}
+/* each label sits on its line: the svg is the cap box, so m units up is (700 - m) / 700 down */
+#t .metric-labels li {
+  position: absolute;
+  top: calc((1 - var(--m) / 700) * 100%);
+  right: 14px;
+  translate: 0 -50%;
+  font: 500 var(--fs-run) / 1 var(--f-mono);
+  font-stretch: 75%;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+#t .call {
+  position: absolute;
+  top: calc(100% + 22px);
+  max-width: 28ch;
+  padding-top: 10px;
+  font: italic 400 18px/1.35 var(--f-text);
+}
+/* a short tick up to the letter it talks about */
+#t .call::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  width: 1px;
+  height: 16px;
+  background: var(--ink);
+}
+#t .call-v {
+  left: calc(325 / 5200 * 100%); /* V's centre */
+}
+#t .call-i {
+  left: 68.75%; /* I's centre: 3575 / 5200 */
+}
+#t .facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px var(--gutter);
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+#t .facts dt {
+  font: 500 var(--fs-run) / 1.3 var(--f-mono);
+  font-stretch: 75%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+#t .facts dd {
+  margin-top: 4px;
+  font: 900 clamp(22px, 2vw, 30px) / 1 var(--f-display);
+}
+#t .count {
+  font: 500 var(--fs-label) / 1 var(--f-mono);
+  font-stretch: 75%;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+#t .count [data-m="countn"] {
+  margin-inline: 0.12em;
+  color: var(--ink);
+  font: 900 clamp(40px, 4.4vw, 64px) / 1 var(--f-display);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+/* Weight and the glyph grid (app/_home/Weight.tsx) style themselves; these rules only place them */
+#glyphs {
+  padding: clamp(64px, 12svh, 140px) var(--margin);
+}
+#glyphs h3 {
+  margin-bottom: clamp(20px, 3svh, 32px);
+  font: 320 clamp(28px, 3vw, 44px) / 1 var(--f-text);
+  letter-spacing: -0.02em;
+}
+
+/* ================================================================
+   Sheet 07 · I and H: cursor, home
+   ================================================================ */
+
+#i .typed {
+  font: 320 8vw/1.02 var(--f-text);
+  font-optical-sizing: auto;
+  letter-spacing: -0.03em;
+}
+/* the caret: an I whose cap is .85 of the line's size, sitting on the last line's baseline */
+#i .inline-i {
+  display: inline-block;
+  width: calc(0.85em * 650 / 700);
+  margin-left: 0.04em;
+  vertical-align: baseline;
+}
+#i .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 24px;
+  font: 500 13px/1.6 var(--f-mono);
+  font-stretch: 87.5%;
+}
+#i .links a {
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+#i .links a:hover {
+  border-color: currentColor;
+  color: var(--signal);
+}
+#i .colophon {
+  max-width: 52ch;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+#i .home-line {
+  font: italic 400 20px/1.35 var(--f-text);
+}
+/* where the H parks: 40px cap, on the baseline */
+#i .park {
+  display: inline-block;
+  width: calc(40px * 650 / 700);
+  margin-left: 4px;
+  vertical-align: baseline;
+}
+
+/* ================================================================
+   desktop and tablet (641px and up)
+   ================================================================ */
+
+@media (min-width: 641px) {
+  /* ---------- 01 · hero ---------- */
+  #v {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: calc(var(--base) - 0.82 * var(--fs)) var(--fs) auto minmax(32px, 1fr) auto;
+    column-gap: var(--gutter);
+    padding: 0 var(--margin) 20px;
+  }
+  #v .name {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    justify-self: center;
+  }
+  /* labels over the word: the spec line on the V's ink, the etymology over the last H's */
+  #v .spec-label,
+  #v .etym {
+    position: absolute;
+    top: calc(var(--base) - 0.7 * var(--fs) - 18px);
+    translate: 0 -100%;
+  }
+  #v .spec-label {
+    left: calc(var(--wx) + 0.045 * var(--fs));
+  }
+  #v .etym {
+    right: calc(var(--wx) + 0.045 * var(--fs));
+    max-width: min(40%, 34ch);
+    text-align: right;
+  }
+  /* right under the V's point */
+  #v .v-note {
+    position: absolute;
+    top: calc(var(--base) + 8px);
+    left: calc(var(--wx) + 0.325 * var(--fs));
+    translate: -50% 0;
+    white-space: nowrap;
+  }
+  /* 32px under the baseline: the word's box ends .18em below it */
+  #v .lede,
+  #v .ctas {
+    grid-row: 3;
+    margin-top: calc(32px - 0.18 * var(--fs));
+  }
+  #v .lede {
+    grid-column: 1 / span 5;
+  }
+  #v .ctas {
+    grid-column: 9 / -1;
+    align-self: start;
+    justify-content: flex-end;
+  }
+  #v .folio-b,
+  #v .place {
+    grid-row: 5;
+    align-self: end;
+  }
+  #v .folio-b {
+    grid-column: 1 / span 6;
+  }
+  #v .place {
+    grid-column: 7 / -1;
+    text-align: right;
+  }
+
+  /* ---------- 02 · the quarter turn: flow. The figure spans the sheet; its legend sits under it on the
+     left and the commentary on the right (the still's box steps aside so its parts join this grid) ---------- */
+  #turn {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h . ."
+      "f f f f f f f f f f f f"
+      "l l l l l . c c c c c c"
+      "n n n n n . p p p p p p";
+  }
+  #turn .kicker {
+    grid-area: k;
+  }
+  #turn .h2 {
+    grid-area: h;
+  }
+  #turn .turn-still {
+    display: contents;
+  }
+  #turn .turn-still > :not(p) {
+    grid-area: f;
+    margin-block: clamp(56px, 10svh, 120px) clamp(40px, 7svh, 80px);
+  }
+  #turn .still-lines {
+    grid-area: l;
+  }
+  #turn .cap-note {
+    grid-area: n;
+    margin-top: 16px;
+  }
+  #turn .i-callout {
+    grid-area: c;
+    align-self: start;
+  }
+  #turn .caption {
+    grid-area: p;
+    margin-top: 16px;
+  }
+
+  /* ---------- manifest ---------- */
+  #manifest {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: start;
+    column-gap: var(--gutter);
+  }
+  /* sticky, cap centre on 50svh; 34vw wide, so it runs a little into the empty column 5 */
+  #manifest .ship-anchor {
+    position: sticky;
+    top: calc(50svh - 34vw * 700 / 5200 / 2);
+    grid-column: 1 / span 4;
+    width: 34vw;
+  }
+  #manifest .mf-body {
+    grid-column: 6 / -1;
+  }
+
+  /* ---------- 03 · VAR: flow ---------- */
+  #var {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "a a a a a . h h h h h h"
+      "a a a a a . s s s s s s"
+      "c c c c c . n n n n n n";
+  }
+  #var .kicker {
+    grid-area: k;
+  }
+  #var .var-anchor {
+    grid-area: a;
+    align-self: start;
+    width: calc(1.95 * 72vw / 5.2); /* the centred word's em: VAR lands at the size it left at */
+    max-width: 100%;
+    margin-top: 8px;
+  }
+  #var .h2 {
+    grid-area: h;
+  }
+  #var .sub {
+    grid-area: s;
+    margin-top: 20px;
+  }
+  #var .code {
+    grid-area: c;
+    align-self: start;
+    justify-self: start;
+    margin-top: 48px;
+  }
+  #var .nums {
+    grid-area: n;
+    display: grid;
+    gap: 48px;
+    margin-top: 48px;
+  }
+
+  /* ---------- 04 · A…I: flow ---------- */
+  #ai {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h . s s s"
+      "r r r r r r r r r r r r"
+      "c c c c c c c c c c c c";
+  }
+  #ai .kicker {
+    grid-area: k;
+  }
+  #ai .h2 {
+    grid-area: h;
+  }
+  #ai .sub {
+    grid-area: s;
+    align-self: end;
+  }
+  /* A, pipe, I in one coordinate system: 650 + 4400 + 650 font units, cap no taller than 22svh */
+  #ai .ai-row {
+    grid-area: r;
+    justify-self: center;
+    display: grid;
+    grid-template-columns: minmax(0, 650fr) minmax(0, 4400fr) minmax(0, 650fr);
+    align-items: start;
+    width: min(100%, calc(22svh / 700 * 5700));
+    margin-block: clamp(72px, 12svh, 140px) clamp(40px, 8svh, 96px);
+  }
+  /* labels hang just under the stations (station bottom 427, labels from 450 of 700) */
+  #ai .stations {
+    position: relative;
+    height: 3.2em;
+    margin-top: calc(-100% * 250 / 4400);
+  }
+  #ai .stations li {
+    position: absolute;
+    top: 0;
+    left: var(--x);
+    width: max-content;
+    max-width: 11ch;
+    translate: -50% 0;
+    text-align: center;
+  }
+  #ai figcaption {
+    margin-top: 6px;
+    text-align: center;
+  }
+  #ai .cards {
+    grid-area: c;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    max-width: 1100px;
+  }
+
+  /* ---------- 05 · SH: flow ---------- */
+  #sh {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "a a a a a . n n n n n n"
+      "h h h h h . t t t t t t"
+      "s s s s s . t t t t t t";
+    grid-template-rows: auto auto auto 1fr;
+  }
+  #sh .kicker {
+    grid-area: k;
+  }
+  /* cap = 22svh; SH and the guide number share a baseline */
+  #sh .sh-anchor {
+    grid-area: a;
+    align-self: end;
+    width: calc(22svh * 1300 / 700);
+    max-width: 82%;
+  }
+  #sh .sh-no {
+    grid-area: n;
+    align-self: end;
+    margin-bottom: -0.18em; /* its baseline on SH's: the line box runs .18em under it */
+  }
+  #sh .h2 {
+    grid-area: h;
+    margin-top: clamp(24px, 4svh, 48px);
+  }
+  #sh .sub {
+    grid-area: s;
+    margin-top: 16px;
+  }
+  #sh .sh-term {
+    grid-area: t;
+    margin-top: clamp(24px, 4svh, 48px);
+  }
+
+  /* ---------- 06 · T: flow ---------- */
+  #t {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h . ."
+      "s s s s s s . . . . . ."
+      "g g g g g g g g g g g g"
+      "f f f f f f . w w w w w"
+      "c c c c c c . w w w w w";
+  }
+  #t .kicker {
+    grid-area: k;
+  }
+  #t .h2 {
+    grid-area: h;
+  }
+  #t .sub {
+    grid-area: s;
+    margin-top: 16px;
+  }
+  #t .t-stage {
+    grid-area: g;
+    justify-self: center;
+    width: 72vw;
+    max-width: 100%;
+    margin-block: clamp(56px, 10svh, 112px) 128px; /* the call-outs hang below the stage */
+  }
+  #t .facts {
+    grid-area: f;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-self: start;
+  }
+  #t .count {
+    grid-area: c;
+    margin-top: 24px;
+  }
+  #t .t-weight {
+    grid-area: w;
+  }
+
+  /* ---------- 07 · I, H: flow ---------- */
+  #i {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "t t t t t t t t t t t ."
+      "s s s s s . l l l l l l"
+      "m m m m m . o o o o o o";
+  }
+  #i .kicker {
+    grid-area: k;
+  }
+  #i .typed {
+    grid-area: t;
+    margin-bottom: clamp(40px, 8svh, 96px);
+  }
+  #i .sub {
+    grid-area: s;
+  }
+  #i .links {
+    grid-area: l;
+    align-self: start;
+  }
+  #i .colophon {
+    grid-area: o;
+    margin-top: 24px;
+  }
+  #i .home-line {
+    grid-area: m;
+    margin-top: 24px;
+  }
+
+  /* ================= motion: pinned sheets ================= */
+
+  html.motion .leaf .h2 {
+    font-size: min(var(--fs-h2), 8.5svh);
+  }
+
+  /* 02: the solids hold the middle; the two H2 lines take turns in one cell */
+  html.motion #turn {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h . .";
+    grid-template-rows: auto auto;
+  }
+  html.motion #turn .h2 {
+    display: grid;
+  }
+  html.motion #turn .h2 > span {
+    grid-area: 1 / 1;
+  }
+  /* only seen if the runtime dies (failsafe): the sculpture where the word would be */
+  html.motion #turn .turn-still {
+    --cs-size: min(calc(72vw / 6.64), 18svh);
+    position: absolute;
+    top: 46svh;
+    left: 14%;
+    display: block;
+    width: 72%;
+    margin: 0;
+    translate: 0 -50%;
+  }
+  html.motion #turn .turn-still > :not(p) {
+    margin-block: 0;
+  }
+  html.motion #turn :is(.still-lines, .cap-note) {
+    display: none;
+  }
+  /* the leader drops from under the I (slot 5 centre = 68.75% of the anchor) and turns right */
+  html.motion #turn .i-callout {
+    position: absolute;
+    top: calc(46svh + 4.846vw + 10px); /* cap centre + half the anchor's height (72vw * 700 / 5200 / 2) */
+    left: calc(14% + 72% * 0.6875);
+    align-items: flex-end;
+    gap: 10px;
+  }
+  html.motion #turn .leader {
+    width: 56px;
+    height: 30px;
+    margin-bottom: 0.62em; /* the elbow meets the text at mid x-height */
+    border-bottom: 1px solid var(--ink);
+    border-left: 1px solid var(--ink);
+    background: none;
+  }
+  html.motion #turn .caption {
+    position: absolute;
+    bottom: clamp(32px, 7svh, 72px);
+    left: var(--margin);
+    width: min(46ch, 40%);
+    margin: 0;
+  }
+
+  /* 03: VAR on the left at cap centre 40svh, the numerals take turns at the bottom right */
+  html.motion #var {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      ". . . . . . h h h h h h"
+      ". . . . . . s s s s s s"
+      ". . . . . . . . . . . ."
+      ". . . . . . n n n n n n";
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+  html.motion #var .var-anchor {
+    position: absolute;
+    top: 40svh;
+    left: var(--margin);
+    max-width: none;
+    margin: 0;
+    translate: 0 -50%;
+  }
+  html.motion #var .code {
+    position: absolute;
+    top: calc(40svh + 4.846vw + 44px); /* under VAR: its half height is 27vw * 700 / 1950 / 2 */
+    left: var(--margin);
+    max-width: 42%;
+    margin: 0;
+  }
+  html.motion #var .nums {
+    gap: 0;
+    margin: 0;
+  }
+  html.motion #var .nums > div {
+    grid-area: 1 / 1;
+  }
+  html.motion #var .num {
+    font-size: min(var(--fs-num), 19vw, 24svh);
+  }
+
+  /* 04: the A…I row across the middle, one card at a time bottom right */
+  html.motion #ai {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h . s s s"
+      "r r r r r r r r r r r r"
+      ". . . . . . . c c c c c";
+    grid-template-rows: auto auto 1fr auto;
+  }
+  html.motion #ai .ai-row {
+    align-self: center;
+    width: min(100%, calc(18svh / 700 * 5700));
+    margin-block: 24px;
+  }
+  html.motion #ai .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  html.motion #ai .cards > * {
+    grid-area: 1 / 1;
+  }
+
+  /* 05: same grid; the H2 gives way to the 22svh SH on short screens */
+  html.motion #sh .h2 {
+    font-size: min(var(--fs-h2), 7.5svh);
+  }
+
+  /* 06: the outline stage floats at 26svh (it is also the anchor); the rest sits along the bottom */
+  html.motion #t {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h . ."
+      ". . . . . . . . . . . ."
+      "s s s s f f f w w w w w"
+      "s s s s c c c w w w w w";
+    grid-template-rows: auto auto 1fr auto auto;
+  }
+  html.motion #t .h2 {
+    font-size: min(var(--fs-h2), 8svh);
+  }
+  html.motion #t .t-stage {
+    position: absolute;
+    top: 26svh;
+    left: 14%;
+    width: 72%;
+    max-width: none;
+    margin: 0;
+  }
+  html.motion #t .sub {
+    align-self: start;
+    margin: 0;
+    font-size: 16px;
+  }
+  html.motion #t .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  html.motion #t .count {
+    margin-top: 18px;
+  }
+
+  /* 07: the typed line on top, the signature along the bottom */
+  html.motion #i {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "t t t t t t t t t t t ."
+      ". . . . . . . . . . . ."
+      "s s s s s . l l l l l l"
+      "m m m m m . o o o o o o";
+    grid-template-rows: auto auto 1fr auto auto;
+  }
+  html.motion #i .typed {
+    font-size: min(8vw, 12.5svh);
+    margin: 0;
+  }
+}
+
+/* narrower desktops: the hero copy needs more columns, and Sheet 04's sub drops under its H2 */
+@media (min-width: 641px) and (max-width: 1100px) {
+  #v .lede {
+    grid-column: 1 / span 7;
+  }
+  #v .ctas {
+    grid-column: 8 / -1;
+  }
+  #ai {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h h h"
+      "s s s s s s s . . . . ."
+      "r r r r r r r r r r r r"
+      "c c c c c c c c c c c c";
+  }
+  #ai .sub {
+    margin-top: 16px;
+  }
+  html.motion #ai {
+    grid-template-areas:
+      "k k k k k k k k k k k k"
+      "h h h h h h h h h h h h"
+      "s s s s s s s . . . . ."
+      "r r r r r r r r r r r r"
+      ". . . . . c c c c c c c";
+    grid-template-rows: auto auto auto 1fr auto;
+  }
+}
+@media (min-width: 641px) and (max-width: 860px) {
+  #v .lede {
+    grid-column: 1 / span 10;
+  }
+  #v .ctas {
+    grid-row: 4;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+}
+
+/* motion only: the token rides the pipe */
+html.motion #ai .token {
+  visibility: visible;
+}
+/* the caret shows from .18 of the SH pin, when the runtime adds .on */
+html.motion #sh .caret.on {
+  visibility: visible;
+}
+html.motion #ai .station path {
+  fill-opacity: 0; /* stations draw, then fill in order (fill-opacity 0 → 1) */
+}
+
+/* ================================================================
+   phones (640px and down)
+   ================================================================ */
+
+@media (max-width: 640px) {
+  .leaf {
+    display: flex;
+    flex-direction: column;
+  }
+  .leaf .sub {
+    margin-top: 16px;
+  }
+
+  /* ---------- 01 · hero: the word is a column at the left, copy in the right 72vw ---------- */
+  #v {
+    --fs: var(--fsc);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12svh var(--margin) 20px 24vw;
+  }
+  #v .name {
+    position: absolute;
+    top: 12svh;
+    left: 4vw;
+  }
+  #v .word {
+    display: flex;
+    flex-direction: column;
+  }
+  #v .slot + .slot {
+    margin-top: -0.2em; /* .8em pitch */
+  }
+  #v :is(.case, .case-line, .v-note) {
+    display: none;
+  }
+  #v .etym {
+    font-size: 17px;
+  }
+  #v .lede {
+    max-width: none;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+  #v .ctas {
+    width: 100%;
+    margin-top: 6px;
+  }
+  #v .ctas .btn {
+    flex: 1 1 auto;
+  }
+  #v .folio-b {
+    margin-top: 10px;
+  }
+
+  /* ---------- 02 ---------- */
+  #turn .turn-anchor {
+    display: none;
+  }
+  #turn .turn-still {
+    display: grid;
+    gap: 18px;
+    margin-block: 40px 24px;
+  }
+  #turn .i-callout {
+    font-size: 17px;
+  }
+  #turn .caption {
+    margin-top: 16px;
+  }
+
+  /* ---------- manifest: rows become blocks ---------- */
+  #manifest .ship-anchor {
+    margin-bottom: 36px;
+  }
+  .mf thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .mf,
+  .mf tbody {
+    display: block;
+  }
+  .mf-row {
+    display: grid;
+    grid-template-columns: 2.4em minmax(0, 1fr);
+    column-gap: 8px;
+    row-gap: 4px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .mf-row > * {
+    padding: 0;
+    border: 0;
+  }
+  .mf-row:hover > * {
+    background: none;
+  }
+  .mf :is(.mf-what, .mf-where) {
+    grid-column: 2;
+  }
+  .mf-name {
+    white-space: normal;
+  }
+
+  /* ---------- 03 ---------- */
+  #var .var-anchor {
+    width: min(100%, 64vw);
+    margin-bottom: 28px;
+  }
+  #var .code {
+    margin-top: 28px;
+    padding: 14px 14px;
+    font-size: 12px;
+    font-stretch: 75%;
+  }
+  #var .nums {
+    display: grid;
+    gap: 32px;
+    margin-top: 36px;
+  }
+  #var .num {
+    font-size: min(var(--fs-num), 30vw);
+  }
+
+  /* ---------- 04: the pipeline runs down the page, A above it and I below ---------- */
+  #ai .ai-row {
+    display: flex;
+    flex-direction: column;
+    margin-block: 36px;
+  }
+  #ai .ai-a,
+  #ai .ai-i {
+    width: 22vw;
+  }
+  #ai .pipe-art {
+    display: none;
+  }
+  #ai .pipe {
+    margin: 10px 0 10px 11vw; /* the line runs through the centre of the A and the I */
+    padding: 6px 0 10px;
+    border-left: 1px solid var(--ink);
+  }
+  #ai .stations li {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    padding-left: 24px;
+  }
+  #ai .stations li::before {
+    content: attr(data-l);
+    position: absolute;
+    left: 0;
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    translate: -50% 0;
+    background: var(--paper);
+    color: var(--signal);
+    font: 900 16px/1 var(--f-display);
+  }
+  #ai figcaption {
+    padding: 6px 0 0 24px;
+    font-size: 15px;
+  }
+  #ai .cards {
+    display: grid;
+    gap: 28px;
+    margin-top: 12px;
+  }
+
+  /* ---------- 05 ---------- */
+  #sh .sh-anchor {
+    width: 48vw;
+    margin-bottom: 28px;
+  }
+  #sh .sh-no {
+    margin-top: 32px;
+    font-size: min(var(--fs-num), 30vw);
+  }
+  #sh .sh-term {
+    margin-top: 28px;
+  }
+
+  /* ---------- 06: the outline sits in the flow; its metric labels would fall off the left edge ---------- */
+  #t .t-stage {
+    margin-block: 36px 28px;
+  }
+  #t .metric-labels,
+  #t .call::before {
+    display: none;
+  }
+  /* too narrow to hang the call-outs under their letters: they follow the outline instead */
+  #t .call {
+    position: static;
+    max-width: none;
+    margin-top: 12px;
+    padding-top: 0;
+    font-size: 16px;
+  }
+  #t .call-v {
+    margin-top: 24px;
+  }
+  #t .facts {
+    margin-top: 12px;
+  }
+  #t .count {
+    margin-top: 20px;
+  }
+  #t .t-weight {
+    margin-top: 28px;
+  }
+
+  /* ---------- 07 ---------- */
+  #i .typed {
+    font-size: 11vw;
+    margin-bottom: 32px;
+  }
+  #i .links {
+    margin-top: 20px;
+  }
+  #i .colophon,
+  #i .home-line {
+    margin-top: 20px;
+  }
+
+  /* ================= motion: the column owns the left 24vw of every sheet ================= */
+
+  html.motion .home section:not(#v) {
+    padding-left: 24vw;
+  }
+  html.motion #turn .h2 {
+    display: grid;
+  }
+  html.motion #turn .h2 > span {
+    grid-area: 1 / 1;
+  }
+  /* the leader points left at the I in the column (slot 5 cap centre: 12svh + 5 × .8em + .47em) */
+  html.motion #turn .i-callout {
+    position: absolute;
+    top: calc(var(--header) + 12svh + 4.47 * var(--fsc));
+    left: calc(4vw + 0.65 * var(--fsc) + 6px);
+    right: var(--margin);
+    translate: 0 -50%;
+  }
+  html.motion #turn .leader {
+    width: calc(24vw - 4vw - 0.65 * var(--fsc));
+  }
+  html.motion #turn .caption {
+    position: absolute;
+    right: var(--margin);
+    bottom: 6svh;
+    left: 24vw;
+  }
+  html.motion #var .nums > div,
+  html.motion #ai .cards > * {
+    grid-area: 1 / 1;
+  }
+  html.motion #var .nums {
+    gap: 0;
+  }
+  /* the widest numeral keeps inside the 72vw column */
+  html.motion #var .num {
+    font-size: min(var(--fs-num), 25vw);
+  }
+  html.motion #var .code {
+    padding-inline: 10px;
+    font-size: 10.5px;
+  }
+  html.motion #ai .cards {
+    gap: 0;
+  }
+  /* the metric lines stop at the column instead of running across it */
+  html.motion #t .t-stage {
+    clip-path: inset(-12px 0);
+  }
+  html.motion #ai .pipe {
+    margin-left: 12px;
+  }
+  html.motion #ai figcaption {
+    display: none; /* the list has to fit between the column's A and I */
+  }
+}

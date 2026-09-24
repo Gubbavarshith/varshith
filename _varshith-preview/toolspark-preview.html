@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>Toolspark — Free Privacy-First Browser Tools</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Tektur:wght@900&display=swap" rel="stylesheet">
+<style>
+.preview{--ink:#282828;--surface:#FFFFFF;--page:#F5F6FA;--yellow:#FFE066;--blue:#3B58E2;--on-accent:#1A1A1A;--mono:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;--display:'Tektur',Impact,sans-serif;
+  position:relative;width:1440px;overflow:hidden;background:var(--page);color:var(--ink);font-family:'Outfit',sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;text-align:left}
+.preview *,.preview *::before,.preview *::after{box-sizing:border-box;margin:0;padding:0;border:0 solid var(--ink)}
+:where(.preview) a{color:inherit;text-decoration:none}
+:where(.preview) :is(ul,ol){list-style:none}
+:where(.preview) :is(h1,h2,h3){font-weight:700;line-height:1.15;letter-spacing:-0.02em;color:var(--ink)}
+.preview svg{display:block;flex-shrink:0}
+.ic{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dots{position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px,rgba(40,40,40,.09) 1px,transparent 0);background-size:26px 26px}
+.container{position:relative;max-width:1200px;margin:0 auto;padding:0 48px}
+.tag{display:inline-flex;align-items:center;border:2px solid var(--ink);border-radius:14px;padding:2px 8px;font-size:12px;font-weight:500;line-height:16px}
+.tag.y{background:var(--yellow);color:var(--on-accent)}
+.tag.b{background:var(--blue);color:#fff}
+.tag.w{background:var(--surface)}
+.display{font-size:40px}
+.body{font-size:15px;line-height:1.6;color:rgba(40,40,40,.6)}
+.glyph{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--surface);flex-shrink:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--ink);border-radius:10px;padding:10px 20px;font-size:15px;font-weight:600;letter-spacing:-0.01em;line-height:24px}
+.btn.primary{background:var(--yellow);color:var(--on-accent);box-shadow:4px 4px 0 var(--ink)}
+.btn.secondary{background:var(--surface);color:var(--ink);box-shadow:4px 4px 0 var(--yellow)}
+.chip{display:grid;place-items:center;width:40px;height:40px;border:2px solid var(--ink);border-radius:14px;flex-shrink:0}
+.chip.b{background:var(--blue);color:#fff}
+.chip.w{background:var(--surface);color:var(--ink)}
+
+/* ── nav ── */
+.nav{position:absolute;top:0;left:0;right:0;z-index:50;background:var(--surface);border-bottom:2px solid var(--ink)}
+.nav-in{max-width:1500px;margin:0 auto;padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:block;height:36px;width:auto;border:2px solid var(--ink);border-radius:4px;box-shadow:3px 3px 0 var(--ink);background:transparent}
+.links{display:flex;align-items:center;gap:10px}
+.links a,.links span{display:flex;align-items:center;gap:4px;border:2px solid transparent;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;line-height:20px}
+.links .on{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.actions{display:flex;align-items:center;gap:12px}
+.search{position:relative;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 10px;color:#fff;text-shadow:2px 2px rgb(116,116,116);text-transform:uppercase;border:2px solid #000!important;border-radius:50px;letter-spacing:1px;font-weight:600;font-size:17px;line-height:25px;background:hsl(49deg 98% 60%);overflow:hidden}
+.toggle{position:relative;width:56.25px;height:25px;font-size:10px;border-radius:50em;overflow:hidden;background:linear-gradient(to bottom,#5caad4 0%,#4a92bd 100%);box-shadow:0 0 0 .078em #1a1a1a,.093em .125em 0 .078em rgba(26,26,26,.22);transform:rotate(-0.7deg)}
+.toggle .rays{position:absolute;left:-4.375px;top:-4.375px;width:33.75px;height:33.75px;border-radius:50em;display:flex;box-shadow:inset 0 0 0 3.375em rgba(255,255,255,.1),inset 0 0 0 3.375em rgba(255,255,255,.1),0 0 0 .625em rgba(255,255,255,.1),0 0 0 1.25em rgba(255,255,255,.1)}
+.toggle .rays::before{content:"";position:absolute;width:4.875em;height:4.875em;left:-.75em;top:-.75em;border-radius:50%;background:repeating-conic-gradient(transparent 0deg 8deg,rgba(245,197,24,.52) 8deg 22deg,transparent 22deg 45deg)}
+.toggle .sun{position:relative;z-index:2;width:2.125em;height:2.125em;margin:auto;border-radius:50em;background:#f5c518;box-shadow:.062em .062em .062em 0 rgba(254,255,239,.61) inset,0 -.062em .062em 0 #a1872a inset,.1em .13em 0 .04em #1a1a1a}
+.toggle .clouds{position:absolute;bottom:-.625em;left:.312em;width:1.25em;height:1.25em;border-radius:50em;background:#f4f4f4;box-shadow:.937em .312em #f4f4f4,-.312em -.312em #bacfe0,1.437em .375em #f4f4f4,.5em -.125em #bacfe0,2.187em 0 #f4f4f4,1.25em -.062em #bacfe0,2.937em .312em #f4f4f4,2em -.312em #bacfe0,3.625em -.062em #f4f4f4,2.625em 0 #bacfe0,4.5em -.312em #f4f4f4,3.375em -.437em #bacfe0,4.625em -1.75em 0 .437em #f4f4f4,4em -.625em #bacfe0,4.125em -2.125em 0 .437em #bacfe0}
+.use-tools{display:inline-flex;align-items:center;gap:6px;border:3px solid var(--ink);border-radius:4px;background:var(--blue);color:#fff;padding:8px 16px;font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:-0.025em;line-height:20px;box-shadow:3px 3px 0 var(--ink)}
+
+/* ── hero ── */
+.hero{position:relative;min-height:900px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:80px 0 40px;overflow:hidden;background:var(--page)}
+.hero .fade{position:absolute;inset:0;background:linear-gradient(to bottom,transparent,var(--page))}
+.hero-in{position:relative;z-index:10;width:100%;max-width:1152px;margin:0 auto;padding:0 16px;display:flex;flex-direction:column;align-items:center;text-align:center}
+.badge{display:inline-flex;align-items:center;gap:8px;margin-bottom:24px;border:2px solid var(--ink);border-radius:9999px;padding:8px 16px;background:var(--yellow);color:var(--on-accent);font-size:13px;font-weight:600;line-height:18px}
+.hero h1{font-size:68px;max-width:896px;margin-bottom:20px}
+.hero h1 div{overflow:hidden}
+.scramble{display:inline-block;min-width:400px;border:2px solid var(--ink);border-radius:14px;padding:4px 16px;background:var(--blue);color:#fff}
+.hero h1 .l3{font-size:60px;margin-top:4px}
+.sub{max-width:60ch;margin-bottom:28px;padding:0 16px;font-size:18px;line-height:1.6;color:rgba(40,40,40,.6)}
+.sub span{display:inline-block;border:2px solid var(--ink);border-radius:14px;padding:2px 8px;background:var(--yellow);color:var(--on-accent);font-weight:600}
+.mid{position:relative;z-index:20;width:100%;max-width:1024px;height:200px;margin:8px auto}
+.marquee{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1728px;display:flex;overflow:hidden;border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);background:var(--blue);color:#fff;font-size:24px;line-height:32px;font-weight:600;letter-spacing:-0.01em;padding:16px 0;white-space:nowrap}
+.marquee span{margin:0 24px}
+.marquee i{font-style:normal;margin:0;color:rgba(255,255,255,.4)}
+.hcard{position:absolute;width:420px;border:2px solid var(--ink);border-radius:18px;padding:20px;text-align:left}
+.hcard.trap{top:0;left:5%;z-index:10;background:var(--surface)}
+.hcard.fix{bottom:0;right:5%;z-index:20;background:var(--yellow);box-shadow:4px 4px 0 var(--ink)}
+.hcard .row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.hcard h2{font-size:17px}
+.hcard p{font-size:15px;line-height:1.6;color:rgba(40,40,40,.6)}
+.hcard.fix h2{color:var(--on-accent)}
+.hcard.fix p{color:var(--on-accent);opacity:.72}
+.cta-row{position:relative;z-index:40;display:flex;gap:12px;margin-top:28px}
+.cta-row .btn{padding:12px 24px;font-size:16px}
+
+/* ── directory ── */
+.dir{position:relative;padding:112px 0}
+.dir-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px 40px}
+.dir-head>div{max-width:60ch}
+.dir h2,.hiw h2{margin-top:16px}
+.dir-head p,.hiw-head p{margin-top:12px}
+.dir-grid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;margin-top:48px}
+.tabs{display:grid;gap:8px;align-content:start}
+.tab{position:relative;display:flex;align-items:center;gap:12px;border:2px solid transparent;border-radius:14px;padding:10px 12px}
+.tab.on::before{content:"";position:absolute;inset:-2px;border:2px solid var(--ink);border-radius:14px;background:var(--surface);box-shadow:3px 3px 0 var(--ink)}
+.tab .chip{position:relative;width:36px;height:36px;border-radius:11px}
+.tab .txt{position:relative;flex:1;min-width:0}
+.tab b{display:block;font-size:15px;line-height:1.25;letter-spacing:-0.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab small{display:block;margin-top:2px;font-size:11px;line-height:1.4;color:rgba(40,40,40,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tab .n{position:relative;font-family:var(--mono);font-size:12px;color:rgba(40,40,40,.5)}
+.panel{position:relative;min-height:420px;border:2px solid var(--ink);border-radius:18px;background:var(--surface);padding:32px}
+.panel-top{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:16px}
+.panel-top>div{max-width:56ch}
+.panel h3{font-size:28px}
+.panel-top p{margin-top:8px}
+.tools{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px}
+.tool{display:flex;flex-direction:column;height:100%;border:2px solid var(--ink);border-radius:14px;background:var(--page);padding:16px}
+.tool .top{display:flex;align-items:center;justify-content:space-between;gap:12px;color:rgba(40,40,40,.7)}
+.tool .top svg+svg{color:rgba(40,40,40,.3)}
+.tool b{margin-top:12px;font-size:15px;line-height:1.375;letter-spacing:-0.01em}
+.tool span{margin-top:4px;font-size:13px;line-height:1.5;color:rgba(40,40,40,.55);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.more{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:14px;font-weight:600}
+
+/* ── how it works ── */
+.hiw{position:relative;padding:16px 0 112px}
+.hiw-head{max-width:62ch}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.cmp{display:flex;flex-direction:column;height:100%;border:2px solid var(--ink);border-radius:18px;padding:24px;background:var(--surface)}
+.cmp.ours{background:var(--yellow);color:var(--on-accent);box-shadow:4px 4px 0 var(--ink)}
+.cmp-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cmp h3{font-size:17px}
+.cmp.ours h3{color:var(--on-accent)}
+.cmp-top span{border:2px solid var(--ink);border-radius:14px;padding:2px 8px;font-size:12px;font-weight:500;line-height:16px}
+.cmp.ours .cmp-top span{border-color:var(--on-accent)}
+.diagram{display:flex;align-items:center;gap:8px;margin-top:24px;border:2px solid var(--ink);border-radius:14px;background:var(--page);padding:20px 16px 12px;color:var(--ink)}
+.node{display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;flex-shrink:0}
+.node.dim{opacity:.35}
+.node i{display:grid;place-items:center;width:48px;height:48px;border:2px solid var(--ink);border-radius:14px;background:var(--surface)}
+.node.act i{background:var(--blue);color:#fff}
+.node span{text-align:center;font-size:11px;font-weight:600;line-height:1.25}
+.wire{position:relative;flex:1;min-width:16px;margin-bottom:24px}
+.wire hr{height:0;border-top:2px solid var(--ink)}
+.wire.up hr{border-top-style:dashed;border-color:rgba(40,40,40,.4)}
+.wire.blk hr{border-color:rgba(40,40,40,.1)}
+.wire .dot{position:absolute;top:-6px;margin-left:-5px;width:10px;height:10px;border:2px solid var(--ink);border-radius:3px;background:var(--blue)}
+.wire.up .dot{left:100%;background:var(--surface)}
+.wire.loc .dot{left:6%}
+.wire .no{position:absolute;left:50%;top:-11px;transform:translateX(-50%);display:grid;place-items:center;width:20px;height:20px;border:2px solid var(--ink);border-radius:50%;background:var(--yellow);color:var(--on-accent)}
+.points{margin-top:20px;display:grid;gap:10px}
+.points li{display:flex;align-items:flex-start;gap:10px;font-size:15px;line-height:1.5}
+.points i{display:grid;place-items:center;width:20px;height:20px;margin-top:2px;border:2px solid rgba(40,40,40,.4);border-radius:50%;color:rgba(40,40,40,.6);flex-shrink:0}
+.points span{color:rgba(40,40,40,.65)}
+.ours .points i{background:var(--on-accent);border-color:var(--on-accent);color:var(--yellow)}
+.ours .points span{color:var(--on-accent);opacity:.8}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:24px}
+.steps li{border:2px solid var(--ink);border-radius:18px;background:var(--surface);padding:24px}
+.steps .hd{display:flex;align-items:center;justify-content:space-between}
+.steps .hd>span:last-child{font-family:var(--mono);font-size:12px;color:rgba(40,40,40,.4)}
+.steps h3{margin-top:16px;font-size:17px}
+.steps p{margin-top:6px}
+.proof{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:32px;font-size:15px;line-height:1.6;color:rgba(40,40,40,.6)}
+.proof b{color:var(--ink)}
+.proof kbd{border:2px solid var(--ink);border-radius:10px;background:var(--surface);padding:0 6px;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--ink);line-height:1.5}
+
+/* ── contact ── */
+.contact{position:relative;height:900px;overflow:hidden;background:var(--surface)}
+.glow{position:absolute;left:0;right:0;bottom:-32%;height:88%;transform:translateY(-6%);background:radial-gradient(ellipse 55% 100% at 58% 100%,rgba(59,88,226,.16) 0%,rgba(59,88,226,.05) 45%,transparent 72%)}
+.stage{position:relative;z-index:10;display:flex;align-items:center;height:100%;padding:32px 56px}
+.stage-in{width:100%;max-width:1240px;margin:0 auto;text-align:center}
+.eyebrow{display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;letter-spacing:.04em;color:rgba(40,40,40,.6)}
+.eyebrow i{width:6px;height:6px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 1px rgba(40,40,40,.25)}
+.big{margin-top:32px;font-family:var(--display);font-weight:900;font-size:135px;line-height:1.05;letter-spacing:.12em;font-variant-caps:small-caps}
+.big span{display:block}
+.big .mid-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:.1em .26em}
+.pill{display:inline-flex;align-items:center;gap:.5em;border-radius:9999px;background:var(--blue);color:#fff;padding:.62em 1.05em;font-family:'Outfit',sans-serif;font-variant-caps:normal;font-size:21.3px;font-weight:500;line-height:1;letter-spacing:-0.01em;box-shadow:0 14px 36px -16px rgba(59,88,226,.95)}
+.facts{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px 12px;margin-top:40px;font-size:14px;color:rgba(40,40,40,.45)}
+.facts i{width:4px;height:4px;border-radius:50%;background:rgba(40,40,40,.25)}
+.facts em{font-style:normal;color:rgba(40,40,40,.7)}
+
+/* ── testimonials ── */
+.say{position:relative;display:flex;align-items:center;min-height:900px;padding:112px 0;overflow:hidden}
+.say-grid{position:relative;z-index:10;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:80px;width:100%;max-width:1200px;margin:0 auto;padding:0 48px}
+.say-left{max-width:576px}
+.say h2{margin-top:16px;font-size:44px}
+.say h2 span{color:var(--blue)}
+.say-left p.body{margin-top:16px;max-width:60ch}
+.drag{display:inline-flex;align-items:center;gap:8px;margin-top:32px;border:2px solid var(--ink);border-radius:9999px;background:var(--surface);padding:8px 16px;font-size:13px;font-weight:600;line-height:18px}
+.cards{display:grid;height:520px;align-content:center;justify-content:start;padding-left:80px}
+.stack{position:relative;width:350px;height:450px}
+.card{position:absolute;left:0;top:0;display:flex;flex-direction:column;justify-content:space-between;width:350px;height:450px;overflow:hidden;border:2px solid var(--ink);border-radius:18px;background:var(--surface);padding:28px;box-shadow:4px 4px 0 var(--yellow)}
+.card.front{z-index:2;transform:rotate(-6deg)}
+.card.middle{z-index:1;transform:translateX(33%)}
+.card.back{z-index:0;transform:translateX(66%) rotate(6deg)}
+.card .q{position:absolute;right:-12px;top:-12px;color:var(--blue);opacity:.12}
+.stars{position:relative;display:flex;gap:4px}
+.stars svg{fill:var(--yellow);stroke:var(--ink)}
+.card p{position:relative;font-size:20px;font-weight:600;line-height:1.4;letter-spacing:-0.015em}
+.author{position:relative;display:flex;align-items:center;gap:12px;border-top:1px solid rgba(40,40,40,.12);padding-top:20px}
+.av{width:48px;height:48px;border:2px solid var(--ink);border-radius:50%;background:var(--page);flex-shrink:0;overflow:hidden}
+.author b{display:block;font-size:14px;line-height:20px}
+.author small{display:block;font-size:12px;line-height:16px;color:rgba(40,40,40,.6)}
+
+/* ── closing cta ── */
+.smash{position:relative;height:900px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:var(--yellow);overflow:hidden}
+.smash div{font-family:var(--display);font-weight:900;font-size:158px;line-height:1.05;letter-spacing:.12em;font-variant-caps:small-caps;white-space:nowrap;color:transparent;-webkit-text-stroke:2px var(--blue)}
+.final{position:relative;height:900px;display:flex;align-items:center;justify-content:center;background:var(--blue)}
+.final-card{width:936px;border:2px solid #282828;border-radius:18px;background:#F5F6FA;color:#282828;padding:56px;box-shadow:6px 6px 0 #FFE066}
+.final-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:1px solid rgba(40,40,40,.15);padding-bottom:20px;margin-bottom:40px}
+.final-top h3{font-size:30px}
+.final-top p{margin-top:8px;font-size:13px;line-height:20px;color:rgba(0,0,0,.5)}
+.final-top .r{text-align:right}
+.final-top .free{display:block;font-size:48px;font-weight:700;line-height:1;letter-spacing:-0.02em;color:var(--blue)}
+.final-card h2{font-size:64px;letter-spacing:-0.02em;margin-bottom:48px}
+.final-card h2 span{display:inline-block;margin-top:4px;color:var(--blue)}
+.final-bot{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:8px}
+.open{display:inline-flex;align-items:center;gap:12px;border:2px solid #282828;border-radius:10px;background:#FFE066;color:#1A1A1A;padding:16px 32px;font-size:18px;font-weight:600;line-height:28px;letter-spacing:-0.01em;box-shadow:4px 4px 0 #282828}
+.open .glyph{background:#282828;color:#F5F6FA}
+.chips{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.chips span{border:2px solid #282828;border-radius:14px;padding:4px 12px;font-size:12px;font-weight:500;line-height:16px}
+.chips span:first-child{background:#282828;color:#FFE066}
+
+/* ── footer ── */
+.footer{position:relative;height:900px;display:flex;flex-direction:column;overflow:hidden;background:var(--page)}
+.f-main{flex:1;min-height:0;display:flex;flex-direction:column;background:#FFE066;color:#282828}
+.f-top{flex:1;display:flex;width:100%;max-width:1600px;margin:0 auto}
+.f-left{width:50%;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:80px 48px 80px 80px}
+.f-left h2{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:64.8px;line-height:1.05;letter-spacing:.02em}
+.f-left p{margin-top:24px;max-width:384px;font-size:16px;font-weight:700;line-height:1.375;letter-spacing:-0.025em;text-transform:uppercase;color:rgba(40,40,40,.8)}
+.explore{display:inline-flex;align-items:center;gap:8px;margin-top:24px;border:3px solid #282828;background:#3B58E2;color:#fff;padding:8px 16px;font-size:16px;font-weight:700;line-height:24px;text-transform:uppercase;letter-spacing:-0.05em;box-shadow:4px 4px 0 #282828}
+.f-right{width:50%;display:flex;flex-direction:column;justify-content:center;padding:80px 80px 80px 48px}
+.f-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:64px 32px}
+.f-cols>div{display:flex;flex-direction:column;gap:20px}
+.f-cols h3{font-size:12px;line-height:16px;text-transform:uppercase;border-bottom:2px solid rgba(40,40,40,.1);padding-bottom:8px}
+.f-cols ul{display:flex;flex-direction:column;gap:12px}
+.f-cols a{font-size:18px;line-height:28px;font-weight:700;letter-spacing:-0.025em}
+.wordmark{margin-top:auto;width:100%;padding:40px 24px;color:#3B58E2}
+.wordmark svg{width:100%;height:auto;fill:currentColor;overflow:visible}
+.legal{position:relative;z-index:10;margin-top:-10px;background:#3B58E2;color:#FFE066}
+.legal-in{max-width:1600px;margin:0 auto;padding:32px 80px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.legal p,.legal a{font-size:14px;line-height:20px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.legal div{display:flex;align-items:center;gap:24px}
+</style>
+</head>
+<body style="margin:0">
+<div class="preview">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.520 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol>
+<symbol id="i-arrow-r" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></symbol>
+<symbol id="i-arrow-ur" viewBox="0 0 24 24"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-calc" viewBox="0 0 24 24"><rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></symbol>
+<symbol id="i-image" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></symbol>
+<symbol id="i-type" viewBox="0 0 24 24"><path d="M12 4v16"/><path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2"/><path d="M9 20h6"/></symbol>
+<symbol id="i-code" viewBox="0 0 24 24"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></symbol>
+<symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.8z"/><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+<symbol id="i-printer" viewBox="0 0 24 24"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></symbol>
+<symbol id="i-file" viewBox="0 0 24 24"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+<symbol id="i-binary" viewBox="0 0 24 24"><rect x="14" y="14" width="4" height="6" rx="2"/><rect x="6" y="4" width="4" height="6" rx="2"/><path d="M6 20h4"/><path d="M14 10h4"/><path d="M6 14h2v6"/><path d="M14 4h2v6"/></symbol>
+<symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/></symbol>
+<symbol id="i-var" viewBox="0 0 24 24"><path d="M8 21s-4-3-4-9 4-9 4-9"/><path d="M16 3s4 3 4 9-4 9-4 9"/><line x1="15" x2="9" y1="9" y2="15"/><line x1="9" x2="15" y1="9" y2="15"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+<symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18"/><path d="m19 8 3 8a5 5 0 0 1-6 0zV7"/><path d="M3 7h1a17 17 0 0 0 8-2 17 17 0 0 0 8 2h1"/><path d="m5 8 3 8a5 5 0 0 1-6 0zV7"/><path d="M7 21h10"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.950 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></symbol>
+<symbol id="i-laptop" viewBox="0 0 24 24"><path d="M18 5a2 2 0 0 1 2 2v8.526a2 2 0 0 0 .212.897l1.068 2.127a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45l1.068-2.127A2 2 0 0 0 4 15.526V7a2 2 0 0 1 2-2z"/><path d="M20.054 15.987H3.946"/></symbol>
+<symbol id="i-moncog" viewBox="0 0 24 24"><path d="M12 17v4"/><path d="m14.305 7.53.923-.382"/><path d="m15.228 4.852-.923-.383"/><path d="m16.852 3.228-.383-.924"/><path d="m16.852 8.772-.383.923"/><path d="m19.148 3.228.383-.924"/><path d="m19.53 9.696-.382-.924"/><path d="m20.772 4.852.924-.383"/><path d="m20.772 7.148.924.383"/><path d="M22 13v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><path d="M8 21h8"/><circle cx="18" cy="6" r="3"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></symbol>
+<symbol id="i-pointer" viewBox="0 0 24 24"><path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/><path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.040 4.35a.5.5 0 0 1-.95.074z"/></symbol>
+<symbol id="i-quote" viewBox="0 0 24 24"><path d="M16 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/><path d="M5 3a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2 1 1 0 0 1 1 1v1a2 2 0 0 1-2 2 1 1 0 0 0-1 1v2a1 1 0 0 0 1 1 6 6 0 0 0 6-6V5a2 2 0 0 0-2-2z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.160z"/></symbol>
+</svg>
+
+<header class="nav" data-part="nav">
+  <div class="nav-in">
+    <a href="#" aria-label="Toolspark — home"><svg class="logo" role="img" aria-label="Toolspark" style="width:144.8px" width="66mm" height="15mm" viewBox="0 0 66 15" xmlns="http://www.w3.org/2000/svg" ><g ><path d="M 1.5319438,3.998101 H 6.6620492 L 7.6480955,4.890872 V 5.69037 H 5.5161068 v 5.303332 H 3.6639382 V 5.69037 H 1.5319438 Z" fill="#3b58e2" /><path fill="#ffe066" d="m 13.026589,10.902812 c 0.42304,-0.08891 0.8349,-0.254239 1.228408,-0.492834 0.201888,-0.122459 0.833232,-0.699268 1.901332,-1.737264 2.668966,-2.593731 2.838258,-2.750388 3.150103,-2.914954 0.418224,-0.220713 0.785328,-0.313096 1.249468,-0.314389 0.674476,-0.0013 1.119017,0.172661 1.594181,0.625888 0.806967,0.769723 0.816812,2.078532 0.02172,2.873737 C 21.40958,9.705223 20.105058,9.806382 19.11716,9.179885 18.989164,9.098705 18.563904,8.717878 18.17202,8.333532 l -0.712509,-0.698836 -0.520905,0.522521 -0.520902,0.52252 0.788847,0.763167 c 0.473163,0.457762 0.925036,0.84791 1.129195,0.974959 0.875254,0.544672 2.183122,0.735502 3.271949,0.47741 0.425212,-0.100763 1.136287,-0.448198 1.464331,-0.715415 0.547936,-0.446364 1.014484,-1.17648 1.17581,-1.840147 C 24.41507,7.651629 24.313276,6.5911 24.025362,6.0197 23.526889,5.030671 22.584927,4.315012 21.481085,4.08665 20.857799,3.957713 19.931577,3.981503 19.378653,4.14065 18.913025,4.274682 18.396397,4.52276 18.066101,4.770953 17.923088,4.878465 16.873822,5.883429 15.734485,7.004261 14.379558,8.337189 13.568323,9.099142 13.389361,9.2069 12.941204,9.476758 12.540161,9.589161 12.03757,9.585762 11.074933,9.579562 10.288493,9.069589 9.9630601,8.241383 9.8277431,7.896998 9.8204721,7.170067 9.9493701,6.831605 10.444747,5.527325 11.946345,5.04575 13.297718,5.757767 c 0.20354,0.107266 0.516802,0.374093 1.044765,0.88999 l 0.754026,0.736811 0.52644,-0.528071 0.526439,-0.528085 -0.747454,-0.743571 C 14.579267,4.766824 14.176366,4.477553 13.531477,4.242198 13.006333,4.050545 12.46023,3.978473 11.777323,4.010664 11.090547,4.042954 10.770256,4.123898 10.171909,4.416111 9.7828631,4.606097 9.6431001,4.709259 9.2696872,5.082112 8.8894706,5.461706 8.7972423,5.58755 8.6086543,5.983629 8.3584659,6.509161 8.2904302,6.757068 8.2490232,7.29438 c -0.078707,1.020746 0.296364,1.965225 1.07361,2.703544 0.7608058,0.722692 1.7134008,1.051166 2.8936318,0.997797 0.258261,-0.01114 0.622854,-0.05349 0.810235,-0.09293 z" /><path d="m 24.919145,4.003029 h 1.852168 V 9.293036 H 31.0353 v 1.705594 h -5.130109 l -0.986046,-0.906096 z" fill="#3b58e2" /><path d="m 31.625955,3.995235 h 5.130103 l 0.986048,0.892772 V 5.687503 H 33.478124 V 6.6469 h 4.263982 v 4.343936 H 32.612001 L 31.625955,10.084739 V 9.285241 h 4.263988 V 8.33917 h -4.263987 z" fill="#3b58e2" /><path d="m 38.332762,4.006922 h 5.130105 l 0.986045,0.892772 v 3.451162 h -4.263987 v 2.651666 h -1.852163 z m 1.852163,2.651665 h 2.411819 V 5.699191 h -2.411819 z" fill="#3b58e2" /><path d="m 46.555673,3.999393 h 3.01902 l 1.516105,1.401074 v 5.604297 h -1.83251 V 8.349395 h -2.38621 v 2.655369 H 45.039567 V 5.400467 Z m 0.316405,2.655369 h 2.38621 V 5.694026 h -2.38621 z" fill="#3b58e2" /><path d="m 51.681453,3.999393 h 5.075655 l 0.975576,0.894019 v 3.455983 h -2.267568 l 2.109365,2.655369 H 55.412385 L 53.513964,8.709671 v 2.295093 h -1.832511 z m 1.832511,2.655369 h 2.38621 V 5.694026 h -2.38621 z" fill="#3b58e2" /><path d="M 58.323339,3.999393 H 60.15585 V 6.201081 L 62.107012,3.999393 H 64.37458 L 61.896079,7.50875 64.37458,11.004764 H 62.107012 L 60.15585,8.803076 v 2.201688 h -1.832511 z" fill="#3b58e2" /></g></svg></a>
+    <nav class="links" aria-label="Main">
+      <a href="#" class="on">Home</a>
+      <a href="#">Tools</a>
+      <a href="#">About</a>
+      <span>More <svg class="ic" width="14" height="14" style="stroke-width:2.5"><use href="#i-chev"/></svg></span>
+    </nav>
+    <div class="actions">
+      <a href="#" class="search" aria-label="Search">
+        <svg viewBox="0 0 36 36" width="36" height="36" aria-hidden="true"><rect width="36" height="36" fill="#fdd835"/><path fill="#e53935" d="M38.67,42H11.52C11.27,40.62,11,38.57,11,36c0-5,0-11,0-11s1.44-7.39,3.22-9.59 c1.67-2.06,2.76-3.48,6.78-4.41c3-0.7,7.130-0.23,9,1c2.15,1.42,3.37,6.67,3.81,11.29c1.49-0.3,5.21,0.2,5.5,1.28 C40.89,30.29,39.48,38.31,38.67,42z"/><path fill="#b71c1c" d="M39.02,42H11.99c-0.22-2.67-0.48-7.050-0.49-12.72c0.83,4.18,1.63,9.59,6.98,9.79 c3.48,0.12,8.27,0.55,9.83-2.45c1.57-3,3.72-8.95,3.51-15.62c-0.19-5.84-1.75-8.2-2.13-8.7c0.59,0.66,3.74,4.49,4.01,11.7 c0.03,0.83,0.06,1.72,0.08,2.66c4.21-0.15,5.93,1.5,6.07,2.35C40.68,33.85,39.8,38.9,39.02,42z"/><path fill="#212121" d="M35,27.17c0,3.67-0.28,11.2-0.42,14.83h-2C32.72,38.42,33,30.83,33,27.17 c0-5.54-1.46-12.65-3.550-14.02c-1.65-1.08-5.49-1.48-8.23-0.85c-3.62,0.83-4.57,1.99-6.14,3.92L15,16.32 c-1.31,1.6-2.59,6.92-3,8.96v10.8c0,2.58,0.28,4.61,0.54,5.92H10.5c-0.25-1.41-0.5-3.42-0.5-5.92l0.02-11.09 c0.15-0.77,1.55-7.63,3.43-9.94l0.08-0.09c1.65-2.03,2.96-3.63,7.25-4.61c3.28-0.76,7.67-0.25,9.77,1.13 C33.79,13.6,35,22.23,35,27.17z"/><path fill="#01579b" d="M17.165,17.283c5.217-0.055,9.391,0.283,9,6.011c-0.391,5.728-8.478,5.533-9.391,5.337 c-0.913-0.196-7.826-0.043-7.696-5.337C9.209,18,13.645,17.32,17.165,17.283z"/><path fill="#212121" d="M40.739,37.38c-0.28,1.99-0.69,3.53-1.22,4.62h-2.43c0.25-0.19,1.13-1.11,1.67-4.9 c0.57-4-0.23-11.79-0.93-12.78c-0.4-0.4-2.63-0.8-4.37-0.89l0.1-1.99c1.04,0.05,4.53,0.31,5.71,1.49 C40.689,24.36,41.289,33.53,40.739,37.38z"/><path fill="#81d4fa" d="M10.154,20.201c0.261,2.059-0.196,3.351,2.543,3.546s8.076,1.022,9.402-0.554 c1.326-1.576,1.75-4.365-0.891-5.267C19.336,17.287,12.959,16.251,10.154,20.201z"/><path fill="#212121" d="M17.615,29.677c-0.502,0-0.873-0.03-1.052-0.069c-0.086-0.019-0.236-0.035-0.434-0.06 c-5.344-0.679-8.053-2.784-8.052-6.255c0.001-2.698,1.17-7.238,8.986-7.32l0.181-0.002c3.444-0.038,6.414-0.068,8.272,1.818 c1.173,1.191,1.712,3,1.647,5.53c-0.044,1.688-0.785,3.147-2.144,4.217C22.785,29.296,19.388,29.677,17.615,29.677z M17.086,17.973 c-7.006,0.074-7.008,4.023-7.008,5.321c-0.001,3.109,3.598,3.926,6.305,4.27c0.273,0.035,0.48,0.063,0.601,0.089 c0.563,0.101,4.68,0.035,6.855-1.732c0.865-0.702,1.299-1.57,1.326-2.653c0.051-1.958-0.301-3.291-1.073-4.075 c-1.262-1.281-3.834-1.255-6.825-1.222L17.086,17.973z"/><path fill="#e1f5fe" d="M15.078,19.043c1.957-0.326,5.122-0.529,4.435,1.304c-0.489,1.304-7.185,2.185-7.185,0.652 C12.328,19.467,15.078,19.043,15.078,19.043z"/></svg>
+        <span>ctrl+k</span>
+      </a>
+      <div class="toggle" aria-hidden="true"><div class="clouds"></div><div class="rays"><div class="sun"></div></div></div>
+      <a href="#" class="use-tools">Use Tools <svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></a>
+    </div>
+  </div>
+</header>
+
+<main>
+<section class="hero" data-part="hero">
+  <div class="dots"></div>
+  <div class="fade"></div>
+  <div class="hero-in">
+    <div class="badge" data-part="hero-badge"><svg class="ic" width="15" height="15"><use href="#i-shield"/></svg>Stays on your device</div>
+    <h1 data-part="hero-title">
+      <div>Stop uploading</div>
+      <div style="margin:8px 0"><span class="scramble">Private PDFs</span></div>
+      <div class="l3">to random servers.</div>
+    </h1>
+    <p class="sub" data-part="hero-sub">Every tool you need works <span>right here in your browser</span>. Your files never leave your device.</p>
+    <div class="mid" data-part="hero-cards">
+      <div class="marquee" aria-hidden="true" data-part="marquee">
+        <div style="display:flex;width:max-content"><div style="display:flex"><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span></div><div style="display:flex"><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span><span>No uploads <i>///</i> No tracking <i>///</i></span></div></div>
+      </div>
+      <div class="hcard trap">
+        <div class="row"><span class="chip w"><svg class="ic" width="19" height="19"><use href="#i-alert"/></svg></span><h2>The trap</h2></div>
+        <p>Most free online tools quietly send your files to their servers. Once they&rsquo;re up there, you&rsquo;ve no idea who sees them.</p>
+      </div>
+      <div class="hcard fix">
+        <div class="row"><span class="chip b"><svg class="ic" width="19" height="19"><use href="#i-shield"/></svg></span><h2>The fix</h2></div>
+        <p>Toolspark does it all on your own device. Your files never go anywhere, so no one can see, save, or leak them.</p>
+      </div>
+    </div>
+    <div class="cta-row" data-part="hero-cta">
+      <a href="#" class="btn primary">Browse the tools <span class="glyph"><svg class="ic" width="13" height="13" style="stroke-width:2.5"><use href="#i-arrow-r"/></svg></span></a>
+      <a href="#" class="btn secondary">How it works</a>
+    </div>
+  </div>
+</section>
+
+<section class="dir" data-part="directory">
+  <div class="dots"></div>
+  <div class="container">
+    <div class="dir-head" data-part="directory-head">
+      <div>
+        <span class="tag y">The directory</span>
+        <h2 class="display">74 tools, sorted by the job you need done.</h2>
+        <p class="body">Pick a category to see what&rsquo;s inside. Every tool opens instantly and runs right here in your browser — no install, no account, no upload.</p>
+      </div>
+      <a href="#" class="btn secondary">Browse all tools <svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-r"/></svg></a>
+    </div>
+    <div class="dir-grid">
+      <div class="tabs" data-part="directory-tabs">
+        <div class="tab on"><span class="chip b"><svg class="ic" width="17" height="17"><use href="#i-calc"/></svg></span><span class="txt"><b>Calc Engines</b><small>Money &amp; math without a spreadsheet</small></span><span class="n">17</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-image"/></svg></span><span class="txt"><b>Media Forge</b><small>Images in, optimized images out</small></span><span class="n">15</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-type"/></svg></span><span class="txt"><b>Type &amp; Text</b><small>Typography maths and text wrangling</small></span><span class="n">14</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-code"/></svg></span><span class="txt"><b>Dev Utilities</b><small>Format, validate, diff — offline</small></span><span class="n">13</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-palette"/></svg></span><span class="txt"><b>Colour Lab</b><small>Pick, convert, check — every space</small></span><span class="n">10</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-printer"/></svg></span><span class="txt"><b>Print &amp; Paper</b><small>Imposition and press-ready checks</small></span><span class="n">4</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-key"/></svg></span><span class="txt"><b>Crypto &amp; Keys</b><small>Secrets generated, never transmitted</small></span><span class="n">1</span></div><div class="tab"><span class="chip w"><svg class="ic" width="17" height="17"><use href="#i-file"/></svg></span><span class="txt"><b>Document Ops</b><small>PDF &amp; paperwork, handled locally</small></span><span class="n">soon</span></div>
+      </div>
+      <div class="panel" data-part="directory-panel">
+        <div class="panel-top">
+          <div>
+            <h3>Calc Engines</h3>
+            <p class="body">Financial, health and unit calculators that give you an answer instantly, with no signup.</p>
+          </div>
+          <span class="tag b">17 tools</span>
+        </div>
+        <ul class="tools">
+          <li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-binary"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Base Converter</b><span>Binary to decimal converter: convert numbers between binary, decimal, hexadecimal and octal at once, with bitwise operations.</span></a></li><li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-calc"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Scientific Calculator</b><span>Free scientific calculator online with trigonometry, logarithms, powers, constants, degree and radian modes, and a history tape.</span></a></li><li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-chart"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Graph Calculator</b><span>Free online graphing calculator: plot functions on an interactive, zoomable grid, compare graphs and trace y-values for any x.</span></a></li><li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-var"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Algebra Calculator</b><span>Free algebra calculator: simplify, expand, factor, solve and differentiate expressions with exact symbolic answers, rendered in LaTeX.</span></a></li><li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-clock"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Time Calculator</b><span>Unix timestamp converter and epoch converter: turn timestamps in seconds or milliseconds into dates, do date maths and compare time zones.</span></a></li><li><a href="#" class="tool"><span class="top"><svg class="ic" width="20" height="20"><use href="#i-scale"/></svg><svg class="ic" width="16" height="16" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span><b>Unit Converter</b><span>Free online unit converter for length, weight, temperature, data, speed, area and volume, across metric, US and imperial units.</span></a></li>
+        </ul>
+        <a href="#" class="more">+11 more in Calc Engines <span class="glyph"><svg class="ic" width="12" height="12" style="stroke-width:2.5"><use href="#i-arrow-r"/></svg></span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hiw" data-part="how-it-works">
+  <div class="dots"></div>
+  <div class="container">
+    <div class="hiw-head">
+      <span class="tag w">How it works</span>
+      <h2 class="display">Your files never leave your device.</h2>
+      <p class="body">Most free tools make you upload a file so their server can do the work. Toolspark flips that: the tool comes to your file, and runs inside the browser tab you already have open.</p>
+    </div>
+    <div class="compare" data-part="compare">
+      <div class="cmp">
+        <div class="cmp-top"><h3>Most online tools</h3><span>Upload required</span></div>
+        <div class="diagram">
+          <div class="node"><i><svg class="ic" width="20" height="20"><use href="#i-laptop"/></svg></i><span>Your file</span></div>
+          <div class="wire up"><hr><b class="dot"></b></div>
+          <div class="node"><i><svg class="ic" width="20" height="20"><use href="#i-cloud"/></svg></i><span>Their server</span></div>
+        </div>
+        <ul class="points">
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3"><use href="#i-x"/></svg></i><span>Your file is uploaded to a stranger's server</span></li>
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3"><use href="#i-x"/></svg></i><span>A copy can be kept, logged or leaked</span></li>
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3"><use href="#i-x"/></svg></i><span>Often wants an email or account first</span></li>
+        </ul>
+      </div>
+      <div class="cmp ours">
+        <div class="cmp-top"><h3>Toolspark</h3><span>Stays on your device</span></div>
+        <div class="diagram">
+          <div class="node"><i><svg class="ic" width="20" height="20"><use href="#i-laptop"/></svg></i><span>Your file</span></div>
+          <div class="wire loc"><hr><b class="dot"></b></div>
+          <div class="node act"><i><svg class="ic" width="20" height="20"><use href="#i-moncog"/></svg></i><span>Browser tab</span></div>
+          <div class="wire blk"><hr><b class="no"><svg class="ic" width="11" height="11" style="stroke-width:3"><use href="#i-x"/></svg></b></div>
+          <div class="node dim"><i><svg class="ic" width="20" height="20"><use href="#i-cloud"/></svg></i><span>No server</span></div>
+        </div>
+        <ul class="points">
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3.5"><use href="#i-check"/></svg></i><span>Your file is opened by your own browser</span></li>
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3.5"><use href="#i-check"/></svg></i><span>The work runs on your device's processor</span></li>
+          <li><i><svg class="ic" width="11" height="11" style="stroke-width:3.5"><use href="#i-check"/></svg></i><span>Close the tab and nothing is left behind</span></li>
+        </ul>
+      </div>
+    </div>
+    <ol class="steps" data-part="steps">
+      <li><div class="hd"><span class="chip b"><svg class="ic" width="19" height="19"><use href="#i-folder"/></svg></span><span>Step 1</span></div><h3>Pick a file</h3><p class="body">Drop it in or choose it. Your browser reads it straight from your disk into the page.</p></li>
+      <li><div class="hd"><span class="chip b"><svg class="ic" width="19" height="19"><use href="#i-moncog"/></svg></span><span>Step 2</span></div><h3>The tool runs in the tab</h3><p class="body">Converting, resizing, checking — all computed locally. No request carries your file anywhere.</p></li>
+      <li><div class="hd"><span class="chip b"><svg class="ic" width="19" height="19"><use href="#i-download"/></svg></span><span>Step 3</span></div><h3>Save the result</h3><p class="body">The finished file downloads from memory back to your device. That's the whole round trip.</p></li>
+    </ol>
+    <p class="proof"><b>Don&rsquo;t take our word for it.</b><span>Open your browser&rsquo;s developer tools</span><kbd>F12</kbd><span>, watch the Network tab, and run any tool. Your file never shows up there.</span></p>
+  </div>
+</section>
+
+<section class="contact" data-part="contact">
+  <div class="glow"></div>
+  <div class="stage">
+    <div class="stage-in">
+      <div class="eyebrow"><i></i>Get in touch</div>
+      <h2 class="big" data-part="contact-title">
+        <span>Tell us</span>
+        <span class="mid-line">what to <a href="#" class="pill">contact us <svg class="ic" width="24" height="24" style="stroke-width:2.2"><use href="#i-arrow-ur"/></svg></a></span>
+        <span>build next.</span>
+      </h2>
+      <div class="facts">Replies within two days <i></i> One inbox, no forms <i></i> <em>inightdeck@gmail.com</em></div>
+    </div>
+  </div>
+</section>
+
+<section class="say" data-part="testimonials">
+  <div class="dots"></div>
+  <div class="say-grid">
+    <div class="say-left">
+      <span class="tag b">What people say</span>
+      <h2>Don't take our word.<br><span>Take theirs.</span></h2>
+      <p class="body">Real people, real tools, nothing uploaded. Here's what they think after giving Toolspark a try.</p>
+      <p class="drag"><svg class="ic" width="16" height="16"><use href="#i-pointer"/></svg>Drag a card to shuffle</p>
+    </div>
+    <div class="cards">
+      <div class="stack" data-part="testimonial-cards">
+        <div class="card front"><svg class="ic q" width="120" height="120"><use href="#i-quote"/></svg><div class="stars"><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg></div><p>&ldquo;Formatted a config full of API keys and watched the network tab stay empty. That&#x27;s the whole pitch, delivered.&rdquo;</p><div class="author"><svg class="av" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 280" fill="none" shape-rendering="auto"><mask id="viewboxMask"><rect width="280" height="280" rx="0" ry="0" x="0" y="0" fill="#fff" /></mask><g mask="url(#viewboxMask)"><g transform="translate(8)"><path d="M132 36a56 56 0 0 0-56 56v6.17A12 12 0 0 0 66 110v14a12 12 0 0 0 10.3 11.88 56.04 56.04 0 0 0 31.7 44.73v18.4h-4a72 72 0 0 0-72 72v9h200v-9a72 72 0 0 0-72-72h-4v-18.39a56.04 56.04 0 0 0 31.7-44.73A12 12 0 0 0 198 124v-14a12 12 0 0 0-10-11.83V92a56 56 0 0 0-56-56Z" fill="#f8d25c"/><path d="M108 180.61v8a55.79 55.79 0 0 0 24 5.39c8.59 0 16.73-1.93 24-5.39v-8a55.79 55.79 0 0 1-24 5.39 55.79 55.79 0 0 1-24-5.39Z" fill="#000" fill-opacity=".1"/><g transform="translate(0 170)"><path d="M132.5 51.83c18.5 0 33.5-9.62 33.5-21.48 0-.36-.01-.7-.04-1.06A72 72 0 0 1 232 101.04V110H32v-8.95a72 72 0 0 1 67.05-71.83c-.03.37-.05.75-.05 1.13 0 11.86 15 21.48 33.5 21.48Z" fill="#262e33"/><path d="M132.5 58.76c21.89 0 39.63-12.05 39.63-26.91 0-.6-.02-1.2-.08-1.8-2-.33-4.03-.59-6.1-.76.04.35.05.7.05 1.06 0 11.86-15 21.48-33.5 21.48S99 42.2 99 30.35c0-.38.02-.76.05-1.13-2.06.14-4.08.36-6.08.67-.07.65-.1 1.3-.1 1.96 0 14.86 17.74 26.91 39.63 26.91Z" fill="#000" fill-opacity=".08"/></g><g transform="translate(78 134)"><rect x="42" y="18" width="24" height="6" rx="3" fill="#000" fill-opacity=".7"/></g><g transform="translate(104 122)"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 8c0 4.42 5.37 8 12 8s12-3.58 12-8" fill="#000" fill-opacity=".16"/></g><g transform="translate(76 90)"><path d="M27 16c-4.84 0-9 2.65-10.84 6.45-.54 1.1.39 1.85 1.28 1.12a15.13 15.13 0 0 1 9.8-3.22 6 6 0 1 0 10.7 2.8 2 2 0 0 0-.12-.74l-.15-.38a6 6 0 0 0-1.64-2.48C33.9 17.32 30.5 16 27 16ZM85 16c-4.84 0-9 2.65-10.84 6.45-.54 1.1.39 1.85 1.28 1.12a15.13 15.13 0 0 1 9.8-3.22 6 6 0 1 0 10.7 2.8 2 2 0 0 0-.12-.74l-.15-.38a6 6 0 0 0-1.64-2.48C91.9 17.32 88.5 16 85 16Z" fill="#000" fill-opacity=".6"/></g><g transform="translate(76 82)"><path d="M36.37 6.88c-1.97 2.9-5.55 4.64-8.74 5.68-3.94 1.29-18.55 3.38-15.11 11.35.05.12.22.12.27 0 1.15-2.65 17.47-5.12 18.97-5.7 4.45-1.71 8.4-5.5 9.17-10.55.35-2.31-.64-6.05-1.55-7.55-.11-.18-.37-.13-.43.07-.36 1.33-1.41 4.97-2.58 6.7ZM75.63 6.88c1.97 2.9 5.55 4.64 8.74 5.68 3.94 1.29 18.55 3.38 15.11 11.35a.15.15 0 0 1-.27 0c-1.15-2.65-17.47-5.12-18.97-5.7-4.45-1.71-8.4-5.5-9.17-10.55-.35-2.31.64-6.05 1.55-7.55.11-.18.37-.13.43.07.36 1.33 1.41 4.97 2.58 6.7Z" fill-rule="evenodd" clip-rule="evenodd" fill="#000" fill-opacity=".6"/></g><g transform="translate(-1)"><path d="M70 97c0 4 .92 5.07 6 5 3.25-.05 3.44-6 3.65-12.59.14-4.37.29-9.03 1.35-12.41.62-4.43-1.82-3.17-3-1-3.96 4.78-8 15.34-8 21ZM196 97c0 4-.92 5.07-6 5-3.25-.05-3.44-6-3.65-12.59-.14-4.37-.29-9.03-1.35-12.41-.62-4.43 1.82-3.17 3-1 3.96 4.78 8 15.34 8 21Z" fill="#e8e1e1"/></g><g transform="translate(49 72)"></g><g transform="translate(62 42)"></g></g></g></svg><div><b>Placeholder — replace me</b><small>Role / handle</small></div></div></div><div class="card middle"><svg class="ic q" width="120" height="120"><use href="#i-quote"/></svg><div class="stars"><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg></div><p>&ldquo;No signup, no upload, no nags. Opened the tool, did the thing, closed the tab.&rdquo;</p><div class="author"><span class="av"></span><div><b>Placeholder — replace me</b><small>Role / handle</small></div></div></div><div class="card back"><svg class="ic q" width="120" height="120"><use href="#i-quote"/></svg><div class="stars"><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg><svg class="ic" width="17" height="17"><use href="#i-star"/></svg></div><p>&ldquo;Fast, private, and it just works offline once the page loads. Exactly what a browser tool should be.&rdquo;</p><div class="author"><span class="av"></span><div><b>Placeholder — replace me</b><small>Role / handle</small></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-part="cta">
+  <div class="smash" aria-hidden="true" data-part="cta-smash">
+    <div>The pitch</div>
+    <div>is over</div>
+    <div>Start building</div>
+  </div>
+  <div class="final" data-part="cta-final">
+    <div class="final-card">
+      <div class="final-top">
+        <div><h3>Toolspark</h3><p>Free browser tools, nothing uploaded</p></div>
+        <div class="r"><span class="free">Free</span><p>Forever</p></div>
+      </div>
+      <h2>The pitch is over.<br><span>Start building.</span></h2>
+      <div class="final-bot">
+        <a href="#" class="open">Open the tools <span class="glyph"><svg class="ic" width="13" height="13" style="stroke-width:2.5"><use href="#i-arrow-ur"/></svg></span></a>
+        <div class="chips"><span>No signup required</span><span>Nothing leaves your device</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer" data-part="footer">
+  <div class="f-main">
+    <div class="f-top">
+      <div class="f-left">
+        <h2>The right<br>tools,<br>zero<br>compromise</h2>
+        <p>Privacy-first utilities running entirely in your browser. No signup. No uploads. No tracking.</p>
+        <a href="#" class="explore">Explore Directory <svg class="ic" width="18" height="18" style="stroke-width:4"><use href="#i-arrow-ur"/></svg></a>
+      </div>
+      <div class="f-right">
+        <div class="f-cols">
+          <div><h3>Explore</h3><ul><li><a href="#">All Tools</a></li></ul></div>
+          <div><h3>Company</h3><ul><li><a href="#">About Us</a></li><li><a href="#">Contact Us</a></li></ul></div>
+          <div><h3>Our Products</h3><ul><li><a href="#">SVG</a></li><li><a href="#">UIZOO</a></li><li><a href="#">AI-Usage app</a></li><li><a href="#">AIImagePrompts</a></li></ul></div>
+        </div>
+      </div>
+    </div>
+    <div class="wordmark" data-part="footer-wordmark"><svg viewBox="0 17 546 83" role="img" aria-label="Toolspark"><g transform="translate(0,100) scale(1,1.28) translate(-24.8,-100)"><path d="m 24.800017,37 h 42.3 l 8.1,8.1 v 7.2 h -17.55 V 100 h -15.3 V 52.3 h -17.55 z"/></g><g transform="translate(58.40,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 40.414957,52.75 h 20.61 l 10.35,9.45 v 28.35 l -10.35,9.45 h -20.61 l -10.35,-9.45 V 62.2 Z m 2.16,35.73 h 16.29 v -24.3 h -16.29 z"/></g><g transform="translate(121.48,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 40.414957,52.75 h 20.61 l 10.35,9.45 v 28.35 l -10.35,9.45 h -20.61 l -10.35,-9.45 V 62.2 Z m 2.16,35.73 h 16.29 v -24.3 h -16.29 z"/></g><g transform="translate(184.56,100) scale(1,1.28) translate(-24.8,-100)"><path d="m 24.800017,37 h 15.3 v 47.7 h 35.1 V 100 h -42.3 l -8.1,-8.1 z"/></g><g transform="translate(242.96,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 30.064957,52.75 h 34.65 l 6.66,6.03 v 5.4 h -28.8 v 6.48 h 28.8 V 100 h -34.65 l -6.66,-6.12 v -5.4 h 28.8 v -6.39 h -28.8 z"/></g><g transform="translate(306.04,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 30.064957,52.75 h 34.65 l 6.66,6.03 v 23.31 h -28.8 V 100 h -12.51 z m 12.51,17.91 h 16.29 v -6.48 h -16.29 z"/></g><g transform="translate(369.12,100) scale(1,1.28) translate(-24.8,-100)"><path d="m 37.400017,37 h 25.2 l 12.6,12.6 V 100 h -15.3 V 76.15 h -19.8 V 100 h -15.3 V 49.6 Z m 2.7,23.85 h 19.8 V 52.3 h -19.8 z"/></g><g transform="translate(427.52,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 30.064957,52.75 h 34.65 l 6.66,6.03 v 23.31 h -15.48 l 14.4,17.91 h -14.76 l -12.96,-15.48 V 100 h -12.51 z m 12.51,17.91 h 16.29 v -6.48 h -16.29 z"/></g><g transform="translate(490.60,100) scale(1.3333,1.706667) translate(-30.06,-100)"><path d="m 30.064957,52.75 h 12.51 V 67.6 l 13.32,-14.85 h 15.48 l -16.92,23.67 16.92,23.58 h -15.48 l -13.32,-14.85 V 100 h -12.51 z"/></g></svg></div>
+  </div>
+  <div class="legal">
+    <div class="legal-in">
+      <p>© 2026 Toolspark. All Rights Reserved.</p>
+      <div><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440">
+<title>UIZoo — A Gallery of Experimental UI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+/* Static 1440px preview of the UIZoo homepage (light theme, 900px viewport).
+   Every 100vh / vw clamp from the source is resolved to its px value at that size. */
+.preview {
+  --uz-display: 'Anton', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --uz-text: 'Inter', system-ui, sans-serif;
+  --uz-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --uz-ground: #f4f4f1;
+  --uz-ground-2: #eceae4;
+  --uz-ink: #0b0b0b;
+  --uz-ink-2: rgba(11, 11, 11, 0.6);
+  --uz-edge-2: rgba(11, 11, 11, 0.24);
+  --uz-zap: #0d9488;
+  --uz-invert: #0b0b0b;
+  --uz-invert-ink: #f4f4f1;
+  --brand-ground: #052e29;
+  --brand-bright: #5eead4;
+  --font-primary: 'Fraunces', serif;
+  --font-secondary: 'Inter', sans-serif;
+
+  position: relative;
+  width: 1440px;
+  overflow: hidden;
+  background: var(--uz-ground);
+  color: var(--uz-ink);
+  font-family: var(--font-secondary), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.preview *, .preview *::before, .preview *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:where(.preview a) { color: inherit; text-decoration: none; }
+:where(.preview img) { display: block; }
+
+/* ================= NAV ================= */
+.top-navbar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 24px 28px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo-svg { display: block; width: 172.8px; height: 38px; }
+.navbar-actions { display: flex; align-items: center; gap: 14px; }
+.cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 11px 18px;
+  border: 1px solid rgba(17, 24, 39, 0.22); border-radius: 999px;
+  font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+  color: #111827;
+}
+.cta-roll { display: block; overflow: hidden; height: 1.05em; line-height: 1.05em; }
+.cta-line { display: block; height: 1.05em; line-height: 1.05em; }
+.cta-arrow-slot { display: inline-flex; width: 12px; justify-content: center; font-size: 13px; }
+.menu-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 11px 4px 11px 2px;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 0.09em; text-transform: uppercase;
+  color: #111827; opacity: 0.62;
+}
+.menu-bars { position: relative; width: 18px; height: 12px; }
+.menu-bar {
+  position: absolute; left: 0; top: 50%;
+  height: 1.5px; margin-top: -0.75px; border-radius: 2px; background: currentColor;
+}
+.menu-bar-1 { width: 18px; transform: translateY(-3.5px); }
+.menu-bar-2 { width: 11px; transform: translateY(3.5px); }
+.menu-roll { display: block; overflow: hidden; height: 1.05em; line-height: 1.05em; }
+
+/* ================= HERO ================= */
+.hr {
+  position: relative;
+  height: 900px;
+  display: flex; flex-direction: column;
+  padding: 108px 44px 40px;
+  background: var(--uz-ground); color: var(--uz-ink);
+  overflow: hidden;
+}
+.hr-viewport {
+  position: relative; flex: 1; min-height: 0;
+  padding-bottom: 63px;
+  margin: 16px 0 48px;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 4%, #000 96%, transparent 100%);
+}
+.hr-row { display: flex; gap: 12px; width: max-content; }
+.hr-card {
+  position: relative; display: block; flex: 0 0 374.4px;
+  width: 374.4px; aspect-ratio: 16 / 9;
+  overflow: hidden; border-radius: 8px; background: #000;
+}
+.hr-card-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.hr-say {
+  position: relative; flex-shrink: 0;
+  display: grid; grid-template-columns: repeat(12, 1fr);
+  column-gap: 28.8px; row-gap: 54px;
+  width: 100%; padding-top: 36px;
+}
+.hr-head { display: contents; font-family: var(--uz-text); font-weight: 800; color: var(--uz-ink); }
+.hr-word {
+  display: flex; width: max-content; white-space: nowrap;
+  font-family: var(--uz-text); font-weight: 800;
+  font-size: 118.08px; line-height: 0.86; text-transform: uppercase;
+}
+.hr-ch { display: block; line-height: 0.86; letter-spacing: 0.055em; }
+.hr-word .hr-ch:last-child { letter-spacing: 0; }
+.hr-word-1 { grid-row: 1; grid-column: 1 / 7; justify-self: start; align-self: end; }
+.hr-word-2 { grid-row: 2; grid-column: 7 / 13; justify-self: end; align-self: end; }
+.hr-copy-box { grid-row: 1; grid-column: 8 / 13; align-self: start; }
+.hr-side { font-family: var(--uz-text); font-size: 19.44px; font-weight: 500; line-height: 1.5; color: var(--uz-ink-2); }
+.hr-cta { grid-row: 2; grid-column: 2 / 5; align-self: center; justify-self: start; display: flex; align-items: center; gap: 14px; }
+.uz-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 22px; border-radius: 999px;
+  border: 1px solid var(--uz-invert); background: var(--uz-invert); color: var(--uz-invert-ink);
+  font-family: var(--uz-text); font-size: 14px; font-weight: 500; letter-spacing: 0.005em; white-space: nowrap;
+}
+.uz-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ================= FEATURED ================= */
+.uz-three-row-featured {
+  position: relative; min-height: 900px;
+  display: flex; align-items: center;
+  overflow: hidden; background: #f5ecdf; color: #080808;
+}
+.uz-three-row-wrap { width: 1440px; padding: 81px 0 54px; }
+.uz-three-row-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 3rem; margin-bottom: 63px; }
+.uz-three-row-kicker, .uz-three-row-note, .uz-three-row-footer { font-family: var(--uz-mono); letter-spacing: .14em; text-transform: uppercase; }
+.uz-three-row-kicker { display: block; margin-bottom: 1rem; color: #8d8379; font-size: 10px; }
+.uz-three-row-heading {
+  font-family: var(--uz-display); font-size: 136.8px; font-weight: 400;
+  line-height: .8; letter-spacing: -.055em; text-transform: uppercase;
+}
+.uz-three-row-note { padding-top: 1rem; color: #665e56; font-size: 11px; line-height: 1.7; text-align: right; }
+.uz-preview-field { display: flex; flex-direction: column; gap: 16.2px; width: 100%; }
+.uz-preview-row { position: relative; width: 100%; overflow: hidden; }
+.uz-preview-track { display: flex; gap: 17.28px; width: max-content; }
+.uz-preview-card {
+  position: relative; display: block; flex: 0 0 244.8px;
+  aspect-ratio: 16 / 9; overflow: hidden; border-radius: 14px;
+  background: #080808; color: #fff;
+}
+.uz-preview-row-2 .uz-preview-card { flex-basis: 259.2px; }
+.uz-preview-image { position: absolute; inset: 0; }
+.uz-preview-image img { width: 100%; height: 100%; object-fit: cover; }
+.uz-preview-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.72)); }
+.uz-preview-meta {
+  position: absolute; z-index: 1; right: 16px; bottom: 14px; left: 16px;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-family: var(--uz-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+}
+.uz-preview-meta b { font-weight: 500; color: #b7ff35; }
+.uz-preview-meta span { max-width: 70%; overflow: hidden; color: rgba(255,255,255,.78); text-align: right; text-overflow: ellipsis; white-space: nowrap; }
+.uz-three-row-footer { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 54px; color: #766d65; font-size: 10px; }
+.uz-three-row-footer span:last-child { color: #0b0b0b; }
+
+/* ================= ABOUT ================= */
+.ab { height: 900px; overflow: hidden; background: var(--uz-ground); color: var(--uz-ink); }
+.ab-grid { display: grid; grid-template-columns: 62% 38%; height: 100%; }
+.ab-col { display: flex; flex-direction: column; min-height: 0; }
+.ab-col--left { padding: 40px; }
+.ab-panel { position: relative; flex: 1; min-height: 0; border-radius: 16px; overflow: hidden; background: var(--uz-ground); }
+/* CardField at its entry keyframe: one card, scale 1.9, alone on the ground */
+.cf-card {
+  position: absolute; left: 50%; top: 50%;
+  width: 874px; aspect-ratio: 16 / 9;
+  transform: translate(-50%, -50%);
+  border-radius: 34.2px; overflow: hidden; background: #16161a;
+}
+.cf-card img { width: 100%; height: 100%; object-fit: cover; }
+.ab-col--right { padding: 44px 40px; justify-content: center; }
+.ab-deck { position: relative; width: 100%; height: 360px; flex-shrink: 0; }
+.sw-card {
+  position: absolute; left: 50%; top: 50%;
+  height: 315px; width: 236.25px;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column;
+  border: 1px solid var(--uz-edge-2); border-radius: 16px; overflow: hidden;
+  box-shadow: 0 26px 60px -28px rgba(11, 11, 11, 0.55);
+}
+/* deck card 01 — Live builds */
+.pc-builds {
+  position: relative; width: 100%; height: 100%; overflow: hidden;
+  display: flex; flex-direction: column; padding: 17.3px;
+  background: #ff4a1c; color: #1a0a05;
+}
+.pc-builds-lines {
+  position: absolute; inset: 45.7px 0 0 17.3px;
+  display: flex; flex-direction: column; gap: 2.36px;
+}
+.pc-builds-lines i { display: block; flex-shrink: 0; height: 3.31px; background: #1a0a05; border-radius: 1px; }
+.pc-builds-top {
+  position: relative; z-index: 2; display: flex; justify-content: space-between;
+  font-family: var(--uz-mono); font-size: 9.14px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.pc-builds-foot {
+  position: relative; z-index: 2;
+  margin: auto -17.3px -17.3px; padding: 9.45px 17.3px 0;
+  background: #ff4a1c; display: flex; align-items: flex-end; gap: 11px;
+}
+.pc-builds-num {
+  margin-left: -0.045em; margin-bottom: -0.085em;
+  font-family: 'Syne', var(--uz-display), sans-serif; font-weight: 800;
+  font-size: 83.5px; line-height: 0.8; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;
+}
+.pc-builds-label {
+  padding-bottom: 17.3px;
+  font-family: var(--uz-mono); font-size: 9.14px; font-weight: 500;
+  line-height: 1.5; letter-spacing: 0.2em; text-transform: uppercase;
+}
+.ab-pitch { margin-top: 108px; }
+.ab-say-line {
+  display: block; font-family: var(--uz-display); font-weight: 400;
+  font-size: 50.4px; line-height: 1.04; letter-spacing: -0.015em; text-transform: uppercase; color: var(--uz-ink);
+}
+.ab-say-line em { font-style: normal; color: var(--uz-zap); }
+.ab-say-caption { margin-top: 14.4px; font-family: var(--uz-text); font-size: 17.1px; line-height: 1.5; color: var(--uz-ink-2); }
+.ab-cmd {
+  margin-top: 27px; align-self: flex-start; display: inline-flex; flex-direction: column;
+  border-radius: 10px; overflow: hidden; border: 1px solid var(--uz-edge-2); background: var(--uz-invert);
+}
+.ab-cmd-tabs { display: flex; gap: 2px; padding: 6px 6px 0; }
+.ab-cmd-tabs span {
+  padding: 5px 11px; border-radius: 6px 6px 0 0;
+  font-family: var(--uz-mono); font-size: 11px; font-weight: 500; letter-spacing: 0.06em;
+  color: rgba(244, 244, 241, 0.4);
+}
+.ab-cmd-tabs span.is-active { background: rgba(244, 244, 241, 0.08); color: var(--uz-invert-ink); }
+.ab-cmd-line { display: flex; align-items: center; gap: 12px; padding: 10px 8px 12px 18px; }
+.ab-cmd-prompt { font-family: var(--uz-mono); font-size: 13px; color: var(--uz-zap); }
+.ab-cmd-line code { flex: 1; font-family: var(--uz-mono); font-size: 15px; color: var(--uz-invert-ink); white-space: nowrap; }
+.ab-cmd-copy { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; color: rgba(244, 244, 241, 0.55); }
+.ab-cmd-copy svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ================= CLOSING ================= */
+.cl {
+  position: relative; min-height: 900px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 130px 40px 40px;
+  background: var(--brand-ground); color: #fff; overflow: hidden;
+}
+.cl-top, .cl-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 22px;
+  font-family: var(--uz-mono); font-size: 10px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+}
+.cl-top { padding-bottom: 16px; }
+.cl-foot { padding-top: 16px; }
+.cl-mark { display: inline-flex; align-items: center; gap: 10px; color: rgba(255, 255, 255, 0.72); }
+.cl-mark.is-dim { color: rgba(255, 255, 255, 0.34); }
+.cl-mark i { width: 7px; height: 7px; border-radius: 50%; background: var(--brand-bright); }
+.cl-alt { color: rgba(255, 255, 255, 0.5); }
+.cl-wall { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 34px 0; }
+.cl-echo, .cl-live-text {
+  display: block; font-family: var(--uz-display); font-weight: 400;
+  font-size: 105.6px; line-height: 0.94; letter-spacing: 0.002em; text-transform: uppercase; white-space: nowrap;
+}
+.cl-echo { color: #fff; }
+.cl-echo-0 { opacity: 0.045; }
+.cl-echo-1 { opacity: 0.1; }
+.cl-echo-2 { opacity: 0.155; }
+.cl-echo-3 { opacity: 0.21; }
+.cl-live { display: flex; align-items: center; gap: 28.8px; color: #fff; }
+.cl-live-orb {
+  flex-shrink: 0; display: grid; place-items: center;
+  width: 66.24px; height: 66.24px;
+  border: 1px solid rgba(255, 255, 255, 0.22); border-radius: 50%;
+  font-family: var(--uz-text); font-size: 22px; color: rgba(255, 255, 255, 0.6);
+}
+
+/* ================= FOOTER ================= */
+.foot {
+  position: relative; display: flex; flex-direction: column; min-height: 900px;
+  padding: 92px 32px 22px; background: var(--brand-ground); color: #fff; overflow: hidden;
+}
+.foot-rulers { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(6, 1fr); }
+.foot-rulers span { border-left: 1px solid rgba(255, 255, 255, 0.07); }
+.foot-rulers span:first-child { border-left: 0; }
+.foot-rule { position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: rgba(255, 255, 255, 0.14); }
+.foot-inner { position: relative; flex: 1; display: flex; flex-direction: column; gap: 46px; }
+.foot-label {
+  display: inline-flex; align-items: baseline; gap: 8px;
+  font-family: var(--font-secondary); font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+}
+.foot-label em { font-style: normal; color: var(--brand-bright); }
+.foot-head { position: relative; display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; }
+.foot-body { flex: 1; display: grid; grid-template-columns: repeat(12, 1fr); gap: 40px; align-items: start; }
+.foot-rows { position: relative; grid-column: 6 / span 7; display: flex; flex-direction: column; }
+.foot-rows > .foot-rule { top: 0; bottom: auto; }
+.foot-row { position: relative; display: flex; align-items: center; gap: 22px; padding: 15px 0; color: #fff; }
+.foot-row-tag { display: flex; align-items: center; gap: 14px; width: 66px; flex-shrink: 0; }
+.foot-row-dot { width: 10px; height: 10px; border-radius: 999px; background: #fff; flex-shrink: 0; }
+.foot-row-num {
+  font-family: var(--font-secondary); font-size: 15px; font-weight: 600;
+  font-variant-numeric: tabular-nums; letter-spacing: 0.06em; color: rgba(255, 255, 255, 0.55);
+}
+.foot-row-mask { position: relative; display: block; overflow: hidden; flex: 1; min-width: 0; padding-bottom: 0.08em; }
+.foot-row-line {
+  display: flex; align-items: baseline;
+  font-family: var(--font-primary); font-size: 57.6px; font-weight: 700;
+  line-height: 1.05; letter-spacing: -0.025em; white-space: nowrap;
+}
+.foot-row-line.is-alt { position: absolute; inset: 0; color: var(--brand-bright); }
+.foot-row-line.is-alt .foot-ch { transform: translateY(125%); }
+.foot-ch { display: inline-block; }
+.foot-row-count {
+  align-self: flex-start; margin-top: 0.35em; flex-shrink: 0;
+  font-family: var(--font-secondary); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: rgba(255, 255, 255, 0.45);
+}
+.foot-row-arrow { font-size: 20px; color: var(--brand-bright); opacity: 0; transform: translateX(-14px); flex-shrink: 0; }
+.foot-ticker { position: relative; display: flex; flex-direction: column; gap: 14px; margin: 44px 0 26px; }
+.foot-ticker-viewport {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 7%, #000 93%, transparent 100%);
+}
+.foot-ticker-track { display: flex; align-items: center; width: max-content; }
+.foot-ticker-item {
+  display: inline-flex; align-items: center; gap: 18px; padding-right: 34px;
+  font-family: var(--font-primary); font-size: 44.8px; font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1.2; white-space: nowrap; color: rgba(255, 255, 255, 0.16);
+}
+.foot-ticker-star { font-size: 0.34em; color: rgba(94, 234, 212, 0.45); }
+.foot-rail {
+  position: relative; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+  padding-top: 18px;
+  font-family: var(--font-secondary); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+.foot-rail > .foot-rule { top: 0; bottom: auto; }
+.foot-rail em { font-style: normal; color: rgba(255, 255, 255, 0.3); margin-right: 6px; }
+.foot-rail-mid { color: rgba(255, 255, 255, 0.35); }
+.foot-rail-legal { display: flex; align-items: center; gap: 28px; }
+</style>
+</head>
+<body>
+<div class="preview">
+
+  <nav class="top-navbar" data-part="nav">
+    <a href="#" class="navbar-logo" data-part="nav-logo" aria-label="UIZoo home"><svg class="logo-svg" viewBox="0 0 926.20044 208.902" fill="none" preserveAspectRatio="xMinYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse"><path fill="#000" d="m 25.842,44.938 c -0.664,0.844 -2.021,0.375 -2.021,-0.698 V 33.937 A 2.26,2.26 0 0 0 21.559,31.675 H 10.183 c -0.92,0 -1.456,-1.04 -0.92,-1.788 l 7.48,-10.471 c 1.07,-1.498 0,-3.579 -1.842,-3.579 H 1.133 c -0.92,0 -1.456,-1.04 -0.92,-1.787 L 9.91,0.473 c 0.214,-0.297 0.556,-0.474 0.92,-0.474 h 28.894 c 0.92,0 1.456,1.04 0.92,1.788 l -7.48,10.471 c -1.07,1.498 0,3.578 1.842,3.578 h 11.377 c 0.943,0 1.473,1.088 0.89,1.832 L 25.843,44.94 Z" style="fill:#000000;fill-opacity:1" /></mask><defs ><filter id="b" width="60.044998" height="41.653999" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659" /></filter><filter id="c" width="90.339996" height="51.437" x="-54.612999" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659" /></filter><filter id="d" width="79.355003" height="29.4" x="-49.639999" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="e" width="79.579002" height="29.4" x="-45.044998" y="20.028999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="f" width="79.579002" height="29.4" x="-43.513" y="21.177999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="g" width="74.749001" height="58.852001" x="15.756" y="-17.900999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659" /></filter><filter id="h" width="61.376999" height="25.362" x="23.548" y="2.2839999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="i" width="61.376999" height="25.362" x="23.548" y="2.2839999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="j" width="56.044998" height="63.648998" x="-27.636" y="-22.853001" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="k" width="54.813999" height="64.646004" x="20.115999" y="-38.415001" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="l" width="33.541" height="35.313" x="24.641001" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="m" width="54.813999" height="64.646004" x="-29.285999" y="6.0089998" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="n" width="54.813999" height="64.646004" x="-29.285999" y="6.0089998" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="o" width="54.813999" height="64.646004" x="8.2440004" y="-2.4159999" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter><filter id="p" width="39.409" height="43.623001" x="18.712999" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix" /><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape" mode="normal" /><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596" /></filter></defs><path style="fill:#0c5f54;fill-opacity:1;stroke-width:62.5484" d="m 626.2157,208.83874 c -0.51269,-0.0422 -2.55058,-0.2007 -4.52786,-0.35042 -10.55647,-0.81798 -20.04638,-2.82844 -29.74335,-6.30135 -13.60212,-4.87125 -25.43429,-11.84337 -35.76503,-21.07513 -2.08841,-1.8665 -7.4523,-7.21315 -9.49868,-9.46862 l -0.89703,-0.98853 -1.25483,1.17537 c -4.99448,4.67984 -7.54395,6.97317 -10.5745,9.51183 -15.60559,13.0729 -32.18053,20.43653 -49.11987,21.82209 -1.91525,0.15454 -19.71039,0.20069 -66.57964,0.1505 -60.35281,-0.0585 -64.06636,-0.0799 -65.73794,-0.39391 -5.78881,-1.08464 -9.18046,-2.4025 -13.37401,-5.19585 -2.46864,-1.64514 -5.57555,-4.69364 -7.40309,-7.26432 -2.32813,-3.27502 -4.49972,-8.21601 -5.34099,-12.15188 -0.67268,-3.14555 -0.83502,-5.20089 -0.72103,-9.10427 0.1204,-4.02935 0.53821,-6.65141 1.63009,-10.16516 0.47541,-1.53539 2.11172,-5.66437 2.33622,-5.9002 0.0341,-0.0344 1.05636,0.48157 2.26909,1.15509 7.82769,4.33895 15.16253,6.62835 24.77327,7.73145 2.54061,0.29378 5.20152,0.32532 25.897,0.32532 l 23.06519,0.004 2.10339,-0.42546 c 5.09954,-1.03329 8.6097,-2.75401 15.81233,-7.74962 l 2.97482,-2.06338 20.20075,0.12042 c 12.65808,0.0735 21.24042,0.0477 22.98522,-0.0682 5.12586,-0.33753 8.90099,-1.06399 13.14973,-2.52068 7.01325,-2.40363 12.06391,-5.49486 21.47776,-13.14293 6.83578,-5.55368 7.80178,-6.32546 9.61822,-7.6832 4.35402,-3.25441 6.88671,-4.83125 10.74099,-6.68754 8.50194,-4.09505 17.54963,-5.25781 27.72321,-3.56402 10.30574,1.71559 21.05236,6.75961 33.34617,15.65089 1.07824,0.77982 4.27203,3.1093 7.09694,5.1759 7.77235,5.68626 11.35971,8.00847 15.82293,10.24371 7.64292,3.82733 14.75282,5.52801 23.1183,5.52863 12.74942,7e-4 25.17321,-5.12646 34.9769,-14.43539 8.05165,-7.64503 12.93749,-14.48044 23.05544,-32.25517 1.96924,-3.4589 7.57039,-13.68093 9.51784,-17.36895 0.56933,-1.07824 2.40114,-4.52412 4.07002,-7.65725 1.66882,-3.13303 4.16696,-7.8814 5.5518,-10.55213 10.21116,-19.698282 16.01219,-28.255643 26.1913,-38.636543 9.99987,-10.197991 20.76381,-17.874409 33.03523,-23.55946 11.84751,-5.4885771 24.07168,-8.8010481 37.94335,-10.28178612 3.72668,-0.400178 14.7044,-0.562882 18.7697,-0.281315 15.0659,1.03750102 28.9217,4.76620002 42.3952,11.40783812 4.9476,2.439311 7.9193,4.105675 11.5792,6.494747 6.3605,4.151965 11.3328,8.153569 16.8788,13.584606 8.4464,8.271337 14.4204,16.512111 19.6315,27.080596 3.2368,6.564907 5.1683,11.698067 7.1673,19.049847 2.2709,8.35297 3.1261,13.88758 3.512,22.73239 0.4944,11.28538 -0.7557,22.40154 -3.6559,32.56933 -6.1229,21.46426 -18.7087,39.85098 -36.3938,53.16864 -7.1192,5.361 -15.0397,9.97725 -22.9214,13.35928 -19.0149,8.1592 -38.9893,10.91455 -61.07146,8.42437 -11.33305,-1.2777 -22.67695,-4.47096 -33.43055,-9.40911 -11.5933,-5.32412 -22.21024,-12.81576 -31.01961,-21.88892 -3.82111,-3.93551 -7.56423,-8.47177 -7.38219,-8.94631 0.0618,-0.15454 0.6853,-1.26728 1.39193,-2.47061 3.3032,-5.63312 6.34644,-11.54418 11.80041,-22.91903 3.57026,-7.44615 7.23224,-14.77012 9.30149,-18.60337 4.17823,-7.74008 11.41449,-19.23796 15.21657,-24.17841 2.04757,-2.66073 3.68035,-4.63358 3.67849,-4.44533 -7.2e-4,0.0883 -0.12438,1.08706 -0.28136,2.21693 -0.15454,1.13022 -0.3317,3.81918 -0.39389,5.9765 -0.28129,9.94758 1.51789,18.71131 5.448,26.52027 8.57146,17.03299 23.45403,26.21164 41.54622,25.62319 4.48595,-0.1425 7.46775,-0.60061 11.48595,-1.73947 9.829,-2.79338 18.3682,-9.3114 24.5096,-18.70816 7.7768,-11.89915 10.4966,-27.95152 7.2184,-42.60245 -1.5375,-6.87128 -3.99,-12.67643 -7.7012,-18.22845 -3.4002,-5.08703 -6.4721,-8.36371 -11.1402,-11.88254 -5.2941,-3.990621 -12.1803,-6.8012 -19.2366,-7.851035 -2.5555,-0.381445 -9.73082,-0.331766 -12.41967,0.08827 -5.83392,0.904451 -11.20229,2.721354 -15.98862,5.410445 -10.20625,5.7344 -22.93956,17.64781 -32.78123,30.67119 -9.34307,12.36347 -17.49752,26.39341 -26.81115,46.12897 -8.89993,18.85898 -14.00051,27.64064 -20.77331,35.76558 -8.77556,10.52743 -22.64135,20.78782 -35.96718,26.61479 -11.94722,5.22406 -23.10686,8.10245 -36.23196,9.34496 -2.99481,0.28132 -13.71337,0.5127 -15.87491,0.34398 z M 98.890914,207.25871 c -17.89036,-0.90582 -34.10584,-4.67174 -48.18483,-11.1912 -11.58595,-5.36539 -21.8291,-13.0734 -29.60739,-22.28014 -3.33693,-3.94932 -7.14157,-9.73159 -9.61586,-14.61281 C 5.9291735,148.21818 2.2878035,135.80038 0.86127352,122.95094 -0.00884648,115.11385 3.5175474e-6,115.7401 3.5175474e-6,61.41256 V 9.9593879 L 0.39408352,9.1185359 c 0.5004,-1.064588 1.73497998,-2.294696 2.84908998,-2.843353 l 0.86322,-0.425449 h 28.4945205 28.4945 l 1.09955,0.563055 c 0.68167,0.35042 1.33092,0.865728 1.7095,1.362199 1.2728,1.669229 1.1798,-2.454277 1.18285,52.2239521 10e-4,30.74813 0.0739,50.74327 0.18806,52.77324 0.82563,14.41392 4.25389,26.7943 11.34039,40.95173 4.04437,8.08005 9.07606,15.71837 15.28362,23.20133 2.5207,3.03859 9.507256,10.04509 12.560556,12.59623 6.85617,5.7288 14.98827,11.07546 22.46161,14.76809 1.45106,0.71682 2.59875,1.3034 2.55003,1.3034 -0.0498,0 -1.17202,0.16459 -2.49689,0.36279 -8.44009,1.27189 -19.01275,1.76194 -28.088326,1.30199 z m 147.404236,-4.21512 c -1.01322,-0.3628 -2.38673,-1.69371 -2.90977,-2.82531 l -0.40657,-0.88117 -0.0502,-56.56807 -0.0502,-56.56814 0.8888,0.12042 c 0.48784,0.0679 2.09171,0.37526 3.56211,0.69035 10.92058,2.32741 22.83994,8.60324 33.28741,17.5267 6.53499,5.58181 11.87185,11.11166 24.78434,25.68048 l 2.66128,3.00292 -0.0481,33.15042 c -0.0481,32.60901 -0.0522,33.16261 -0.41901,33.89744 -0.43788,0.88639 -1.67445,2.16719 -2.55199,2.64633 -0.60043,0.32531 -1.89459,0.34397 -29.29519,0.37525 -25.13171,0.0301 -28.76579,-0.001 -29.46013,-0.24908 z m -95.95112,-2.53702 c -2.60565,-0.58188 -5.78197,-1.42105 -8.12415,-2.14146 -9.78943,-3.01296 -21.32077,-9.48333 -30.34901,-17.02934 -8.59358,-7.18287 -16.411216,-16.86306 -21.949126,-27.17837 l -0.99323,-1.85085 0.63921,0.1144 c 0.35042,0.0619 1.64746,0.32533 2.88034,0.58799 5.30723,1.1272 7.34851,1.31844 14.007206,1.31603 6.79135,-0.003 8.46978,-0.16459 12.80419,-1.22112 7.84467,-1.91445 13.64454,-4.67798 20.45061,-9.74296 4.3371,-3.22749 9.90171,-8.54033 19.23385,-18.36243 13.09155,-13.77888 21.38677,-21.1502 30.80762,-27.3763 5.81824,-3.84547 12.43222,-7.10801 18.35281,-9.05368 2.04034,-0.67067 5.4267,-1.56869 5.9133,-1.56869 0.26289,0 0.2938,1.14525 0.28777,11.15904 -0.004,13.99461 -0.2071,18.69056 -1.13784,26.47362 -1.92108,16.04704 -7.28718,31.25929 -15.12712,42.88351 -9.79532,14.52353 -24.99982,25.75999 -43.12229,31.86843 -3.41201,1.15008 -3.90989,1.27229 -4.5754,1.12339 z m 210.90279,-49.08351 c -9.04136,-0.48163 -16.25118,-2.41499 -23.11736,-6.20793 -3.02486,-1.67144 -2.91228,-1.27269 -1.0371,-3.66283 2.03952,-2.60012 5.8614,-6.56903 8.90307,-9.24719 2.50877,-2.20863 3.00671,-2.61452 13.8032,-11.24343 17.52736,-14.00864 39.67485,-31.77993 52.03678,-41.75457 9.87953,-7.97166 24.50935,-20.00046 26.15938,-21.508489 0.54381,-0.500315 0.99134,-1.022443 0.99134,-1.165731 0,-0.219172 -7.50627,-0.268507 -50.37923,-0.306239 -46.57873,-0.04641 -50.42855,-0.0679 -51.03297,-0.362795 -1.2765,-0.606668 -2.23029,-1.454728 -2.75096,-2.44188 l -0.51915,-0.981908 V 31.250741 9.9598259 l 0.4443,-0.978903 c 0.51273,-1.130411 1.56689,-2.159345 2.8028,-2.730752 l 0.8633,-0.400351 74.42498,-0.05242 c 75.01805,-0.05587 80.70327,-0.01285 84.3234,0.613079 9.74206,1.68087 17.03253,6.6882431 21.7327,14.9272571 1.67324,2.932928 2.90161,6.483106 3.68846,10.66132 0.5316,2.82342 0.49404,9.809884 -0.0679,12.79329 -0.91127,4.816203 -2.28551,8.832668 -4.53913,13.265345 -3.28444,6.460289 -7.2316,11.685769 -13.90057,18.403469 -4.07062,4.10066 -5.47546,5.38475 -9.71226,8.88103 -5.68127,4.68799 -21.52938,17.19863 -34.92405,27.56928 -1.54079,1.19283 -3.55776,2.76454 -4.48221,3.49206 -1.74389,1.37243 -2.69254,2.11031 -3.73975,2.9073 -0.3377,0.2575 -1.52496,1.1858 -2.63889,2.06456 -7.75872,6.12096 -18.3813,14.36461 -24.3061,18.8625 -2.49633,1.89539 -5.22713,3.97932 -6.06965,4.63234 -5.10458,3.95552 -6.0841,4.61041 -8.1771,5.46168 -3.01861,1.22855 -1.85206,1.17196 -25.01083,1.20727 -11.55592,0.0172 -22.25005,-0.0318 -23.76473,-0.11439 z m 225.70382,-29.1125 c -0.419,-0.30022 -2.09028,-1.37985 -3.71851,-2.3956 -13.50757,-8.42556 -25.14866,-12.36904 -37.97818,-12.8652 -4.93824,-0.19261 -10.1776,0.48786 -15.92551,2.07029 -2.35192,0.64677 -6.40069,2.12792 -7.15151,2.61701 -0.38145,0.249 -0.38772,0.21435 -0.61309,-2.57882 -0.16854,-2.12218 -0.17259,-3.73975 -0.0301,-6.47147 0.72422,-13.34841 2.53066,-22.60452 6.48912,-33.24385 2.58214,-6.93965 5.02951,-11.860507 9.38532,-18.868561 6.42096,-10.330585 15.39088,-19.90598 26.54388,-28.335697 5.58805,-4.223243 10.20638,-7.036918 17.25345,-10.510269 20.05908,-9.8868711 43.437,-13.7076551 65.64715,-10.72921612 22.09837,2.96354402 42.20923,12.09996012 58.51362,26.58300712 3.83111,3.403238 7.90153,7.569153 10.8994,11.155309 l 0.77742,0.930339 -1.80529,2.703314 c -3.78921,5.67504 -4.95572,7.606454 -9.18791,15.212772 -3.24502,5.832632 -5.59497,10.209632 -8.02156,14.941042 -1.15891,2.26004 -2.77835,5.36914 -3.59964,6.91021 -3.2037,6.01338 -4.61669,8.67804 -5.74317,10.83224 -2.60705,4.98387 -8.31149,15.42002 -9.22925,16.88446 -0.23318,0.36907 -0.95061,1.63753 -1.5994,2.81907 -0.64875,1.18138 -1.30118,2.31551 -1.45109,2.52125 -0.26267,0.36279 -0.26851,0.35643 -0.16855,-0.0943 0.35042,-1.58977 0.52515,-7.13706 0.31905,-10.39916 -0.54381,-8.65005 -2.39616,-15.48397 -6.18478,-22.81387 -6.89175,-13.33379 -18.1065,-21.904339 -31.82935,-24.324722 -2.88659,-0.506675 -8.88605,-0.69353 -11.89805,-0.369069 -6.07845,0.661041 -12.08915,2.629448 -17.33035,5.675661 -3.10423,1.80389 -6.18853,4.22387 -9.06192,7.10992 -8.28254,8.31797 -13.27357,19.21357 -14.7647,32.23178 -0.71424,6.23481 0.0164,14.45046 1.90783,21.44714 0.25751,0.95883 0.43791,1.7788 0.39391,1.82194 -0.0464,0.0464 -0.41884,-0.16855 -0.83681,-0.46895 z m -439.30839,-0.26851 c -0.004,-0.0883 0.11896,-0.97308 0.274,-1.96081 0.91945,-5.89332 0.90897,-5.25218 1.01824,-59.50629 l 0.10013,-50.7994861 0.41307,-0.768825 c 1.03849,-1.940743 2.25315,-2.776539 4.46095,-3.067987 0.98777,-0.130475 10.55938,-0.172593 28.8386,-0.138468 l 27.36077,0.05587 0.98593,0.444271 c 0.58175,0.262666 1.31664,0.813778 1.79325,1.343735 1.53819,1.710565 1.42801,-1.057766 1.42059,35.5908991 l -0.006,32.485231 -2.56384,0.61909 c -3.38637,0.81954 -10.19634,3.08681 -13.11594,4.36652 -7.5646,3.31628 -11.72197,5.69878 -18.28562,10.47976 -6.24174,4.54664 -11.44138,8.97478 -17.45601,14.86615 -5.14772,5.04198 -12.63214,12.92415 -14.63144,15.40849 -0.33168,0.41281 -0.60071,0.67264 -0.60663,0.58197 z m 157.91242,-7.45378 c -4.32834,-4.78305 -11.85308,-12.56211 -14.55034,-15.04148 -9.51614,-8.74735 -17.75693,-14.28767 -28.22177,-18.9734 -4.77429,-2.13791 -12.45123,-4.39718 -17.89287,-5.26535 l -2.01107,-0.31904 0.0502,-32.512351 0.0502,-32.5123491 0.4443,-0.985919 c 0.56932,-1.263464 1.94335,-2.515166 3.13992,-2.862211 0.74914,-0.218911 5.52926,-0.262666 29.09817,-0.262666 26.34552,0 28.25456,0.01975 29.01184,0.325322 1.303,0.519142 2.20361,1.36059 2.8328,2.638862 l 0.57553,1.167545 0.01,53.5561971 c 0.005,29.45586 -0.0221,53.58875 -0.0642,53.62866 -0.0381,0.0378 -1.15329,-1.12117 -2.47393,-2.58128 z" /></svg></a>
+    <div class="navbar-actions" data-part="nav-actions">
+      <a href="#" class="cta">
+        <span class="cta-roll"><span class="cta-line">Explore</span></span>
+        <span class="cta-arrow-slot">&#8599;</span>
+      </a>
+      <a href="#" class="menu-btn">
+        <span class="menu-bars" aria-hidden="true"><span class="menu-bar menu-bar-1"></span><span class="menu-bar menu-bar-2"></span></span>
+        <span class="menu-roll">Menu</span>
+      </a>
+    </div>
+  </nav>
+
+  <section class="hr" data-part="hero">
+    <div class="hr-viewport" data-part="hero-rail">
+      <div class="hr-row"><a class="hr-card" href="#"><img class="hr-card-img" src="img/spinning-3d-carousel.webp" alt="Spinning 3D Carousel"></a><a class="hr-card" href="#"><img class="hr-card-img" src="img/chasing-light.webp" alt="Chasing Light"></a><a class="hr-card" href="#"><img class="hr-card-img" src="img/burst-timeline.webp" alt="Burst Timeline"></a><a class="hr-card" href="#"><img class="hr-card-img" src="img/folder-hover-list.webp" alt="Folder Hover List"></a></div>
+    </div>
+    <div class="hr-say" data-part="hero-statement">
+      <h1 class="hr-head" aria-label="CURIOUS SYSTEMS">
+        <span class="hr-word hr-word-1" data-part="hero-word-1"><span class="hr-ch">C</span><span class="hr-ch">U</span><span class="hr-ch">R</span><span class="hr-ch">I</span><span class="hr-ch">O</span><span class="hr-ch">U</span><span class="hr-ch">S</span></span>
+        <span class="hr-word hr-word-2" data-part="hero-word-2"><span class="hr-ch">S</span><span class="hr-ch">Y</span><span class="hr-ch">S</span><span class="hr-ch">T</span><span class="hr-ch">E</span><span class="hr-ch">M</span><span class="hr-ch">S</span></span>
+      </h1>
+      <div class="hr-copy-box" data-part="hero-copy">
+        <p class="hr-side">UI Zoo is a living collection of real interfaces, experiments, and motion systems. Explore the work, study how it moves, and find the ideas behind every build.</p>
+      </div>
+      <div class="hr-cta" data-part="hero-cta">
+        <a class="uz-btn" href="#">Open the catalogue<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4M9.5 2.5V8"/></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="uz-three-row-featured" data-part="featured">
+    <div class="uz-three-row-wrap">
+      <header class="uz-three-row-header" data-part="featured-header">
+        <div>
+          <span class="uz-three-row-kicker">Featured</span>
+          <h2 class="uz-three-row-heading">Selected Builds</h2>
+        </div>
+        <p class="uz-three-row-note">A running cut of the catalogue.<br>Open any card for the full build and its source.</p>
+      </header>
+      <div class="uz-preview-field" data-part="featured-rows"><div class="uz-preview-row uz-preview-row-1" data-part="featured-row-1"><div class="uz-preview-track" style="margin-left:0px"><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/spinning-3d-carousel.webp" alt=""></div><div class="uz-preview-meta"><b>Creative Experience</b><span>Spinning 3D Carousel</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/chasing-light.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Chasing Light</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/svg-page-transition.webp" alt=""></div><div class="uz-preview-meta"><b>Creative Experience</b><span>SVG Page Transition</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/ascii-footer-hover.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>ASCII Footer Hover</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/webgl-loader.webp" alt=""></div><div class="uz-preview-meta"><b>Page Transition</b><span>WebGL Loader</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/project-hover-list.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Project Hover List</span></div></a></div></div><div class="uz-preview-row uz-preview-row-2" data-part="featured-row-2"><div class="uz-preview-track" style="margin-left:-189.44px"><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/burst-timeline.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Burst Timeline</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/double-image-mask.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Double Image Mask</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/clip-path-scroll.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Clip Path Reveal</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/horizontal-scroll-gallery.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Horizontal Scroll Gallery</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/studio-intro-reveal.webp" alt=""></div><div class="uz-preview-meta"><b>Page Transition</b><span>Studio Intro Reveal</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/pin-cards-scroll.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Pin &amp; Rotate Cards</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/scroll-showcase-reel.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Scroll Showcase Reel</span></div></a></div></div><div class="uz-preview-row uz-preview-row-3" data-part="featured-row-3"><div class="uz-preview-track" style="margin-left:-212.48px"><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/flow-art-scroll.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Flow Art Scroll</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/loading-intro.webp" alt=""></div><div class="uz-preview-meta"><b>Page Transition</b><span>Loading Intro</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/free-fall-reveal.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Free Fall Reveal</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/folder-hover-list.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Folder Hover List</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/clip-slider.webp" alt=""></div><div class="uz-preview-meta"><b>Creative Experience</b><span>Clip Path Work Slider</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/cursor-text-mask.webp" alt=""></div><div class="uz-preview-meta"><b>Hover Effect</b><span>Cursor Text Mask</span></div></a><a class="uz-preview-card" href="#"><div class="uz-preview-image"><img src="img/skew-scroll-landing.webp" alt=""></div><div class="uz-preview-meta"><b>Scroll Effect</b><span>Skew Scroll Landing</span></div></a></div></div></div>
+      <div class="uz-three-row-footer" data-part="featured-footer">
+        <span>73 builds in the catalogue</span>
+        <span>Scroll to browse faster</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="ab" data-part="about">
+    <div class="ab-grid">
+      <div class="ab-col ab-col--left">
+        <div class="ab-panel" data-part="about-panel">
+          <div class="cf-card"><img src="img/chasing-light.webp" alt="Chasing Light"></div>
+        </div>
+      </div>
+      <div class="ab-col ab-col--right">
+        <div class="ab-deck" data-part="about-deck">
+          <article class="sw-card">
+            <div class="pc-builds">
+              <div class="pc-builds-lines" aria-hidden="true"><i style="width:34.0%"></i><i style="width:60.0%"></i><i style="width:85.9%"></i><i style="width:49.9%"></i><i style="width:75.8%"></i><i style="width:39.8%"></i><i style="width:65.7%"></i><i style="width:91.7%"></i><i style="width:55.6%"></i><i style="width:81.6%"></i><i style="width:45.5%"></i><i style="width:71.5%"></i><i style="width:35.4%"></i><i style="width:61.4%"></i><i style="width:87.3%"></i><i style="width:51.3%"></i><i style="width:77.3%"></i><i style="width:41.2%"></i><i style="width:67.2%"></i><i style="width:93.1%"></i><i style="width:57.1%"></i><i style="width:83.0%"></i><i style="width:47.0%"></i><i style="width:72.9%"></i><i style="width:36.9%"></i><i style="width:62.8%"></i><i style="width:88.8%"></i><i style="width:52.7%"></i><i style="width:78.7%"></i><i style="width:42.7%"></i><i style="width:68.6%"></i><i style="width:94.6%"></i><i style="width:58.5%"></i><i style="width:84.5%"></i><i style="width:48.4%"></i><i style="width:74.4%"></i><i style="width:38.3%"></i><i style="width:64.3%"></i><i style="width:90.2%"></i><i style="width:54.2%"></i><i style="width:80.1%"></i><i style="width:44.1%"></i><i style="width:70.0%"></i><i style="width:34.0%"></i><i style="width:60.0%"></i><i style="width:85.9%"></i><i style="width:49.9%"></i><i style="width:75.8%"></i><i style="width:39.8%"></i><i style="width:65.7%"></i><i style="width:91.7%"></i><i style="width:55.6%"></i><i style="width:81.6%"></i><i style="width:45.5%"></i><i style="width:71.5%"></i><i style="width:35.4%"></i><i style="width:61.4%"></i><i style="width:87.3%"></i><i style="width:51.3%"></i><i style="width:77.3%"></i><i style="width:41.2%"></i><i style="width:67.2%"></i><i style="width:93.1%"></i><i style="width:57.1%"></i><i style="width:83.0%"></i><i style="width:47.0%"></i><i style="width:72.9%"></i><i style="width:36.9%"></i><i style="width:62.8%"></i><i style="width:88.8%"></i><i style="width:52.7%"></i><i style="width:78.7%"></i><i style="width:42.7%"></i></div>
+              <div class="pc-builds-top"><span>01 / 05</span><span>UIZoo</span></div>
+              <div class="pc-builds-foot">
+                <span class="pc-builds-num">73</span>
+                <span class="pc-builds-label">Live<br>builds</span>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div class="ab-pitch" data-part="about-pitch">
+          <h2 class="ab-say"><span class="ab-say-line">Every build. <em>One command.</em></span></h2>
+          <p class="ab-say-caption">No setup. No boilerplate. Just working code.</p>
+          <div class="ab-cmd" data-part="about-command">
+            <div class="ab-cmd-tabs"><span class="is-active">npm</span><span>pnpm</span><span>yarn</span><span>bun</span></div>
+            <div class="ab-cmd-line">
+              <span class="ab-cmd-prompt" aria-hidden="true">$</span>
+              <code>npm install @toolspark/uizoo</code>
+              <span class="ab-cmd-copy"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M3 10V3.5C3 2.67 3.67 2 4.5 2H11"/></svg></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cl" data-part="closing">
+    <div class="cl-top">
+      <span class="cl-mark"><i></i>Ready when you are</span>
+      <span class="cl-mark is-dim">73 builds · 05 categories · all with source</span>
+    </div>
+    <div class="cl-wall" data-part="closing-wall">
+      <span class="cl-echo cl-echo-0" aria-hidden="true">Open the catalogue</span>
+      <span class="cl-echo cl-echo-1" aria-hidden="true">Open the catalogue</span>
+      <span class="cl-echo cl-echo-2" aria-hidden="true">Open the catalogue</span>
+      <span class="cl-echo cl-echo-3" aria-hidden="true">Open the catalogue</span>
+      <a class="cl-live" href="#" data-part="closing-cta">
+        <span class="cl-live-text">Open the catalogue</span>
+        <span class="cl-live-orb" aria-hidden="true">&#8599;</span>
+      </a>
+    </div>
+    <div class="cl-foot">
+      <a class="cl-alt" href="#">Or poke around the Lab</a>
+      <span class="cl-mark is-dim">No sign-up · nothing for sale</span>
+    </div>
+  </section>
+
+  <footer class="foot" data-part="footer">
+    <div class="foot-rulers" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    <div class="foot-inner">
+      <div class="foot-head" data-part="footer-head">
+        <span class="foot-label">[Colophon]<em>00</em></span>
+        <span class="foot-label">[Index]<em>05</em></span>
+        <i class="foot-rule" aria-hidden="true"></i>
+      </div>
+      <div class="foot-body">
+        <nav class="foot-rows" data-part="footer-index">
+          <i class="foot-rule" aria-hidden="true"></i>
+          <a href="#" class="foot-row" data-part="footer-link"><span class="foot-row-tag"><span class="foot-row-dot"></span><span class="foot-row-num">01</span></span><span class="foot-row-mask"><span class="foot-row-line"><span class="foot-ch">S</span><span class="foot-ch">h</span><span class="foot-ch">o</span><span class="foot-ch">w</span><span class="foot-ch">c</span><span class="foot-ch">a</span><span class="foot-ch">s</span><span class="foot-ch">e</span></span><span class="foot-row-line is-alt" aria-hidden="true"><span class="foot-ch">S</span><span class="foot-ch">h</span><span class="foot-ch">o</span><span class="foot-ch">w</span><span class="foot-ch">c</span><span class="foot-ch">a</span><span class="foot-ch">s</span><span class="foot-ch">e</span></span></span><span class="foot-row-count">73</span><span class="foot-row-arrow">&#8594;</span><i class="foot-rule"></i></a><a href="#" class="foot-row" data-part="footer-link"><span class="foot-row-tag"><span class="foot-row-dot"></span><span class="foot-row-num">02</span></span><span class="foot-row-mask"><span class="foot-row-line"><span class="foot-ch">L</span><span class="foot-ch">a</span><span class="foot-ch">b</span></span><span class="foot-row-line is-alt" aria-hidden="true"><span class="foot-ch">L</span><span class="foot-ch">a</span><span class="foot-ch">b</span></span></span><span class="foot-row-arrow">&#8594;</span><i class="foot-rule"></i></a><a href="#" class="foot-row" data-part="footer-link"><span class="foot-row-tag"><span class="foot-row-dot"></span><span class="foot-row-num">03</span></span><span class="foot-row-mask"><span class="foot-row-line"><span class="foot-ch">S</span><span class="foot-ch">u</span><span class="foot-ch">b</span><span class="foot-ch">m</span><span class="foot-ch">i</span><span class="foot-ch">t</span></span><span class="foot-row-line is-alt" aria-hidden="true"><span class="foot-ch">S</span><span class="foot-ch">u</span><span class="foot-ch">b</span><span class="foot-ch">m</span><span class="foot-ch">i</span><span class="foot-ch">t</span></span></span><span class="foot-row-arrow">&#8594;</span><i class="foot-rule"></i></a><a href="#" class="foot-row" data-part="footer-link"><span class="foot-row-tag"><span class="foot-row-dot"></span><span class="foot-row-num">04</span></span><span class="foot-row-mask"><span class="foot-row-line"><span class="foot-ch">C</span><span class="foot-ch">o</span><span class="foot-ch">n</span><span class="foot-ch">t</span><span class="foot-ch">a</span><span class="foot-ch">c</span><span class="foot-ch">t</span></span><span class="foot-row-line is-alt" aria-hidden="true"><span class="foot-ch">C</span><span class="foot-ch">o</span><span class="foot-ch">n</span><span class="foot-ch">t</span><span class="foot-ch">a</span><span class="foot-ch">c</span><span class="foot-ch">t</span></span></span><span class="foot-row-arrow">&#8594;</span><i class="foot-rule"></i></a><a href="#" class="foot-row" data-part="footer-link"><span class="foot-row-tag"><span class="foot-row-dot"></span><span class="foot-row-num">05</span></span><span class="foot-row-mask"><span class="foot-row-line"><span class="foot-ch">T</span><span class="foot-ch">o</span><span class="foot-ch">o</span><span class="foot-ch">l</span><span class="foot-ch">s</span><span class="foot-ch">p</span><span class="foot-ch">a</span><span class="foot-ch">r</span><span class="foot-ch">k</span></span><span class="foot-row-line is-alt" aria-hidden="true"><span class="foot-ch">T</span><span class="foot-ch">o</span><span class="foot-ch">o</span><span class="foot-ch">l</span><span class="foot-ch">s</span><span class="foot-ch">p</span><span class="foot-ch">a</span><span class="foot-ch">r</span><span class="foot-ch">k</span></span></span><span class="foot-row-arrow">&#8599;</span><i class="foot-rule"></i></a>
+        </nav>
+      </div>
+    </div>
+    <div class="foot-ticker" data-part="footer-ticker">
+      <span class="foot-label">[Now showing]<em>73</em></span>
+      <div class="foot-ticker-viewport"><div class="foot-ticker-track"><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>Spinning 3D Carousel</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>Chasing Light</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>SVG Page Transition</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>ASCII Footer Hover</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>WebGL Loader</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>Project Hover List</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>Portrait Spread Hero</a><a class="foot-ticker-item" href="#"><span class="foot-ticker-star">&#10035;</span>Horizontal Scroll Gallery</a></div></div>
+    </div>
+    <div class="foot-rail" data-part="footer-rail">
+      <i class="foot-rule" aria-hidden="true"></i>
+      <span><em>(c)</em> 2026 UIZoo</span>
+      <div class="foot-rail-legal">
+        <a href="#"><em>(Privacy)</em> Privacy Policy</a>
+        <a href="#"><em>(Legal)</em> Terms &amp; Conditions</a>
+      </div>
+      <span class="foot-rail-mid"><em>(Rel.)</em> Version 1.0</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StartupMap.in — Hyderabad startup directory</title>
+<meta name="viewport" content="width=1440">
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+.preview, .preview * { box-sizing: border-box; margin: 0; padding: 0; }
+.preview {
+  width: 1440px; height: 900px; position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: #F4FBF8; color: #18231F;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+.preview a { color: inherit; text-decoration: none; }
+.preview svg { display: block; }
+
+/* NavBar */
+.nav { position: relative; z-index: 40; flex-shrink: 0; background: #fff; border-bottom: 1px solid #DFEEE8; }
+.nav-in { display: flex; align-items: center; gap: 16px; height: 64px; padding: 0 24px; }
+.brand { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.brand-mark { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 8px; background: #2F8F6B; color: #fff;
+  font: 700 13px/1 "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: -0.06em; }
+.brand-text { line-height: 1.25; }
+.brand-name { display: block; font-size: 15px; font-weight: 700; letter-spacing: -0.02em; color: #18231F; }
+.brand-sub { display: flex; align-items: center; gap: 6px; margin-top: 2px; font-size: 11px; font-weight: 500; color: #5F7D70; }
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: #3EBD80; }
+.links { display: flex; align-items: center; gap: 4px; margin: 0 auto; }
+.links a { padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; line-height: 20px; color: #5F7D70; }
+.nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.seg { display: flex; align-items: center; gap: 4px; padding: 4px; border-radius: 8px; background: #EEF6F1; }
+.seg-btn { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; color: #7C9B8D; }
+.seg-btn svg { width: 16px; height: 16px; }
+.on { background: #fff; color: #1F6B4F; box-shadow: 0 1px 3px 0 rgb(0 0 0 / .1), 0 1px 2px -1px rgb(0 0 0 / .1); }
+.btn { display: flex; align-items: center; height: 36px; padding: 0 12px; border-radius: 8px; font-size: 13px; line-height: 20px; }
+.btn-ghost { font-weight: 500; color: #5F7D70; }
+.btn-line { font-weight: 600; color: #1F6B4F; border: 1px solid #DFEEE8; }
+.btn-solid { gap: 6px; padding: 0 14px; font-weight: 600; color: #fff; background: #2F8F6B; }
+.btn-solid svg { width: 14px; height: 14px; }
+
+/* Map area */
+.main { position: relative; flex: 1; min-height: 0; overflow: hidden; background: #F4FBF8; }
+.map { position: absolute; inset: 0; background: url(img/hyderabad-map-left.webp) no-repeat 0 0, url(img/hyderabad-map-right.webp) no-repeat 720px 0, #ddd; font-size: 12px; }
+
+/* Floating filter bar */
+.filters { position: absolute; left: 24px; right: 24px; top: 16px; z-index: 500; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px;
+  border: 1px solid #DFEEE8; background: rgba(255,255,255,.95); box-shadow: 0 6px 20px rgba(24,35,31,.08);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.select { position: relative; display: flex; align-items: center; height: 40px; padding: 0 32px 0 36px; border-radius: 8px;
+  border: 1px solid #DFEEE8; background: #fff; font-size: 13px; font-weight: 500; color: #18231F; }
+.select .ico { position: absolute; left: 12px; width: 14px; height: 14px; color: #7C9B8D; }
+.select .chev { position: absolute; right: 12px; width: 14px; height: 14px; color: #7C9B8D; }
+.count { font-size: 13px; font-weight: 500; line-height: 20px; color: #5F7D70; }
+.views { margin-left: auto; }
+.view-btn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 6px;
+  font-size: 13px; font-weight: 500; line-height: 20px; color: #5F7D70; }
+.view-btn.on { color: #1F6B4F; }
+.view-btn svg { width: 14px; height: 14px; }
+
+/* Markers (same geometry as MapView's divIcons) */
+.pin { position: absolute; width: 34px; height: 40px; }
+.pin svg { overflow: visible; }
+.cluster { position: absolute; display: grid; place-items: center; border-radius: 9999px; background: rgba(47,143,107,.92); color: #fff;
+  font: 700 13px/1 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  box-shadow: 0 0 0 5px rgba(47,143,107,.22), 0 6px 16px rgba(24,35,31,.2); }
+
+/* Leaflet controls */
+.zoom { position: absolute; right: 18px; bottom: 35px; z-index: 800; width: 42px; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 16px 34px rgba(24,35,31,.16); }
+.zoom a { display: block; width: 42px; height: 42px; line-height: 42px; text-align: center; background: rgba(255,255,255,.92);
+  color: #18231f; font: 400 22px/42px "Lucida Console", Monaco, monospace; text-indent: 1px; }
+.zoom a + a { border-top: 1px solid #dfebe6; line-height: 41px; }
+.attrib { position: absolute; right: 0; bottom: 0; z-index: 800; padding: 0 5px; background: rgba(255,255,255,.8);
+  color: #333; font-size: 12px; line-height: 1.4; }
+.attrib a { color: #0078A8; }
+.attrib svg { display: inline; vertical-align: baseline; width: 1em; height: .6669em; }
+</style>
+</head>
+<body>
+<div class="preview">
+
+  <header class="nav" data-part="nav">
+    <div class="nav-in">
+      <a href="#" class="brand">
+        <span class="brand-mark">SM</span>
+        <span class="brand-text">
+          <span class="brand-name">StartupMap</span>
+          <span class="brand-sub"><span class="live-dot"></span>Hyderabad · Live</span>
+        </span>
+      </a>
+
+      <nav class="links" aria-label="Primary navigation" data-part="links">
+        <a href="#">Submit</a>
+        <a href="#">Boost</a>
+      </nav>
+
+      <div class="nav-right" data-part="actions">
+        <div class="seg">
+          <a href="#" class="seg-btn" aria-label="Light"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2.5M12 19v2.5M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2.5 12H5M19 12h2.5M4.2 19.8L6 18M18 6l1.8-1.8"/></svg></a>
+          <a href="#" class="seg-btn" aria-label="Dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 119.5 4a7 7 0 0010.5 10.5z"/></svg></a>
+          <a href="#" class="seg-btn on" aria-label="System"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M12 16v4"/></svg></a>
+        </div>
+        <a href="#" class="btn btn-ghost">Sign in</a>
+        <a href="#" class="btn btn-line">Sign up</a>
+        <a href="#" class="btn btn-solid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>Add startup</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main" data-part="hero">
+    <div class="map" data-part="map">
+      <div data-part="pins">
+        <div class="cluster" style="left:551px;top:-68px;width:36px;height:36px">2</div>
+        <a href="#" class="pin" style="left:440px;top:6px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="Helex"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#e11d48" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">H</text></svg></a>
+        <a href="#" class="pin" style="left:167px;top:10px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="LinkedINspire"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">L</text></svg></a>
+        <a href="#" class="pin" style="left:637px;top:34px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="RESOFTWA TECHNOLOGIES &amp; SOLUTIONS PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#7c3aed" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">RT</text></svg></a>
+        <a href="#" class="pin" style="left:694px;top:73px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="PAVANI POWER SYSTEMS PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">PP</text></svg></a>
+        <a href="#" class="pin" style="left:986px;top:92px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="NTH EKSEPJEN LLP"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">NE</text></svg></a>
+        <a href="#" class="pin" style="left:286px;top:103px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="PRASUNA INFRA PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#e11d48" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">PI</text></svg></a>
+        <div class="cluster" style="left:871px;top:138px;width:36px;height:36px">2</div>
+        <div class="cluster" style="left:442px;top:141px;width:36px;height:36px">3</div>
+        <a href="#" class="pin" style="left:1150px;top:137px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="BR MEDICAL RESEARCH AND SOFTWARE SOLUTIONS (OPC) PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#ea580c" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">BM</text></svg></a>
+        <div class="cluster" style="left:326px;top:153px;width:36px;height:36px">2</div>
+        <a href="#" class="pin" style="left:1070px;top:153px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="LEDchip Indus Private Limited"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#e11d48" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">LI</text></svg></a>
+        <div class="cluster" style="left:603px;top:190px;width:36px;height:36px">9</div>
+        <div class="cluster" style="left:800px;top:206px;width:36px;height:36px">2</div>
+        <div class="cluster" style="left:686px;top:244px;width:36px;height:36px">7</div>
+        <a href="#" class="pin" style="left:241px;top:234px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="Buildwright"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#ea580c" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">B</text></svg></a>
+        <div class="cluster" style="left:458px;top:254px;width:42px;height:42px">18</div>
+        <div class="cluster" style="left:1020px;top:258px;width:36px;height:36px">2</div>
+        <div class="cluster" style="left:1161px;top:260px;width:36px;height:36px">2</div>
+        <a href="#" class="pin" style="left:945px;top:271px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="SHERATAAN AGRI TECH PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#059669" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">SA</text></svg></a>
+        <a href="#" class="pin" style="left:1322px;top:276px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="Kritsnam Technologies"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#4f46e5" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">KT</text><clipPath id="pc-kritsnam-technologies"><circle cx="17" cy="16" r="10"/></clipPath><circle cx="17" cy="16" r="10" fill="#fff"/><image href="img/logo-kritsnam-technologies.webp" x="7" y="6" width="20" height="20" clip-path="url(#pc-kritsnam-technologies)" preserveAspectRatio="xMidYMid slice"/></svg></a>
+        <div class="cluster" style="left:519px;top:286px;width:50px;height:50px">92</div>
+        <div class="cluster" style="left:842px;top:311px;width:42px;height:42px">12</div>
+        <div class="cluster" style="left:407px;top:313px;width:42px;height:42px">39</div>
+        <div class="cluster" style="left:719px;top:314px;width:42px;height:42px">13</div>
+        <div class="cluster" style="left:576px;top:341px;width:42px;height:42px">21</div>
+        <div class="cluster" style="left:482px;top:347px;width:42px;height:42px">34</div>
+        <a href="#" class="pin" style="left:926px;top:348px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="AODH LIFESCIENCES PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">AL</text></svg></a>
+        <div class="cluster" style="left:1023px;top:365px;width:36px;height:36px">6</div>
+        <div class="cluster" style="left:724px;top:365px;width:42px;height:42px">10</div>
+        <div class="cluster" style="left:663px;top:375px;width:36px;height:36px">9</div>
+        <a href="#" class="pin" style="left:826px;top:371px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="Pursuit Data Systems India Private Limited"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">PD</text></svg></a>
+        <div class="cluster" style="left:388px;top:388px;width:42px;height:42px">29</div>
+        <a href="#" class="pin" style="left:1266px;top:384px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="SincroSys Solutions"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#e11d48" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">SS</text><clipPath id="pc-sincrosys-solutions"><circle cx="17" cy="16" r="10"/></clipPath><circle cx="17" cy="16" r="10" fill="#fff"/><image href="img/logo-sincrosys-solutions.webp" x="7" y="6" width="20" height="20" clip-path="url(#pc-sincrosys-solutions)" preserveAspectRatio="xMidYMid slice"/></svg></a>
+        <div class="cluster" style="left:657px;top:399px;width:42px;height:42px">11</div>
+        <a href="#" class="pin" style="left:578px;top:399px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="KUZA TECHNOLOGIES PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#c026d3" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">KT</text></svg></a>
+        <div class="cluster" style="left:735px;top:421px;width:36px;height:36px">6</div>
+        <div class="cluster" style="left:1023px;top:435px;width:36px;height:36px">6</div>
+        <div class="cluster" style="left:363px;top:459px;width:36px;height:36px">3</div>
+        <div class="cluster" style="left:835px;top:462px;width:36px;height:36px">2</div>
+        <div class="cluster" style="left:431px;top:465px;width:36px;height:36px">3</div>
+        <a href="#" class="pin" style="left:957px;top:457px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="TRUE COMET EDUTECH PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#ea580c" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">TC</text></svg></a>
+        <a href="#" class="pin" style="left:1023px;top:493px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="SSV HEALTHCARE SERVICES PRIVATE LIMITED"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#e11d48" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">SH</text></svg></a>
+        <a href="#" class="pin" style="left:934px;top:529px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="Startoon Labs"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#0d9488" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">SL</text><clipPath id="pc-startoon-labs"><circle cx="17" cy="16" r="10"/></clipPath><circle cx="17" cy="16" r="10" fill="#fff"/><image href="img/logo-startoon-labs.webp" x="7" y="6" width="20" height="20" clip-path="url(#pc-startoon-labs)" preserveAspectRatio="xMidYMid slice"/></svg></a>
+        <div class="cluster" style="left:956px;top:643px;width:36px;height:36px">2</div>
+        <a href="#" class="pin" style="left:969px;top:788px"><svg width="34" height="40" viewBox="0 0 34 40" aria-label="BluJ Aero"><path d="M17 33 C11 27 4 24 4 15 C4 7.8 9.8 2 17 2 C24.2 2 30 7.8 30 15 C30 24 23 27 17 33 Z" fill="#0d9488" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><text x="17" y="20.5" text-anchor="middle" font-family="ui-sans-serif,system-ui,sans-serif" font-size="10.5" font-weight="700" fill="#fff">BA</text><clipPath id="pc-bluj-aero"><circle cx="17" cy="16" r="10"/></clipPath><circle cx="17" cy="16" r="10" fill="#fff"/><image href="img/logo-bluj-aero.webp" x="7" y="6" width="20" height="20" clip-path="url(#pc-bluj-aero)" preserveAspectRatio="xMidYMid slice"/></svg></a>
+      </div>
+
+      <div class="zoom" data-part="zoom">
+        <a href="#" aria-label="Zoom in">+</a>
+        <a href="#" aria-label="Zoom out">&#x2212;</a>
+      </div>
+      <div class="attrib" data-part="attribution"><a href="#"><svg viewBox="0 0 12 8" aria-hidden="true"><path fill="#4C7BE1" d="M0 0h12v4H0z"/><path fill="#FFD500" d="M0 4h12v3H0z"/><path fill="#E0BC00" d="M0 7h12v1H0z"/></svg> Leaflet</a> <span aria-hidden="true">|</span> &copy; <a href="#">OpenStreetMap</a> contributors</div>
+    </div>
+
+    <div class="filters" data-part="filters">
+      <div class="bar">
+        <div class="select" style="width:203px">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12.6 2.6l8.8 8.8a2 2 0 010 2.8l-6.2 6.2a2 2 0 01-2.8 0l-8.8-8.8A2 2 0 013 10.2V4a1 1 0 011-1h6.2a2 2 0 011.4.6z"/><circle cx="7.5" cy="7.5" r="1.3" fill="currentColor" stroke="none"/></svg>
+          All sectors
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <div class="select" style="width:148px">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+          All stages
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+        <span class="count">373 results</span>
+        <div class="seg views">
+          <a href="#" class="view-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6.5v14L9 18l6 2.5 6-2.5v-14L15 6 9 4z"/><path d="M9 4v14M15 6v14"/></svg>Map</a>
+          <a href="#" class="view-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Grid</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+</div>
+</body>
+</html>

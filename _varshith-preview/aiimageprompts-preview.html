@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Image Prompts Library | Better Prompts, Better Art</title>
+<meta name="viewport" content="width=1440">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kaushan+Script&family=Sora:wght@600;700&display=swap">
+<style>
+.preview{--y:#FFDE1A;--yh:#F8BE00;--z950:#09090b;--z900:#18181b;--z800:#27272a;--z600:#52525b;--z500:#71717a;--z400:#a1a1aa;--z300:#d4d4d8;--z200:#e4e4e7;
+  width:1440px;margin:0 auto;position:relative;overflow:hidden;background:#000;color:#fff;font-family:'DM Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5}
+.preview *,.preview *::before,.preview *::after{box-sizing:border-box;margin:0;padding:0}
+.preview :where(a){color:inherit;text-decoration:none}
+.preview img{display:block}
+.preview ul{list-style:none}
+.preview .i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.preview .i.fill{fill:currentColor;stroke:none}
+.preview .wrap{width:1400px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.preview .disp{font-family:'Sora',sans-serif}
+
+/* NAV */
+.nav{position:absolute;top:20px;left:50%;margin-left:-425px;width:850px;height:60px;border-radius:32px;z-index:50;background:rgba(0,0,0,.85);border:1px solid rgba(255,255,255,.1);box-shadow:0 8px 32px rgba(248,190,0,.1);display:flex;align-items:center;justify-content:space-between;padding:0 20px}
+.nav::before{content:"";position:absolute;inset:0;border-radius:inherit;opacity:.08;background:radial-gradient(ellipse at 50% 50%,rgba(248,190,0,.15) 0%,transparent 70%)}
+.nav .brand{display:flex;align-items:center;gap:10px;position:relative}
+.nav .logo-text{font-family:'Kaushan Script',cursive;font-size:24px;line-height:32px;color:#fff}
+.nav nav{display:flex;gap:24px;position:relative}
+.nav nav a{font-size:14px;line-height:20px;font-weight:600;color:rgba(255,255,255,.7)}
+.nav .right{display:flex;align-items:center;gap:12px;position:relative}
+.switch{position:relative;width:48px;height:24px;border-radius:22px;box-shadow:0 0 8px rgba(0,0,0,.08);background:#00a6ff;overflow:hidden;font-size:15px}
+.switch::before{content:"";position:absolute;width:1.1em;height:1.1em;border-radius:50%;left:.25em;bottom:.25em;transform:translateX(1.6em);box-shadow:inset 13px -3px 0 13px #ffcf48}
+.switch svg{position:absolute;width:2.8em;bottom:-1.1em;left:-.9em}
+.signin{position:relative;width:160px;height:48px;border-radius:9999px;overflow:hidden;background:#fff;border:1px solid rgba(255,255,255,.1)}
+.signin i{position:absolute;border-radius:50%}
+.signin .b2{width:48px;height:48px;right:80px;top:-24px;background:#FFDE1A}
+.signin .b3{width:32px;height:32px;right:128px;top:24px;background:#FFC527}
+.signin span{position:absolute;inset:0;display:flex;align-items:center;padding-left:16px;font-size:14px;font-weight:800;color:#000;z-index:2}
+
+/* HERO */
+.hero{position:relative;min-height:900px;padding-top:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;text-align:center}
+.hero::before{content:"";position:absolute;inset:0;opacity:.4;background:radial-gradient(circle at 20px 20px,#fff 1.5px,transparent 2px) 0 0/40px 40px}
+.hero .in{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
+.pill{display:flex;align-items:center;gap:12px;padding:6px 20px 6px 6px;margin-bottom:32px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:9999px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.avs{display:flex}
+.avs img{width:32px;height:32px;border-radius:50%;border:2px solid #000;background:#e5e7eb;box-shadow:0 0 0 1px rgba(255,255,255,.1);margin-left:-10px;object-fit:cover}
+.avs img:first-child{margin-left:0}
+.pill .t1{font-size:12px;line-height:16px;font-weight:600;color:#f3f4f6;text-align:left}
+.pill .t2{display:flex;align-items:center;gap:4px;margin-top:2px}
+.pill .stars{display:flex;gap:2px;font-size:12px;color:#4b5563}
+.pill .t2 span{font-size:10px;font-weight:500;color:#9ca3af}
+.hero h1{font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;font-size:128px;line-height:.9;text-transform:uppercase;max-width:1024px;margin-bottom:32px;color:#fff}
+.hero .sub{font-size:24px;line-height:32px;color:#9ca3af;max-width:672px;margin-bottom:32px}
+.b3d{margin-bottom:48px;font-family:"Rubik",sans-serif;font-weight:700;font-size:16px;line-height:1;padding:1px;border-radius:9999px;background:#fff;color:#fff;transform:translate(-4px,-4px);
+  box-shadow:.5px .5px 0 0 #fff,1px 1px 0 0 #fff,1.5px 1.5px 0 0 #fff,2px 2px 0 0 #fff,2.5px 2.5px 0 0 #fff,3px 3px 0 0 #fff,0 0 0 2px #000,.5px .5px 0 2px #000,1px 1px 0 2px #000,1.5px 1.5px 0 2px #000,2px 2px 0 2px #000,2.5px 2.5px 0 2px #000,3px 3px 0 2px #000,3.5px 3.5px 0 2px #000,4px 4px 0 2px #000}
+.b3d .face{position:relative;background:#FFDE1A;border:2px solid rgba(255,255,255,.3);border-radius:9999px}
+.b3d .face::before{content:"";position:absolute;inset:0;border-radius:9999px;opacity:.5;mix-blend-mode:hard-light;background-image:radial-gradient(rgb(255 255 255/80%) 20%,transparent 20%),radial-gradient(rgb(255 255 255/100%) 20%,transparent 20%);background-position:0 0,4px 4px;background-size:8px 8px}
+.b3d span{position:relative;display:flex;align-items:center;justify-content:center;gap:4px;padding:12px 20px;text-transform:uppercase;filter:drop-shadow(0 -1px 0 rgba(255,255,255,.25))}
+.b3d .i{width:20px;height:20px;stroke-width:2.5}
+.search{width:672px;position:relative}
+.search .field{height:64px;border-radius:9999px;border:1px solid #fff;background:#000;padding-left:24px;display:flex;align-items:center;font-size:18px;color:#9ca3af;box-shadow:0 1px 2px rgba(255,255,255,.1)}
+.search .go{position:absolute;right:8px;top:8px;width:48px;height:48px;border-radius:50%;background:#fff;color:#000;display:flex;align-items:center;justify-content:center;font-size:24px}
+.tags{margin-top:16px;display:flex;gap:8px;justify-content:center}
+.tags a{padding:4px 12px;border:1px solid #1f2937;border-radius:9999px;font-size:14px;line-height:20px;color:#9ca3af;background:#000}
+
+/* FEATURED */
+.featured{position:relative;padding:128px 0;background:#000;border-bottom:1px solid rgba(255,255,255,.05);overflow:hidden}
+.featured .decor{position:absolute;top:0;right:0;width:33.333%;height:100%;background:rgba(255,222,26,.05);transform-origin:top;transform:translateX(50%) skewX(-12deg)}
+.fhead{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:80px;gap:24px}
+.fhead .lbl{position:absolute;top:-24px;left:0;color:var(--y);font-family:monospace;font-size:14px;line-height:20px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.fhead h2{font-size:60px;line-height:1;font-weight:800;letter-spacing:-.025em;margin-bottom:24px}
+.grad{color:transparent;-webkit-background-clip:text;background-clip:text}
+.fhead h2 .grad{background-image:linear-gradient(to right,#FFDE1A,#ca8a04)}
+.fhead p{font-size:20px;line-height:1.625;color:#9ca3af;max-width:576px}
+.fhead .all{display:flex;align-items:center;gap:8px;font-size:18px;line-height:28px;font-weight:700;border-bottom:2px solid #fff;padding-bottom:4px}
+.fhead .all .i{font-size:18px}
+.masonry{columns:5;column-gap:16px}
+.card{break-inside:avoid;margin-bottom:16px;border:2px solid #fff;border-radius:12px;overflow:hidden;background:var(--z800)}
+.card img{width:100%;height:100%;object-fit:cover}
+.r45{aspect-ratio:4/5}.r23{aspect-ratio:2/3}.r34{aspect-ratio:3/4}
+
+/* SEO */
+.seo{position:relative;padding:128px 0;background:#000;border-top:1px solid var(--z800);overflow:hidden}
+.seo .glow{position:absolute;top:0;right:0;width:500px;height:500px;border-radius:50%;background:rgba(255,222,26,.05);filter:blur(120px)}
+.seo .body{max-width:896px;margin:0 auto;color:var(--z300)}
+.seo article+article{margin-top:48px}
+.seo article>*+*{margin-top:24px}
+.seo h2{font-size:30px;line-height:36px;font-weight:900;color:#fff}
+.seo p,.seo li{font-size:18px;line-height:1.625}
+.seo ul{list-style:disc;padding-left:24px}
+.seo li+li{margin-top:12px}
+.seo strong{font-weight:700}
+.seo a{color:var(--yh);font-weight:700}
+.seo .tools>div+div{margin-top:16px}
+.seo h3{font-size:20px;line-height:28px;font-weight:700;color:#fff}
+
+/* SUBMIT */
+.submit{position:relative;padding:160px 0;background:var(--z950);overflow:hidden}
+.submit .bg1{position:absolute;top:0;left:50%;margin-left:-500px;width:1000px;height:600px;border-radius:50%;background:rgba(255,222,26,.05);filter:blur(120px)}
+.submit .bg2{position:absolute;bottom:0;left:0;width:100%;height:300px;background:linear-gradient(to top,var(--z900),transparent)}
+.submit .noise{position:absolute;inset:0;opacity:.2;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20256%20256%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.7%22%20numOctaves%3D%224%22%20stitchTiles%3D%22stitch%22%2F%3E%3C%2Ffilter%3E%3Crect%20width%3D%22256%22%20height%3D%22256%22%20filter%3D%22url(%23n)%22%20opacity%3D%221%22%2F%3E%3C%2Fsvg%3E")}
+.submit .inner{max-width:1152px;margin:0 auto;position:relative;z-index:1}
+.manifesto{position:relative;max-width:896px;margin:0 auto 128px;padding:64px 32px;text-align:center}
+.circuit{position:absolute;top:0;bottom:0;left:50%;width:1440px;margin-left:-720px;opacity:.3;
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(75,85,99,.08) 19px,rgba(75,85,99,.08) 20px,transparent 20px,transparent 39px,rgba(75,85,99,.08) 39px,rgba(75,85,99,.08) 40px),repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(75,85,99,.08) 19px,rgba(75,85,99,.08) 20px,transparent 20px,transparent 39px,rgba(75,85,99,.08) 39px,rgba(75,85,99,.08) 40px),radial-gradient(circle at 20px 20px,rgba(55,65,81,.12) 2px,transparent 2px),radial-gradient(circle at 40px 40px,rgba(55,65,81,.12) 2px,transparent 2px);background-size:40px 40px}
+.manifesto .fl,.manifesto .fr{position:absolute;top:0;bottom:0;width:64px;z-index:2}
+.manifesto .fl{left:0;background:linear-gradient(to right,var(--z950),rgba(9,9,11,.3),transparent)}
+.manifesto .fr{right:0;background:linear-gradient(to left,var(--z950),rgba(9,9,11,.3),transparent)}
+.manifesto .c{position:relative;z-index:1}
+.collective{display:inline-flex;align-items:center;gap:12px;padding:10px 20px;margin-bottom:48px;border-radius:9999px;border:2px solid rgba(255,222,26,.2);background:rgba(255,222,26,.05);font-size:14px;line-height:20px;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--y);box-shadow:0 10px 15px -3px rgba(255,222,26,.1),0 4px 6px -4px rgba(255,222,26,.1)}
+.collective .i{font-size:16px}
+.manifesto h2{font-size:128px;line-height:.85;font-weight:900;letter-spacing:-.04em;margin-bottom:40px;color:#fff}
+.manifesto h2 .l1{display:block;margin-bottom:8px}
+.manifesto h2 .l2{position:relative;display:inline-block}
+.manifesto h2 .grad{background-image:linear-gradient(to right,#FFDE1A,#fff,var(--z300))}
+.manifesto h2 .ul{position:absolute;left:0;right:0;bottom:-8px;height:4px;background:linear-gradient(to right,transparent,rgba(255,222,26,.5),transparent)}
+.manifesto p{font-size:30px;line-height:1.4;font-weight:500;letter-spacing:-.025em;color:var(--z300);max-width:768px;margin:0 auto}
+.manifesto p span{display:block}
+.manifesto p span+span{margin-top:8px}
+.manifesto p .m{color:var(--z400)}
+.manifesto p .e{font-weight:600;color:var(--z200)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--z800);margin-bottom:128px}
+.steps div{padding:32px 48px 48px;border-left:1px solid var(--z800)}
+.steps div:last-child{border-right:1px solid var(--z800)}
+.steps .n{display:block;font-family:monospace;font-size:14px;line-height:20px;color:var(--y);letter-spacing:.1em;margin-bottom:24px}
+.steps h3{font-size:30px;line-height:36px;font-weight:700;margin-bottom:16px}
+.steps p{color:var(--z400);line-height:1.625}
+.ctawrap{display:flex;justify-content:center;margin-top:80px}
+.cta{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:240px;padding:16px 32px;border-radius:.75rem;overflow:hidden;background:radial-gradient(65.28% 65.28% at 50% 100%,rgba(255,255,255,.2) 0%,rgba(255,255,255,0) 100%),#000}
+.cta::before{content:"";position:absolute;inset:1px;border-radius:calc(.75rem - 1px);background:linear-gradient(177.95deg,rgba(255,255,255,.19) 0%,rgba(255,255,255,0) 100%)}
+.cta::after{content:"";position:absolute;inset:2px;border-radius:calc(.75rem - 2px);background:radial-gradient(65.28% 65.28% at 50% 100%,rgba(255,255,255,.2) 0%,rgba(255,255,255,0) 100%),#000}
+.cta .fold{position:absolute;top:0;right:0;width:16px;height:16px;z-index:1;overflow:hidden;background:radial-gradient(100% 75% at 55%,#000 0%,rgba(255,255,255,0) 100%) #333;box-shadow:0 0 3px #000;border-bottom-left-radius:8px;border-top-right-radius:.75rem}
+.cta .fold::after{content:"";position:absolute;top:0;right:0;width:150%;height:150%;transform:rotate(45deg) translateY(-18px);background:#e8e8e8;opacity:.5}
+.cta .lab{position:relative;z-index:2;display:inline-flex;align-items:center;gap:12px;color:#fff;font-size:16px;font-weight:700;line-height:1.5;text-transform:uppercase;letter-spacing:.05em}
+.cta .lab .i{font-size:20px}
+
+/* INTERNAL LINKS */
+.links{position:relative;padding:96px 0;background:#050506;border-top:1px solid var(--z800)}
+.links .glow{position:absolute;bottom:0;left:50%;margin-left:-300px;width:600px;height:300px;border-radius:50%;background:rgba(255,222,26,.05);filter:blur(120px)}
+.links .w7{max-width:1280px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.lhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px}
+.lhead .l{display:flex;align-items:center;gap:12px}
+.ico{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:12px;background:rgba(255,222,26,.1);color:var(--yh);font-size:20px}
+.lhead h2{font-size:30px;line-height:36px;font-weight:900}
+.lhead p{font-size:14px;line-height:20px;color:var(--z500);margin-top:4px}
+.more{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:700;color:var(--yh)}
+.more .i{font-size:14px}
+.posts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-bottom:80px}
+.post{display:flex;flex-direction:column;padding:24px;background:var(--z900);border:2px solid rgba(255,255,255,.05);border-radius:16px}
+.post .meta{display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;font-weight:500;color:var(--z400);margin-bottom:12px}
+.post .cat{padding:2px 8px;border-radius:6px;background:var(--z800);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.post .date{display:flex;align-items:center;gap:4px}
+.post .date .i{font-size:12px}
+.post h3{font-size:18px;line-height:1.375;font-weight:700;margin-bottom:8px}
+.post p{font-size:14px;line-height:1.625;color:var(--z500);flex:1;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.catc{display:flex;align-items:center;gap:16px;padding:16px;border-radius:12px;background:var(--z900);border:2px solid rgba(255,255,255,.05)}
+.catc .em{font-size:24px;line-height:32px}
+.catc div{min-width:0}
+.catc h3{font-size:14px;line-height:20px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.catc p{font-size:12px;line-height:16px;color:var(--z400);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.catc .i{font-size:16px;color:var(--z600);margin-left:auto}
+.exall{text-align:center;margin-top:32px}
+.exall a{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--y);color:#000;border:2px solid #000;border-radius:12px;font-weight:700;box-shadow:4px 4px 0 0 #000}
+.exall .i{font-size:16px}
+
+/* TESTIMONIALS */
+.testi{padding:128px 0;background:#000;border-top:1px solid #fff;overflow:hidden}
+.th{text-align:center;margin-bottom:80px}
+.th h2{font-size:48px;line-height:1;font-weight:700;margin-bottom:24px}
+.th h2 span,.bh h2 span{color:var(--y)}
+.th p{font-size:20px;line-height:28px;color:#9ca3af;max-width:672px;margin:0 auto}
+.marq{position:relative;overflow:hidden;padding:48px 0}
+.marq .fl,.marq .fr{position:absolute;top:0;bottom:0;width:160px;z-index:2}
+.marq .fl{left:0;background:linear-gradient(to right,#000,transparent)}
+.marq .fr{right:0;background:linear-gradient(to left,#000,transparent)}
+.track{display:flex;gap:32px;padding-left:32px;width:max-content}
+.tc{width:450px;flex-shrink:0;padding:32px;border-radius:12px;background:var(--z900);border:2px solid #fff;box-shadow:4px 4px 0 0 #fff}
+.tc .top{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.1)}
+.tc img{width:56px;height:56px;border-radius:50%;border:2px solid #000;background:#f3f4f6}
+.tc .who{flex:1;min-width:0;padding-top:4px}
+.tc h4{font-size:18px;line-height:1.25;font-weight:700}
+.tc .role{font-size:14px;line-height:20px;color:#9ca3af;margin-top:2px}
+.tc .st{display:flex;gap:2px;color:var(--y);font-size:16px;padding-top:6px}
+.tc q{display:block;font-size:18px;line-height:1.625;font-weight:500;color:var(--z300);quotes:'"' '"'}
+
+/* BADGES */
+.badges{padding:96px 0;background:#000;border-top:1px solid var(--z800)}
+.badges .w6{max-width:1152px;margin:0 auto;padding:0 16px}
+.bh{text-align:center;margin-bottom:40px}
+.bh h2{font-size:48px;line-height:1;font-weight:700;margin-bottom:16px}
+.bh p{font-size:18px;line-height:28px;color:var(--z400);max-width:672px;margin:0 auto}
+.bmarq{position:relative;overflow:hidden}
+.bmarq .fl,.bmarq .fr{position:absolute;top:0;bottom:0;width:64px;z-index:2}
+.bmarq .fl{left:0;background:linear-gradient(to right,#000,transparent)}
+.bmarq .fr{right:0;background:linear-gradient(to left,#000,transparent)}
+.btrack{display:flex;align-items:center;gap:20px;padding:8px 0;width:max-content}
+.bcard{border-radius:8px;border:2px solid #fff;background:var(--z900);padding:10px;box-shadow:3px 3px 0 0 #fff}
+.jgf{display:flex;align-items:center;gap:8px;width:270px;height:46px;padding:0 8px;border:2px solid #60a5fa;border-radius:6px;background:var(--z950)}
+.jgf .s{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;background:var(--y);box-shadow:0 0 0 2px rgba(255,255,255,.15);color:#fff;font-size:16px;flex-shrink:0}
+.jgf .tx{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:13px;line-height:1.375;font-weight:600;letter-spacing:-.025em;white-space:nowrap}
+.jgf .v{display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:6px;background:#059669;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.025em;color:#fff}
+.jgf .v .i{font-size:14px;stroke-width:3}
+.tiny{display:inline-flex;align-items:center;gap:14px;padding:16px 24px 16px 20px;border-radius:14px;font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg,#3525E6,#D81FE0,#22B8F0);color:#fff}
+.tiny span{display:flex;flex-direction:column;line-height:1.15}
+.tiny .k{font-family:monospace;font-size:9px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.75)}
+.tiny .n{font-size:22px;font-weight:800;letter-spacing:-.025em}
+.tiny .u{font-size:11px;color:rgba(255,255,255,.75);margin-top:4px}
+
+/* FOOTER */
+.foot{background:var(--z950);border-top:1px solid var(--z800);padding:64px 0 32px}
+.fgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:48px;margin-bottom:64px}
+.fbrand{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.fbrand svg{width:32px;height:32px;border-radius:8px}
+.fbrand span{font-size:20px;line-height:28px;font-weight:700;letter-spacing:-.025em}
+.fdesc{font-size:14px;line-height:1.625;color:var(--z400);max-width:320px;margin-bottom:24px}
+.soc{display:flex;gap:16px}
+.soc a{width:40px;height:40px;border-radius:50%;background:var(--z900);color:var(--z400);display:flex;align-items:center;justify-content:center;font-size:18px}
+.foot h3{font-size:18px;line-height:28px;font-weight:700;margin-bottom:24px}
+.foot li+li{margin-top:16px}
+.foot li a{font-size:14px;line-height:20px;color:var(--z400)}
+.nl{font-size:14px;line-height:20px;color:var(--z400);margin-bottom:16px}
+.inp{position:relative;height:36px;border:1px solid var(--z800);border-radius:6px;background:var(--z900);display:flex;align-items:center;padding-left:40px;font-size:14px;color:var(--z500);box-shadow:0 1px 2px rgba(0,0,0,.05);margin-bottom:12px}
+.inp .i{position:absolute;left:12px;font-size:16px;color:var(--z400)}
+.btn{height:36px;border-radius:6px;background:#fff;color:#000;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.btn .i{font-size:16px;margin-left:8px}
+.fbot{border-top:1px solid var(--z800);padding-top:32px;display:flex;justify-content:space-between;align-items:center;font-size:14px;line-height:20px;color:var(--z400)}
+.fbot div{display:flex;gap:24px}
+</style>
+</head>
+<body style="margin:0">
+<div class="preview">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+  <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol>
+  <symbol id="i-tw" viewBox="0 0 24 24"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></symbol>
+  <symbol id="i-logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="32" fill="#FFDE1A"/><path d="M32 12L36.5 27.5L52 32L36.5 36.5L32 52L27.5 36.5L12 32L27.5 27.5L32 12Z" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/></symbol>
+</svg>
+
+<header class="nav" data-part="nav">
+  <div class="brand">
+    <svg width="32" height="32"><use href="#i-logo"/></svg>
+    <a href="#" class="logo-text">AI Image Prompts</a>
+  </div>
+  <nav><a href="#">Home</a><a href="#">Explore</a><a href="#">Blog</a></nav>
+  <div class="right">
+    <div class="switch"><svg viewBox="0 0 16 16"><path transform="matrix(.77976 0 0 .78395-299.99-418.63)" fill="#fff" d="m391.84 540.91c-.421-.329-.949-.524-1.523-.524-1.351 0-2.451 1.084-2.485 2.435-1.395.526-2.388 1.88-2.388 3.466 0 1.874 1.385 3.423 3.182 3.667v.034h12.73v-.006c1.775-.104 3.182-1.584 3.182-3.395 0-1.747-1.309-3.186-2.994-3.379.007-.106.011-.214.011-.322 0-2.707-2.271-4.901-5.072-4.901-2.073 0-3.856 1.202-4.643 2.925"/></svg></div>
+    <a href="#" class="signin"><i class="b2"></i><i class="b3"></i><span>Sign in / Sign up</span></a>
+  </div>
+</header>
+
+<section class="hero" data-part="hero">
+  <div class="in">
+    <div class="pill">
+      <div class="avs">
+        <img src="img/avatar-16.webp" alt="Community Member 1"><img src="img/avatar-17.webp" alt="Community Member 2"><img src="img/avatar-18.webp" alt="Community Member 3"><img src="img/avatar-19.webp" alt="Community Member 4"><img src="img/avatar-20.webp" alt="Community Member 5"><img src="img/avatar-21.webp" alt="Community Member 6">
+      </div>
+      <div>
+        <div class="t1">Loved by 15,000+ creators</div>
+        <div class="t2">
+          <div class="stars"><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg><svg class="i"><use href="#i-star"/></svg></div>
+          <span>Rated 4.9/5</span>
+        </div>
+      </div>
+    </div>
+    <h1>Better Prompts <br>Better Art</h1>
+    <p class="sub">Master the art of AI generation. Thousands of pro-level prompts ready for your next masterpiece.</p>
+    <a href="#" class="b3d"><div class="face"><span>Explore prompts <svg class="i"><use href="#i-arrow"/></svg></span></div></a>
+    <div class="search">
+      <div class="field">Search for 'cyberpunk city' or 'watercolor cat'...</div>
+      <a href="#" class="go" aria-label="Search prompts"><svg class="i"><use href="#i-search"/></svg></a>
+      <div class="tags"><a href="#">Portrait</a><a href="#">Photography</a><a href="#">Product Marketing</a><a href="#">Fantasy Art</a><a href="#">Poster</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="featured" data-part="featured">
+  <div class="decor"></div>
+  <div class="wrap">
+    <div class="fhead">
+      <div style="position:relative">
+        <span class="lbl">// Recently added</span>
+        <h2 class="disp">Latest <br><span class="grad">Generations</span></h2>
+        <p>New publishes from the catalog—fresh prompts as they land. Copy and create.</p>
+      </div>
+      <a href="#" class="all"><span>View All Prompts</span><svg class="i"><use href="#i-ext"/></svg></a>
+    </div>
+    <div class="masonry">
+      <div class="card r45"><img src="img/prompt-1.webp" alt="AI Photography Prompt: Feel Every Beat – Futuristic Headphones Ad Shot"></div>
+      <div class="card r23"><img src="img/prompt-2.webp" alt="AI Fashion portrait Prompt: Cozy Indoor Fashion Shot Prompt (Gray Turtleneck Set)"></div>
+      <div class="card r45"><img src="img/prompt-3.webp" alt="AI Product Marketing Prompt: Artisan Toy Product Photography Prompt"></div>
+      <div class="card r23"><img src="img/prompt-4.webp" alt="AI Portrait Prompt: E-commerce Full-Body Product Shot Prompt (Olive Green Dress)"></div>
+      <div class="card r45"><img src="img/prompt-5.webp" alt="AI Product Marketing Prompt: Composite Product Photography Prompt (Etsy Style)"></div>
+      <div class="card r23"><img src="img/prompt-6.webp" alt="AI Portrait Prompt: E-commerce Product Listing: Grey Ruched Top and Black Mini Skirt"></div>
+      <div class="card r45"><img src="img/prompt-7.webp" alt="AI Product Marketing Prompt: Multi-Language Figure Product Introduction Layout Prompt for Nano Banana Pro"></div>
+      <div class="card r45"><img src="img/prompt-8.webp" alt="AI Product Marketing Prompt: Luxury Cherry Product Photography Prompt (Black Diamond)"></div>
+      <div class="card r34"><img src="img/prompt-9.webp" alt="AI Product Marketing Prompt: Premium Studio Product Shot Prompt Template"></div>
+      <div class="card r34"><img src="img/prompt-10.webp" alt="AI Product Marketing Prompt: New Year's Day Special: Forbidden City in Snow"></div>
+    </div>
+  </div>
+</section>
+
+<section class="seo" data-part="seo-content">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="body">
+      <article>
+        <h2>What Are AI Photo Prompts &amp; Image Prompts?</h2>
+        <p>AI photo prompts are carefully crafted text instructions that guide artificial intelligence image generators to produce specific visual outputs. Whether you're looking for <a href="#">realistic AI photo prompts</a>, cinematic portrait ideas, or stylized art directions, the prompt is your primary tool for communicating with models like Midjourney, DALL-E, Stable Diffusion, and Flux. The best AI photo results come from prompts that combine precise subject descriptions with lighting, camera parameters, and artistic style references.</p>
+        <p>The difference between generic and exceptional AI photos lies in prompt engineering. High-quality image prompts reduce the trial-and-error cycle by providing clear, actionable instructions. They help you achieve consistent results, maintain brand identity, and explore creative directions with confidence — whether you're generating free AI photos for personal projects or producing assets for commercial campaigns.</p>
+      </article>
+      <article>
+        <h2>How to Write Better AI Photo Prompts</h2>
+        <p>Writing effective AI photo prompts requires a mix of creativity and structural understanding. Start with a clear subject, then layer in environmental details, lighting, and camera settings. You can also use image-to-image AI workflows to refine an existing photo by combining it with a style-transfer prompt.</p>
+        <ul>
+          <li><strong>Be specific:</strong> Instead of "a car," use "a vintage 1969 Mustang parked on a neon-lit cyberpunk street."</li>
+          <li><strong>Include lighting:</strong> Terms like <em>cinematic lighting</em>, <em>golden hour</em>, or <em>volumetric fog</em> dramatically improve the <a href="#">cinematic quality</a>.</li>
+          <li><strong>Specify the medium:</strong> Tell the AI if you want a 3D render, a watercolor painting, or <a href="#">digital illustration</a>.</li>
+          <li><strong>Use text art AI techniques:</strong> Newer models like Midjourney v6 and DALL-E 3 can render clean typography — put your exact text in double quotes inside the prompt.</li>
+          <li><strong>Use negative prompts:</strong> Exclude unwanted elements to keep the composition clean.</li>
+        </ul>
+      </article>
+      <article>
+        <h2>Best AI Image Generation Tools for Creating Stunning AI Photos</h2>
+        <p>The best AI image generation tools each excel at different styles. Understanding their strengths will help you choose the right platform — and the right free AI prompts — for your creative vision:</p>
+        <div class="tools">
+          <div><h3>Midjourney</h3><p>Best for highly artistic, cinematic, and photorealistic results. Midjourney responds incredibly well to detailed aesthetic keywords and camera parameters.</p></div>
+          <div><h3>DALL-E 3</h3><p>Excels at prompt adherence. If you need exact details, text within the image, or complex compositional arrangements, DALL-E 3 (via ChatGPT) is highly recommended.</p></div>
+          <div><h3>Stable Diffusion / Flux</h3><p>The best choice for complete control, fine-tuning, and open-source flexibility. Great for generating specific <a href="#">anime aesthetics</a> and custom models.</p></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="submit" data-part="submit">
+  <div class="bg1"></div><div class="bg2"></div><div class="noise"></div>
+  <div class="wrap" style="padding:0 24px">
+    <div class="inner">
+      <div class="manifesto">
+        <div class="circuit"></div><div class="fl"></div><div class="fr"></div>
+        <div class="c">
+          <span class="collective"><svg class="i"><use href="#i-sparkles"/></svg>Join the Collective</span>
+          <h2><span class="l1">Share Your</span><span class="l2"><span class="grad">Creative Vision.</span><span class="ul"></span></span></h2>
+          <p><span>Submit your prompts.</span><span class="m">Inspire thousands.</span><span class="e">Shape the future of AI art.</span></p>
+        </div>
+      </div>
+      <div class="steps">
+        <div><span class="n">01</span><h3>Create</h3><p>Craft unique, high-quality prompts that generate stunning results.</p></div>
+        <div><span class="n">02</span><h3>Submit</h3><p>Share your work with our community of creators and enthusiasts.</p></div>
+        <div><span class="n">03</span><h3>Inspire</h3><p>Get featured, earn recognition, and help others learn.</p></div>
+      </div>
+      <div class="ctawrap">
+        <a href="#" class="cta"><span class="fold"></span><span class="lab"><svg class="i"><use href="#i-send"/></svg>Submit</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="links" data-part="internal-links">
+  <div class="glow"></div>
+  <div class="w7">
+    <div class="lhead">
+      <div class="l"><span class="ico"><svg class="i"><use href="#i-sparkles"/></svg></span><div><h2>Latest from the Blog</h2><p>Guides, techniques, and prompt engineering tips</p></div></div>
+      <a href="#" class="more">View all posts <svg class="i"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="posts">
+      <a href="#" class="post"><div class="meta"><span class="cat">Resources</span><span class="date"><svg class="i"><use href="#i-cal"/></svg>May 12, 2026</span></div><h3>50+ Best AI Photo Prompts for Ultra-Realistic Results (2026 Guide)</h3><p>The ultimate collection of 50+ AI photo prompts for generating hyper-realistic images. Master the art of realistic text-to-image generation.</p><span class="more">Read article <svg class="i"><use href="#i-arrow"/></svg></span></a>
+      <a href="#" class="post"><div class="meta"><span class="cat">News</span><span class="date"><svg class="i"><use href="#i-cal"/></svg>May 10, 2026</span></div><h3>Weekly AI Visual News: Grok Imagine API, Deepfake Headlines, and Creator Tools (May 3–10, 2026)</h3><p>A week in visual generative AI: xAI’s Grok Imagine Quality Mode API, Gemini Nano Banana disruption, AI Inspo and Novi AI pipelines, Met Gala and geopolitical deepfakes, NewsGuard on detectors, and Luma’s Uni-1.1 API.</p><span class="more">Read article <svg class="i"><use href="#i-arrow"/></svg></span></a>
+      <a href="#" class="post"><div class="meta"><span class="cat">Resources</span><span class="date"><svg class="i"><use href="#i-cal"/></svg>May 9, 2026</span></div><h3>AI Image Generation Tools: What to Use for Prompt-First Workflows</h3><p>Choose AI image generation tools by workflow, prompt control, output quality, cost, and production needs instead of hype.</p><span class="more">Read article <svg class="i"><use href="#i-arrow"/></svg></span></a>
+    </div>
+    <div class="lhead" style="justify-content:flex-start">
+      <div class="l"><span class="ico"><svg class="i"><use href="#i-sparkles"/></svg></span><div><h2>Browse by Category</h2><p>Find prompts organized by visual style and use case</p></div></div>
+    </div>
+    <div class="cats">
+      <a href="#" class="catc"><span class="em">🎬</span><div><h3>Cinematic</h3><p>Film-quality dramatic scenes</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">✨</span><div><h3>Anime</h3><p>Japanese animation styles</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">📸</span><div><h3>Photography</h3><p>Photorealistic AI images</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">🎨</span><div><h3>Illustration</h3><p>Digital art &amp; concept work</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">📦</span><div><h3>Product</h3><p>E-commerce &amp; product shots</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">👗</span><div><h3>Fashion</h3><p>Editorial &amp; runway styles</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">🏛️</span><div><h3>Architecture</h3><p>Buildings &amp; interiors</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">🌀</span><div><h3>Abstract</h3><p>Non-representational art</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">🐉</span><div><h3>Fantasy</h3><p>Mythical &amp; magical worlds</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+      <a href="#" class="catc"><span class="em">🏔️</span><div><h3>Landscape</h3><p>Nature &amp; environments</p></div><svg class="i"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="exall"><a href="#"><svg class="i"><use href="#i-sparkles"/></svg>Explore all prompts</a></div>
+  </div>
+</section>
+
+<section class="testi" data-part="testimonials">
+  <div class="th">
+    <h2 class="disp">LOVED BY <span>CREATORS</span></h2>
+    <p>Hear from artists, developers, and content creators who achieve professional results with our prompts.</p>
+  </div>
+  <div class="marq">
+    <div class="fl"></div><div class="fr"></div>
+    <div class="track">
+      <div class="tc"><div class="top"><img src="img/avatar-sarah.webp" alt="Sarah Jenkins"><div class="who"><h4>Sarah Jenkins</h4><p class="role">Visual Designer</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>Every prompt here feels intentional. It’s like having an art director whispering ideas into Midjourney.</q></div>
+      <div class="tc"><div class="top"><img src="img/avatar-mike.webp" alt="Mike Thompson"><div class="who"><h4>Mike Thompson</h4><p class="role">Freelance 3D Artist</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>These prompts helped me break out of generic “AI look” renders and find a more cinematic, moody style.</q></div>
+      <div class="tc"><div class="top"><img src="img/avatar-elena.webp" alt="Elena Rodriguez"><div class="who"><h4>Elena Rodriguez</h4><p class="role">Creative Director</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>I save so much time now. Instead of wrestling with wording, I just tweak one of these prompts and focus on direction.</q></div>
+      <div class="tc"><div class="top"><img src="img/avatar-david.webp" alt="David Chen"><div class="who"><h4>David Chen</h4><p class="role">Indie Game Dev</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>The consistency I get for character sheets using these prompts is unreal. A total game-changer for my workflow.</q></div>
+      <div class="tc"><div class="top"><img src="img/avatar-jessica.webp" alt="Jessica Lee"><div class="who"><h4>Jessica Lee</h4><p class="role">Social Media Manager</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>Finally, prompts that actually work for marketing assets. No more weird hallucinations, just clean, usable images.</q></div>
+      <div class="tc"><div class="top"><img src="img/avatar-marcus.webp" alt="Marcus Johnson"><div class="who"><h4>Marcus Johnson</h4><p class="role">Concept Artist</p></div><div class="st"><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg><svg class="i fill"><use href="#i-star"/></svg></div></div><q>I use this library as a starting point for all my daily sketches. The 'Cinematic' category is gold.</q></div>
+    </div>
+  </div>
+</section>
+
+<section class="badges" data-part="badges">
+  <div class="w6">
+    <div class="bh">
+      <h2 class="disp">FEATURED ON <span>PLATFORMS</span></h2>
+      <p>Discover where AI Image Prompts has been recognized and featured.</p>
+    </div>
+    <div class="bmarq">
+      <div class="fl"></div><div class="fr"></div>
+      <div class="btrack">
+        <div class="bcard"><div class="jgf"><span class="s"><svg class="i fill"><use href="#i-star"/></svg></span><span class="tx">Featured on JustGotFound</span><a href="#" class="v"><svg class="i"><use href="#i-up"/></svg>Vote</a></div></div>
+        <a href="#" class="bcard"><img src="img/badge-producthunt.webp" alt="AI Image Prompts - Better Prompts, Better Art | Product Hunt" width="250" height="54"></a>
+        <a href="#" class="bcard"><img src="img/badge-goodaitools.webp" alt="Good AI Tools" width="210" height="55"></a>
+        <a href="#" class="bcard"><img src="img/badge-fazier.webp" alt="Fazier badge" width="270" height="115"></a>
+        <a href="#" class="tiny"><svg width="56" height="56" viewBox="0 0 100 100"><path d="M50 6C52 32 68 48 94 50C68 52 52 68 50 94C48 68 32 52 6 50C32 48 48 32 50 6Z" fill="#fff"/></svg><span><span class="k">Launched on</span><span class="n">Tiny Startups</span><span class="u">tinystartups.com</span></span></a>
+        <div class="bcard"><div class="jgf"><span class="s"><svg class="i fill"><use href="#i-star"/></svg></span><span class="tx">Featured on JustGotFound</span><a href="#" class="v"><svg class="i"><use href="#i-up"/></svg>Vote</a></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot" data-part="footer">
+  <div class="wrap">
+    <div class="fgrid">
+      <div>
+        <a href="#" class="fbrand"><svg><use href="#i-logo"/></svg><span>Aiimageprompts</span></a>
+        <p class="fdesc">Curated prompts for image models – crafted to help you create sharper, stranger, and more intentional visuals.</p>
+        <div class="soc">
+          <a href="#" aria-label="Follow us on Twitter"><svg class="i"><use href="#i-tw"/></svg></a>
+          <a href="#" aria-label="Join our Discord server"><svg class="i fill" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg></a>
+        </div>
+      </div>
+      <div>
+        <h3>Explore</h3>
+        <ul><li><a href="#">Browse prompts</a></li><li><a href="#">Blog</a></li><li><a href="#">Submit a prompt</a></li><li><a href="#">Support us</a></li></ul>
+      </div>
+      <div>
+        <h3>Company</h3>
+        <ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li><li><a href="#">Community guidelines</a></li><li><a href="#">FAQ</a></li></ul>
+      </div>
+      <div>
+        <h3>Stay in the loop</h3>
+        <p class="nl">Fresh prompts, trends, and experiments in your inbox. No spam, just genuinely useful inspiration.</p>
+        <div class="inp"><svg class="i"><use href="#i-mail"/></svg>you@example.com</div>
+        <a href="#" class="btn">Subscribe <svg class="i"><use href="#i-arrow"/></svg></a>
+      </div>
+    </div>
+    <div class="fbot">
+      <p>© 2026 Aiimageprompts.xyz. All rights reserved.</p>
+      <div><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookies</a><a href="#">Refund</a><a href="#">Sitemap</a></div>
+    </div>
+  </div>
+</footer>
+</div>
+</body>
+</html>
