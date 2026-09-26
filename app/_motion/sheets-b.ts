@@ -10,7 +10,7 @@ import { SplitText } from "gsap/SplitText";
 import { accentVars, guides } from "../_data/guides";
 import { driveWeight } from "../_home/Weight";
 import { L, slotVars, transition, type Layout } from "./layouts";
-import type { BuildCtx } from "./sheets-a";
+import { clearCopy, type BuildCtx } from "./sheets-a";
 import { store } from "./store";
 
 type Tl = gsap.core.Timeline;
@@ -235,6 +235,7 @@ export function buildAI(ctx: BuildCtx) {
 
     // .86–1.00 A and I come home, then the word steps back in, T last
     const home = (i: number) => (i === 1 || i === 5 ? center()[i] : undefined);
+    clearCopy(tl, sec, 0.8, ctx);
     transition(tl, "fromAI", 0.86, 0.14, 0.05, ctx.column ? undefined : home);
   });
 }
@@ -320,17 +321,18 @@ export function buildSH(ctx: BuildCtx) {
       );
     }
 
-    // the caret after SH blinks (CSS) from .18
+    // the caret after SH blinks (CSS) from .18 until S and H leave at .86
     const caret = hook(sec, "caret");
     let on = false;
     tl.eventCallback("onUpdate", () => {
-      const now = tl.time() >= 0.18;
+      const now = tl.time() >= 0.18 && tl.time() < 0.86;
       if (now !== on) caret?.classList.toggle("on", (on = now));
     });
     offs.push(() => caret?.classList.remove("on"));
 
     // .86–1.00 S and H go home and the word steps back in
     const home = (i: number) => (i === 3 || i === 4 ? center()[i] : undefined);
+    clearCopy(tl, sec, 0.8, ctx);
     transition(tl, "fromSH", 0.86, 0.14, 0.05, ctx.column ? undefined : home);
 
     // hovering or focusing a guide row turns the number into that guide's cover (time-based, not scrubbed)
@@ -457,28 +459,10 @@ export function buildT(ctx: BuildCtx) {
   });
 }
 
-// ---------- glyphs ----------
-
-export function buildGlyphs(ctx: BuildCtx) {
-  sheet("glyphs", ({ sec }) => {
-    if (ctx.reduced) return;
-    const cells = hooks(sec, "cell");
-    if (!cells.length) return;
-    gsap.from(cells, {
-      autoAlpha: 0,
-      y: 8,
-      duration: 0.5,
-      ease: "power3.out",
-      stagger: { each: 0.01, from: "center", grid: "auto" },
-      scrollTrigger: { trigger: sec, start: "top 80%", once: true },
-    });
-  });
-}
-
 // ---------- 07 · I, H ----------
 
 /** Sheet 06 unpins with the word parked on its outline. The word rides up with that sheet (it is printed
- *  there), waits just above the viewport while the glyph grid passes, then comes down to centre as Sheet 07
+ *  there), waits just above the viewport while the rest of Sheet 06 passes, then comes down to centre as Sheet 07
  *  arrives: this is Sheet 07's entry. Linked straight to the scroll (no scrub lag) so it stays glued to the
  *  page. x, y and s go from the outline to centre on the entry's ease; lift carries the ride and hands it
  *  back as y comes down, so y + lift runs from the ridden position to centre. */
@@ -519,6 +503,13 @@ function rideIn(sec: HTMLElement) {
     0,
   );
   tl.fromTo(store.slots, { lift: 0 }, { lift: -1, ease: risen, duration: 1, immediateRender: false }, 0);
+  // Sheet 06's tail is still scrolling out as the word comes down through it: it fades, so the two never
+  // print over each other. A custom property (home.css), since the sheet's own tweens own their opacity
+  const t = document.getElementById("t");
+  if (t) {
+    const out = (p: number) => Math.min(1, toCentre(p) * 3);
+    tl.fromTo(t, { "--t-tail": 1 }, { "--t-tail": 0, ease: out, duration: 1, immediateRender: false }, 0);
+  }
 }
 
 export function buildI(ctx: BuildCtx) {

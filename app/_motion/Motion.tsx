@@ -3,8 +3,8 @@
 import { useEffect } from "react";
 import { L } from "./layouts";
 import { startRuntime } from "./runtime";
-import { buildIntro, buildManifest, buildPeeks, buildTurn, buildV, buildVar, disposeIntro } from "./sheets-a";
-import { buildAI, buildGlyphs, buildI, buildSH, buildT } from "./sheets-b";
+import { buildIntro, buildManifest, buildTurn, buildV, buildVar, disposeIntro } from "./sheets-a";
+import { buildAI, buildI, buildSH, buildT } from "./sheets-b";
 import { store } from "./store";
 
 // Home only. Starts the runtime, then builds every sheet once the display face has loaded (the hero word is
@@ -27,9 +27,7 @@ export default function Motion() {
         buildAI(ctx);
         buildSH(ctx);
         buildT(ctx);
-        buildGlyphs(ctx);
         buildI(ctx);
-        buildPeeks(ctx);
       });
     });
     return () => {

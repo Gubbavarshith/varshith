@@ -66,16 +66,6 @@ function anchorOf(sel: string): Layout {
   return el && sec ? measure(el, -sec.getBoundingClientRect().top) : {};
 }
 
-function stickyOf(sel: string): Layout {
-  const el = document.querySelector<HTMLElement>(sel);
-  if (!el) return {};
-  const r = el.getBoundingClientRect();
-  const top = parseFloat(getComputedStyle(el).top);
-  if (Number.isFinite(top)) return measure(el, top - r.top); // where it will be once stuck
-  const sec = el.closest("section");
-  return measure(el, -(sec?.getBoundingClientRect().top ?? 0));
-}
-
 /** The resting row: the #turn anchor (72% wide, cap centre 46svh), re-spaced and zoomed about its centre. */
 function row(spacing: number, zoom: number): Layout {
   const a = memo("turn", () => anchorOf("#turn"));
@@ -149,7 +139,6 @@ export const L = {
   center: (o: { spacing?: number; zoom?: number } = {}): Layout =>
     store.column ? L.column() : memo(`row${o.spacing ?? 650}:${o.zoom ?? 1}`, () => row(o.spacing ?? 650, o.zoom ?? 1)),
   anchor: (sel: string): Layout => (store.column ? L.column() : memo(`a:${sel}`, () => anchorOf(sel))),
-  sticky: (sel: string): Layout => (store.column ? L.column() : memo(`k:${sel}`, () => stickyOf(sel))),
   /**
    * The I (slot 5) as a text caret after `i` revealed non-space characters of `#i [data-m=typed]`: cap height .85 of
    * the line's font-size, ink starting a hair after the last glyph, on that glyph's baseline. Reveal the characters

@@ -20,7 +20,6 @@
   margin-top: 56px;
   font-size: 18px;
   font-weight: 560;
-  font-stretch: 112%;
   letter-spacing: -0.01em;
 }
 .fine {
@@ -73,12 +72,6 @@
   gap: 10px;
   margin-top: 28px;
 }
-.credit {
-  margin-top: 28px;
-  color: var(--graphite);
-  font: 500 12px/1.5 var(--f-mono);
-  font-stretch: 87.5%;
-}
 
 /* ---------- body: layers panel + sheet ---------- */
 
@@ -89,7 +82,7 @@
   gap: var(--gut);
   max-width: var(--max);
   margin: 0 auto var(--gap);
-  padding-inline: var(--gut);
+  padding-inline: var(--margin);
 }
 .doc-sheet > * {
   max-width: 900px;
@@ -197,7 +190,6 @@
   gap: 0.3em;
   font-size: clamp(30px, 4.2vw, 54px);
   font-weight: 560;
-  font-stretch: 112%;
   line-height: 1;
   letter-spacing: -0.025em;
 }
@@ -270,7 +262,6 @@
   margin-top: 6px;
   font-size: 17px;
   font-weight: 560;
-  font-stretch: 112%;
   line-height: 1.25;
 }
 .card-b {
@@ -592,6 +583,7 @@
   text-align: center;
 }
 .join {
+  container-type: inline-size;
   display: grid;
   justify-items: center;
   gap: 6px;
@@ -603,7 +595,7 @@
 }
 .join a {
   color: var(--g-ink);
-  font: 900 clamp(26px, 5.4vw, 60px)/1.1 var(--f-dot);
+  font: 900 clamp(20px, 7cqi, 60px)/1.1 var(--f-dot);
   overflow-wrap: anywhere;
   text-decoration: none;
 }
@@ -652,8 +644,11 @@
   }
   /* the panel becomes a sticky strip of chips */
   .layers {
-    top: 0;
+    top: var(--header);
     padding: 0;
+  }
+  .doc [id] {
+    scroll-margin-top: calc(var(--header) + 64px);
   }
   .layers-head,
   .layers-root,
@@ -671,15 +666,21 @@
     flex: none;
   }
   .layers a {
-    padding: 8px 10px;
+    padding: 13px 10px; /* 44px targets */
     border-radius: 3px;
     white-space: nowrap;
+  }
+  .layers a:focus-visible {
+    outline-offset: -2px;
   }
   .layers-progress {
     margin: 0;
   }
 }
 @media (max-width: 719px) {
+  .prompt-copy {
+    min-height: 44px;
+  }
   .flow {
     --gx: 30px;
     grid-template-columns: minmax(0, 1fr);

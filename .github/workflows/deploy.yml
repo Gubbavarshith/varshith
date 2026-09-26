@@ -1,0 +1,39 @@
+# Every push and pull request: lint, test and build (the build also type-checks).
+# Pushes to main then deploy the exported site to Cloudflare Workers (wrangler.jsonc).
+# Needs one repo secret, CLOUDFLARE_API_TOKEN: a Cloudflare API token with Workers Scripts Edit on this account.
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# one run per branch; a newer PR push cancels the stale check, but a deploy to main always finishes
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  ship:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - name: Deploy to Cloudflare
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Missing repo secret CLOUDFLARE_API_TOKEN (Settings > Secrets and variables > Actions)"
+            exit 1
+          fi
+          npx --yes wrangler@4 deploy

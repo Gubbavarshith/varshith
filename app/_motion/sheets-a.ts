@@ -7,7 +7,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
 import type Lenis from "lenis";
 import type { SheetId } from "../_data/word";
-import { L, compose, peek, reveal, slotVars, transition, unpeek, type Layout } from "./layouts";
+import { createDeck } from "./deck";
+import { L, compose, reveal, slotVars, transition, unpeek, type Layout } from "./layouts";
 import { probeLow, stageReady, store, type StageKind } from "./store";
 
 export type BuildCtx = {
@@ -32,6 +33,8 @@ const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 // per-item stagger that still lands the last item inside its window
 const fit = (n: number, room: number, each: number) => (n > 1 ? Math.min(each, room / (n - 1)) : 0);
 const pinEnd = (pct: number, column: boolean) => `+=${Math.round(pct * (column ? 0.6 : 1))}%`;
+const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
+const inOutCubic = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - (-2 * t + 2) ** 3 / 2);
 
 function pinned(sec: El, pct: number, scrub: number, ctx: BuildCtx, snap?: ScrollTrigger.SnapVars) {
   const tl = gsap.timeline({
@@ -43,6 +46,14 @@ function pinned(sec: El, pct: number, scrub: number, ctx: BuildCtx, snap?: Scrol
     },
   });
   return tl.to({}, { duration: 1 }, 0); // positions are fractions of the pin
+}
+
+/** Desktop: a sheet's copy gives way (all but the kicker) before the whole word comes back through the middle
+ *  of it. Opacity only, because visibility belongs to the stills' CSS. */
+export function clearCopy(tl: gsap.core.Timeline, sec: Element, at: number, ctx: BuildCtx): void {
+  if (ctx.column) return; // the column never crosses the copy
+  const copy = Array.from(sec.children).filter((el) => !el.matches(".kicker"));
+  if (copy.length) tl.to(copy, { opacity: 0, duration: 0.05, ease: "power1.in" }, at);
 }
 
 /** Every pinned sheet slides the word to its resting placement while the sheet scrolls in. */
@@ -111,7 +122,7 @@ export function buildIntro(ctx: BuildCtx): void {
       inked();
       return;
     }
-    const delay = Math.max(0, 0.4 - performance.now() / 1000);
+    const delay = Math.max(0, 1.2 - performance.now() / 1000); // the portrait has the first second to itself
     intro.tl = gsap
       .timeline({ delay })
       .set(store, { sand: 1, rain: 0 })
@@ -139,8 +150,6 @@ export function disposeIntro(): void {
 
 // ---- Sheet 01: V, the hero leaving ----
 
-let vExit: ScrollTrigger | null = null;
-
 export function buildV(ctx: BuildCtx): void {
   const sec = document.getElementById("v");
   if (!sec) return;
@@ -164,6 +173,9 @@ export function buildV(ctx: BuildCtx): void {
   tl.to({}, { duration: 1 }, 0);
   if (etym) tl.to(etym.lines, { yPercent: -100, duration: 0.3, stagger: 0.03, ease: "power2.in" }, 0);
   if (plain.length) tl.to(plain, { yPercent: -40, autoAlpha: 0, duration: 0.45, stagger: 0.03, ease: "power1.in" }, 0);
+  // the portrait sinks away before the Quarter Turn, so it never sits under the turning solids
+  const me = document.querySelector<El>("[data-m=me]");
+  if (me) tl.to(me, { yPercent: 12, autoAlpha: 0, duration: 0.55, ease: "power1.in" }, 0);
   // the word leaves the type case for the middle of the screen (in place on mobile), and any nudge is cleared
   tl.fromTo(
     store.slots,
@@ -171,7 +183,6 @@ export function buildV(ctx: BuildCtx): void {
     { ...slotVars(() => L.center()), lift: 0, duration: 1, ease: "power1.inOut", immediateRender: false },
     0,
   );
-  vExit = tl.scrollTrigger ?? null;
 
   const turn = m("cta-turn"), guides = m("cta-guides");
   const toTurn = (e: MouseEvent) => {
@@ -189,72 +200,6 @@ export function buildV(ctx: BuildCtx): void {
   onRevert(() => {
     turn?.removeEventListener("click", toTurn);
     guides?.removeEventListener("click", toGuides);
-    vExit = null;
-  });
-}
-
-// ---- hero peeks ----
-
-export function buildPeeks(ctx: BuildCtx): void {
-  const sec = document.getElementById("v");
-  if (!sec) return;
-  const slots = Array.from(sec.querySelectorAll<El>(".slot[data-slot]"));
-
-  const chip = document.createElement("span");
-  chip.className = "peek-chip";
-  chip.setAttribute("aria-hidden", "true");
-  chip.textContent = "same both ways";
-  chip.style.cssText =
-    "position:fixed;left:0;top:0;z-index:5;pointer-events:none;white-space:nowrap;visibility:hidden;opacity:0;" +
-    "padding:6px 8px;border:1px solid var(--rule);background:var(--paper-hi);color:var(--ink-2);" +
-    "font:500 12px/1 var(--f-mono);font-stretch:87.5%;letter-spacing:.06em;text-transform:uppercase";
-  sec.appendChild(chip);
-
-  // the I turns into an I: say so, just above its cap
-  let shown = false;
-  const explain = (el: El) => {
-    const r = el.getBoundingClientRect();
-    const fs = parseFloat(getComputedStyle(el).fontSize);
-    const y = r.top + 0.12 * fs - 10;
-    gsap.killTweensOf(chip);
-    gsap.set(chip, { x: r.left + r.width / 2, xPercent: -50, yPercent: -100 });
-    shown = true;
-    gsap.timeline()
-      .fromTo(chip, { autoAlpha: 0, y: y + 6 }, { autoAlpha: 1, y, duration: 0.3, ease: "power3.out" })
-      .to(chip, { autoAlpha: 0, duration: 0.3, ease: "power1.in", onComplete: () => void (shown = false) }, 1.6);
-  };
-
-  const fire = (el: El) => {
-    if (!intro.done || (vExit?.progress ?? 0) >= 0.02 || ctx.kind === "none") return;
-    const i = Number(el.dataset.slot);
-    if (peek(i) && i === 5) explain(el);
-  };
-  const hover = (e: PointerEvent) => {
-    if (e.pointerType !== "touch") fire(e.currentTarget as El);
-  };
-  const tap = (e: PointerEvent) => {
-    if (e.pointerType === "touch") fire(e.currentTarget as El); // a pan cancels the pointer, so this is a real tap
-  };
-  for (const el of slots) {
-    el.addEventListener("pointerenter", hover);
-    el.addEventListener("pointerup", tap);
-  }
-  const off = ctx.lenis?.on("scroll", (l) => {
-    if (Math.abs(l.velocity) < 0.5) return;
-    unpeek();
-    if (!shown) return;
-    shown = false;
-    gsap.killTweensOf(chip);
-    gsap.to(chip, { autoAlpha: 0, duration: 0.15 });
-  });
-  onRevert(() => {
-    for (const el of slots) {
-      el.removeEventListener("pointerenter", hover);
-      el.removeEventListener("pointerup", tap);
-    }
-    off?.();
-    unpeek();
-    chip.remove();
   });
 }
 
@@ -290,11 +235,11 @@ export function buildTurn(ctx: BuildCtx): void {
   }
   const a = lines(m("h2a"), "lines,chars");
   if (a) {
-    tl.fromTo(a.chars, { yPercent: 100 }, { yPercent: 0, duration: 0.04, ease: "expo.out", stagger: fit(a.chars.length, 0.04, 0.012) }, 0);
-    tl.to(a.lines, { yPercent: -100, duration: 0.06, ease: "power2.in", stagger: 0.01 }, 0.7);
+    tl.fromTo(a.chars, { yPercent: 110 }, { yPercent: 0, duration: 0.04, ease: "expo.out", stagger: fit(a.chars.length, 0.04, 0.012) }, 0);
+    tl.to(a.lines, { yPercent: -110, duration: 0.06, ease: "power2.in", stagger: 0.01 }, 0.7);
   }
   const b = lines(m("h2b"), "lines,chars");
-  if (b) tl.fromTo(b.chars, { yPercent: 100 }, { yPercent: 0, duration: 0.04, ease: "expo.out", stagger: fit(b.chars.length, 0.04, 0.012) }, 0.72);
+  if (b) tl.fromTo(b.chars, { yPercent: 110 }, { yPercent: 0, duration: 0.04, ease: "expo.out", stagger: fit(b.chars.length, 0.04, 0.012) }, 0.72);
   const leader = m("leader"), callout = m("icallout");
   if (callout) tl.fromTo(callout, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.04 }, 0.72);
   if (leader) tl.fromTo(leader, { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.08, ease: "power2.inOut" }, 0.72);
@@ -302,29 +247,126 @@ export function buildTurn(ctx: BuildCtx): void {
   if (cap) tl.fromTo(cap.lines, { yPercent: 100 }, { yPercent: 0, duration: 0.05, ease: "expo.out", stagger: 0.01 }, 0.74);
 }
 
-// ---- the manifest: the word stands as SHIPPING beside the list ----
+// ---- the manifest: SHIPPING holds the left while a browser opens each build in turn ----
+
+const PER_STOP = 62; // % of the viewport scrolled per stop (the new tab, then one per build)
 
 export function buildManifest(ctx: BuildCtx): void {
   const sec = document.getElementById("manifest");
   if (!sec) return;
-  if (!ctx.column) entry(sec, () => L.center(), () => L.sticky("#manifest [data-m=ship]"));
+  if (!ctx.column) {
+    entry(sec, () => L.center(), () => L.anchor("#manifest [data-m=ship]"));
+    // Sheet 02's notes would drift up through SHIPPING as it heads left, so they go first
+    const notes = document.querySelectorAll<El>("#turn :is(.caption, .i-callout)");
+    if (notes.length) {
+      gsap.fromTo(notes, { opacity: 1 }, {
+        opacity: 0, ease: "none", immediateRender: false,
+        scrollTrigger: { trigger: sec, start: "top bottom", end: "top 65%", scrub: true, invalidateOnRefresh: true },
+      });
+    }
+    // the heading sits in SHIPPING's path to the left, so it comes in once the word has passed
+    const head = sec.querySelector<El>(".mf-head");
+    if (head) {
+      gsap.fromTo(head, { autoAlpha: 0, y: 28 }, {
+        autoAlpha: 1, y: 0, ease: "power2.out",
+        scrollTrigger: { trigger: sec, start: "top 16%", end: "top top", scrub: 0.6, invalidateOnRefresh: true },
+      });
+    }
+  }
+  const deck = createDeck(sec);
+  if (!deck) return;
 
-  const rows = Array.from(sec.querySelectorAll<El>("[data-m=row]"));
-  if (!rows.length) return;
-  // table rows do not clip reliably, so their cells do (a shared left-to-right wipe per row)
-  const parts = (row: El) => (getComputedStyle(row).display === "table-row" ? Array.from(row.children) : [row]);
-  gsap.set(rows.flatMap(parts), { clipPath: "inset(0 100% 0 0)" });
-  ScrollTrigger.batch(rows, {
-    start: "top 85%",
-    once: true,
-    onEnter: (batch) =>
-      batch.forEach((row, i) => {
-        const delay = i * 0.06;
-        gsap.to(parts(row as El), { clipPath: "inset(0 0% 0 0)", duration: 0.6, ease: "power3.out", delay });
-        const no = row.firstElementChild;
-        const text = no?.textContent?.trim();
-        if (no && text) gsap.to(no, { scrambleText: { text, chars: "0123456789", speed: 0.5 }, duration: 0.6, delay });
-      }),
+  const last = deck.last;
+  let painted = NaN;
+  const pin = ScrollTrigger.create({
+    trigger: sec, start: "top top", end: pinEnd(PER_STOP * last, ctx.column), pin: true,
+    anticipatePin: 1, invalidateOnRefresh: true,
+    onRefresh: () => {
+      deck.measure();
+      painted = NaN;
+    },
+  });
+
+  // the browser follows the scroll 1:1 (Lenis already smooths it): the new tab while the section arrives, one
+  // build per stop while pinned
+  const span = () => Math.max(1, pin.end - pin.start);
+  const stopAt = (y: number) => clamp01((y - pin.start) / span()) * last;
+  const yOf = (s: number) => pin.start + (s / last) * span();
+  let moving: gsap.core.Tween | null = null;
+  const tick = () => {
+    if (moving) return; // a tab click is drawing its own move
+    const p = stopAt(window.scrollY);
+    if (p === painted) return;
+    deck.render(p);
+    painted = p;
+  };
+  gsap.ticker.add(tick);
+
+  // Desktop settles on a stop once the scroll comes to rest: onward in the direction of travel if it covered
+  // 15% of a stop, back if less. Lenis does the settling, so nothing else fights it for the scroll position.
+  const lenis = ctx.lenis;
+  let dir = 1, idle = 0;
+  const settle = () => {
+    const y = window.scrollY;
+    if (moving || !lenis || y <= pin.start + 1 || y >= pin.end - 1) return;
+    const x = stopAt(y), base = Math.floor(x), f = x - base;
+    const s = Math.min(last, base + (dir > 0 ? (f > 0.15 ? 1 : 0) : f > 0.85 ? 1 : 0));
+    if (Math.abs(yOf(s) - y) > 2) lenis.scrollTo(yOf(s), { duration: 0.6, easing: inOutCubic });
+  };
+  const offScroll =
+    !ctx.column && lenis
+      ? lenis.on("scroll", (l) => {
+          if (l.direction) dir = l.direction;
+          clearTimeout(idle);
+          idle = window.setTimeout(settle, 140);
+        })
+      : undefined;
+
+  // A tab click (or keyboard focus on a build's label) goes straight there: one move from the build showing to
+  // the one asked for, like switching tabs, without replaying every build in between. The scroll catches up
+  // silently at the end.
+  const goto = (s: number) => {
+    const from = deck.current(stopAt(window.scrollY));
+    if (s === from || moving) return;
+    const state = { f: 0 };
+    moving = gsap.to(state, {
+      f: 1, duration: 0.95, ease: "power2.inOut",
+      onUpdate: () => deck.draw(from, s, state.f),
+      onComplete: () => {
+        moving = null;
+        const y = yOf(s);
+        if (lenis) lenis.scrollTo(y, { immediate: true, force: true });
+        else window.scrollTo(0, y);
+        painted = NaN;
+      },
+    });
+  };
+  // scrolling during a tab move hands control straight back to the scroll
+  const interrupt = () => {
+    if (!moving) return;
+    moving.kill();
+    moving = null;
+    painted = NaN;
+  };
+  const tabs = Array.from(sec.querySelectorAll<El>("[data-m=tab]"));
+  const labels = Array.from(sec.querySelectorAll<El>("[data-m=label]"));
+  const onTab = (e: MouseEvent) => goto(tabs.indexOf(e.currentTarget as El) + 1);
+  const onFocus = (e: FocusEvent) => goto(labels.indexOf(e.currentTarget as El) + 1);
+  tabs.forEach((t) => t.addEventListener("click", onTab));
+  labels.forEach((l) => l.addEventListener("focusin", onFocus));
+  addEventListener("wheel", interrupt, { passive: true });
+  addEventListener("touchstart", interrupt, { passive: true });
+
+  onRevert(() => {
+    gsap.ticker.remove(tick);
+    clearTimeout(idle);
+    offScroll?.();
+    moving?.kill();
+    removeEventListener("wheel", interrupt);
+    removeEventListener("touchstart", interrupt);
+    tabs.forEach((t) => t.removeEventListener("click", onTab));
+    labels.forEach((l) => l.removeEventListener("focusin", onFocus));
+    deck.dispose();
   });
 }
 
@@ -335,7 +377,7 @@ export function buildVar(ctx: BuildCtx): void {
   if (!sec) return;
   const m = hooks(sec);
   const col = ctx.column;
-  if (!col) entry(sec, () => L.sticky("#manifest [data-m=ship]"), () => L.center());
+  if (!col) entry(sec, () => L.anchor("#manifest [data-m=ship]"), () => L.center());
   const tl = pinned(sec, 150, 0.8, ctx);
 
   // word: turn back to VARSHITH (the row breathes so the blocks clear), keep V A R, forward-delete S H I T H
@@ -352,6 +394,7 @@ export function buildVar(ctx: BuildCtx): void {
     tl.fromTo(vr, slotVars(() => L.anchor("#var")), { ...slotVars(() => L.center()), duration: 0.08, ease: "power1.inOut", immediateRender: false }, 0.82);
   }
   transition(tl, "fromVar", 0.9, 0.1, 0.04);
+  clearCopy(tl, sec, 0.77, ctx);
 
   // copy
   const kicker = m("kicker");
@@ -361,7 +404,7 @@ export function buildVar(ctx: BuildCtx): void {
     tl.to(kicker, { scrambleText: { text, chars: "VAR0123456789", speed: 0.6 }, duration: 0.06 }, 0.3);
   }
   const h2 = lines(m("h2"), "words,lines");
-  if (h2) tl.fromTo(h2.words, { yPercent: 100 }, { yPercent: 0, duration: 0.05, ease: "expo.out", stagger: fit(h2.words.length, 0.04, 0.008) }, 0.31);
+  if (h2) tl.fromTo(h2.words, { yPercent: 110 }, { yPercent: 0, duration: 0.05, ease: "expo.out", stagger: fit(h2.words.length, 0.04, 0.008) }, 0.31);
   const sub = lines(m("sub"));
   if (sub) tl.fromTo(sub.lines, { yPercent: 100 }, { yPercent: 0, duration: 0.05, ease: "expo.out", stagger: 0.01 }, 0.35);
   const code = m("code");

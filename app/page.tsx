@@ -5,7 +5,9 @@ import Stage from "./_stage/Stage";
 import CSSWord from "./_stage/CSSWord";
 import Motion from "./_motion/Motion";
 import Shell from "./_home/Shell";
-import Weight, { GlyphGrid } from "./_home/Weight";
+import Weight from "./_home/Weight";
+import Browser from "./_home/Browser";
+import Portrait from "./_home/Portrait";
 import glyphs from "./_data/glyphs.json";
 import { FRONT, SIDE } from "./_data/word";
 import { work } from "./_data/work";
@@ -49,12 +51,18 @@ const ST = 0.22;
 const stationX = (k: number) => Math.round((PIPE * (k + 1)) / (STATIONS.length + 1));
 
 const METRICS = [0, 170, 265, 435, 530, 700];
+
+const pad = (k: number) => String(k).padStart(2, "0");
+// a name set in the display face spans this many ems: every capital advances 650 units, the space 320
+const advance = (name: string) => [...name].reduce((em, c) => em + (c === " " ? 0.32 : 0.65), 0);
+const COUNT = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve"];
 const latest = guides[0];
 
 export default function Home() {
   return (
     <main id="main" className="home">
       <Stage />
+      <Portrait />
       <Motion />
 
       {/* ---------- Sheet 01 · V: rain ---------- */}
@@ -67,7 +75,11 @@ export default function Home() {
           <span lang="te" className="te">
             వర్షిత్
           </span>
-          ). From Sanskrit <i>varṣa</i>: rain.
+          ). From Sanskrit{" "}
+          <span className="nobr">
+            <i>varṣa</i>:
+          </span>{" "}
+          rain.
         </p>
         <h1 id="name" className="name" aria-label={site.name}>
           <span className="sr-only">Gubba </span>
@@ -108,7 +120,7 @@ export default function Home() {
           </a>
         </div>
         <p className="folio-b" aria-hidden="true">
-          Toolsplex Display Black · {num(facts.woff2Bytes)} bytes · {facts.offCurve} curves
+          Toolsplex Display Black · {num(facts.woff2Bytes)} bytes{" "}· {facts.offCurve} curves
         </p>
         <p className="place">
           Mahbubnagar · <Clock /> IST
@@ -145,46 +157,46 @@ export default function Home() {
 
       {/* ---------- the manifest (part of Sheet 02) ---------- */}
       <section id="manifest" aria-labelledby="manifest-h">
-        <div className="ship-anchor still" data-m="ship">
-          <Glyphs text={SIDE} slots={ALL} tone="signal" />
-        </div>
-        <div className="mf-body">
+        <div className="mf-head">
+          <p className="kicker">Sheet 02 · Manifest</p>
           <h2 id="manifest-h" className="h2-sm">
             The manifest.
           </h2>
-          <table className="mf">
-            <thead>
-              <tr>
-                <th scope="col">No.</th>
-                <th scope="col">Name</th>
-                <th scope="col">What it is</th>
-                <th scope="col">Where</th>
-              </tr>
-            </thead>
-            <tbody>
-              {work.map((w) => (
-                <tr key={w.no} className="mf-row" data-m="row">
-                  <td className="mf-no">{w.no}</td>
-                  <th scope="row" className="mf-name">
-                    {w.name}
-                    {w.swatches && (
-                      <span className="sws" aria-hidden="true">
-                        {w.swatches.map((c) => (
-                          <span key={c} className="sw" style={vars({ "--c": c })} />
-                        ))}
-                      </span>
-                    )}
-                    {w.status && <span className={`st st-${w.status}`}>{w.status}</span>}
-                  </th>
-                  <td className="mf-what">{w.what}</td>
-                  <td className="mf-where">
-                    {w.where?.href ? <a href={w.where.href}>{w.where.label}</a> : w.where?.label}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <p className="mf-sub">{COUNT[work.length] ?? work.length} tabs I never close.</p>
         </div>
+        <div className="ship-anchor still" data-m="ship">
+          <Glyphs text={SIDE} slots={ALL} tone="signal" />
+        </div>
+        <Browser work={work} />
+        <ol className="mf-labels" aria-label="Builds">
+          {work.map((w, k) => (
+            <li
+              key={w.name}
+              id={`build-${pad(k + 1)}`}
+              className="mf-label"
+              data-m="label"
+              style={vars({ "--fit": advance(w.name) })}
+            >
+              <h3 className="mf-name">
+                <span>{w.name}</span>
+              </h3>
+              <p className="mf-meta">
+                <span>
+                  No. {pad(k + 1)}/{pad(work.length)}
+                </span>
+                {w.status && <span className={`st st-${w.status}`}>{w.status === "soon" ? "coming soon" : w.status}</span>}
+                {w.href ? (
+                  <a className="mf-link" href={w.href}>
+                    {w.domain} <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  w.domain && <span className="mf-link">{w.domain}</span>
+                )}
+              </p>
+              <p className="mf-what">{w.what}</p>
+            </li>
+          ))}
+        </ol>
       </section>
 
       {/* ---------- Sheet 03 · VAR: declared ---------- */}
@@ -385,11 +397,6 @@ export default function Home() {
         <div className="t-weight">
           <Weight />
         </div>
-      </section>
-
-      <section id="glyphs" aria-labelledby="glyphs-h">
-        <h3 id="glyphs-h">All {facts.chars} characters</h3>
-        <GlyphGrid />
       </section>
 
       {/* ---------- Sheet 07 · I and H: cursor, home ---------- */}

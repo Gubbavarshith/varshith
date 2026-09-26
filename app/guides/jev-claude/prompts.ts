@@ -1,4 +1,4 @@
-// Copied word for word from the original PDF. Keep them that way: people paste these as-is.
+// Copied word for word from the original guide. Keep them that way: people paste these as-is.
 
 export const MAIN = `i want to add a new kind of AI model called Jev to this workspace. Jev doesn't write anything. you hand it some text plus a few questions, and it answers them almost instantly, for almost nothing. it's made for sorting and deciding.
 - Jev is brand new, so you won't know it yet. before anything else, read how it works: https://docs.typesafe.ai/llms.txt

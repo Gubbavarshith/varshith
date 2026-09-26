@@ -16,7 +16,7 @@ export default function GuideList({ h: H = "h3" }: { h?: "h2" | "h3" }) {
           </div>
           <div>
             <p className="guide-meta">
-              No. {g.no} · {g.parts} parts · {g.minutes} min read · {g.credit}
+              No. {g.no} · {g.parts} parts · {g.minutes} min read
             </p>
             <H className="guide-title">
               <Link className="guide-link" href={`/guides/${g.slug}`}>

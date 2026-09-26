@@ -20,13 +20,10 @@
   --edge: light-dark(rgb(18 18 18 / 0.55), rgb(236 233 224 / 0.45));
 
   /* legacy aliases: app/guides/guide.css and GuideList consume these names */
-  --canvas: var(--paper);
   --sheet: var(--paper-hi);
   --sunk: var(--paper-2);
   --graphite: var(--ink-2);
   --hair: var(--rule);
-  --select: var(--signal);
-  --select-ink: var(--signal);
   --select-solid: var(--signal);
   --on-select-solid: var(--on-signal);
   --select-wash: var(--signal-wash);
@@ -36,7 +33,6 @@
   --f-text: var(--font-news), Georgia, serif;
   --f-mono: var(--font-martian), ui-monospace, monospace;
   --f-telugu: var(--font-telugu), sans-serif;
-  --f-sans: var(--f-text); /* legacy */
   --f-dot: var(--f-display); /* legacy: guide covers and part numbers now set in Toolsplex */
 
   /* type scale */
@@ -45,7 +41,6 @@
   --fs-mono: 14px;
   --fs-body: 18px;
   --fs-lede: 24px;
-  --fs-pull: 32px;
   --fs-h2: clamp(40px, 6vw, 92px);
   --fs-num: clamp(120px, 22vw, 360px); /* Toolsplex numerals: 53, 131, 373, 001 */
   --fs-display: min(calc(88vw / 5.2), 51svh); /* hero word: 5.2em = 8 advances of 650 */
@@ -61,7 +56,6 @@
 
   /* easing */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1); /* legacy + UI */
-  --ease-snap: cubic-bezier(0.7, 0, 0.2, 1); /* theme circle reveal (560ms), turns */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1); /* expo-like reveals */
   --ease-p3: cubic-bezier(0.215, 0.61, 0.355, 1); /* gsap power3.out, for the CSS-only moves */
 }
@@ -75,7 +69,6 @@
   :root {
     --fs-body: 17px;
     --fs-lede: 19px;
-    --fs-pull: 24px;
     /* 4vw is 16px at 400px wide: never let the gutter get thinner than that */
     --margin: max(4vw, 16px);
   }
@@ -286,7 +279,7 @@ input {
 .mi-l:hover {
   color: var(--ink);
 }
-:is(.mi-l.lit, .mi-l.is-lit, .mi-l[data-lit="true"], .mi-l[data-lit="1"]) {
+.mi-l[data-lit="true"] {
   color: var(--signal);
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -359,6 +352,17 @@ input {
     display: none;
   }
 }
+@media (max-width: 640px) {
+  /* thumbs: every header control gets a 44px target (the header is 56px tall) */
+  .vmark,
+  .mi-l {
+    height: 44px;
+  }
+  .nav a,
+  .scheme button {
+    min-height: 44px;
+  }
+}
 @media (max-width: 480px) {
   .top {
     column-gap: 8px;
@@ -369,6 +373,22 @@ input {
   .nav a,
   .scheme button {
     padding: 0 7px;
+  }
+}
+/* 320–400px phones: the header's five parts only fit once everything tightens */
+@media (max-width: 400px) {
+  .top {
+    column-gap: 4px;
+  }
+  .vmark {
+    width: 28px;
+  }
+  .mi-l {
+    width: 12px;
+  }
+  .nav a,
+  .scheme button {
+    padding: 0 5px;
   }
 }
 
@@ -464,17 +484,18 @@ html.motion:not(.stage-gpu):not(.stage-css) :is(#turn .h2 > span, .cards > *, .n
 
 /* ---------- intro (CSS half; runs from first paint under html.intro, independent of hydration) ---------- */
 
+/* the header waits out the portrait's first second too */
 html.intro .top > * {
-  animation: rise 0.4s var(--ease) both;
+  animation: rise 0.4s var(--ease) 1s both;
 }
 html.intro .top > :nth-child(2) {
-  animation-delay: 0.04s;
+  animation-delay: 1.04s;
 }
 html.intro .top > :nth-child(3) {
-  animation-delay: 0.08s;
+  animation-delay: 1.08s;
 }
 html.intro .top > :nth-child(n + 4) {
-  animation-delay: 0.12s;
+  animation-delay: 1.12s;
 }
 @keyframes rise {
   from {
@@ -749,6 +770,20 @@ html.intro .top > :nth-child(n + 4) {
 }
 .foot-up {
   margin-left: auto;
+}
+/* thumbs: small text links keep their look but reach a 44px target */
+@media (max-width: 640px) {
+  .foot {
+    row-gap: 18px;
+  }
+  :is(.foot a, #i .links a, #sh .more, a.mf-link) {
+    position: relative;
+  }
+  :is(.foot a, #i .links a, #sh .more, a.mf-link)::after {
+    content: "";
+    position: absolute;
+    inset: -13px -4px;
+  }
 }
 
 /* ---------- theme switch: the new scheme wipes in from the button ---------- */

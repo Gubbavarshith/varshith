@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { accentVars, guides } from "../../_data/guides";
+import { site } from "../../_data/site";
 import CopyBlock from "../_ui/CopyBlock";
 import Layers, { type Part } from "../_ui/Layers";
 import { INBOX, INVOICES, MAIN, ROUTER, TICKETS } from "./prompts";
@@ -51,62 +52,54 @@ export default function JevClaude() {
       <header className="frame" id="cover">
         <p className="frame-label" aria-hidden="true">
           <span>Guide {g.no} / Cover</span>
-          <span>{g.credit}</span>
+          <span>{site.name}</span>
         </p>
         <div className="sheet cover">
-          <p className="kicker">A RoboNuggets guide</p>
+          <p className="kicker">A Varshith guide</p>
           <h1 className="cover-title">
             Jev + <span className="dot">CLAUDE</span>
             <span className="cover-sub">the setup guide</span>
           </h1>
           <p className="promise">
-            The promise: pair Jev with Claude and get 10x the power at 100x less cost. Jev makes the fast calls for a
-            fraction of a cent. Claude keeps the thinking and the writing.
+            Let Jev make the quick calls and let Claude do the thinking. Jev answers pick-one, how-much and how-likely
+            questions in about a third of a second for a fraction of a cent, so Claude only spends tokens on work that needs
+            it.
           </p>
           <div className="cover-actions">
             <a className="btn btn-solid" href="#get-access">
               Start with part 01
             </a>
-            {g.pdf && (
-              <a className="btn" href={g.pdf} download>
-                Download the PDF
-              </a>
-            )}
           </div>
 
-          <h2 className="mini-h">What Jev is, in 4 lines</h2>
+          <h2 className="mini-h">Jev in four lines</h2>
           <table className="t four">
             <tbody>
               <tr>
                 <td className="t-n">1</td>
                 <th scope="row">Not an LLM</th>
-                <td>It never writes text. You send it a state (any text or data) plus typed questions, and it sends back decisions.</td>
+                <td>It doesn’t write. You give it a state (any text or data) and typed questions, and it returns decisions.</td>
               </tr>
               <tr>
                 <td className="t-n">2</td>
-                <th scope="row">3 answer shapes</th>
+                <th scope="row">Three answer shapes</th>
                 <td>
-                  <code>choice</code> picks one of your options. <code>score</code> places it on your scale. <code>noul</code> gives
-                  the chance a statement is true.
+                  <code>choice</code> picks one of your options. <code>score</code> puts it on your scale. <code>noul</code> gives
+                  the odds that a statement is true.
                 </td>
               </tr>
               <tr>
                 <td className="t-n">3</td>
-                <th scope="row">Output is free</th>
-                <td>You pay $0.042 per 1M input tokens and nothing at all for the answers.</td>
+                <th scope="row">Answers are free</th>
+                <td>Input costs $0.042 per 1M tokens. The output costs nothing.</td>
               </tr>
               <tr>
                 <td className="t-n">4</td>
                 <th scope="row">About 0.3 s</th>
-                <td>It answers every question in one parallel pass, in 70 to 500 ms.</td>
+                <td>Every question comes back in one parallel pass, usually in 70 to 500 ms.</td>
               </tr>
             </tbody>
           </table>
-          <p className="fine">Jev is the first “System One” model from TypeSafe AI, launched 15 September 2026.</p>
-          <p className="credit">
-            Original guide and kit by RoboNuggets (<a href="https://www.skool.com/robonuggets">skool.com/robonuggets</a>).
-            Web edition shared by Gubba Varshith.
-          </p>
+          <p className="fine">Jev is TypeSafe AI’s first “System One” model. It launched on 15 September 2026.</p>
         </div>
       </header>
 
@@ -117,18 +110,17 @@ export default function JevClaude() {
           <aside className="readme" aria-label="Readme">
             <p className="label">Readme</p>
             <p>
-              <b>What this is.</b> The setup guide for the “Jev + Claude” lesson. It shows how to wire Jev, a fast decision
-              model, into Claude Code, then three levels of things to do with it.
+              <b>What this is.</b> A hands-on setup for Jev, a fast decision model, inside Claude Code: one prompt to wire it
+              in, then three levels of things to build on top.
             </p>
             <p>
-              <b>How to set it up.</b> Work through the parts in order. Part 01 gets your key. Part 02 is the one prompt that
-              wires Jev in. Parts 03 and 04 are the builds on top: the routers, then sorting any pile of text. Parts 05 and 06
-              show where this goes next. Every prompt block is copy-paste ready.
+              <b>How to use it.</b> Go in order. Part 01 gets you a key. Part 02 is the single prompt that connects Jev. Parts
+              03 and 04 build on it: a model router, then sorting any pile of text. Parts 05 and 06 are about what comes
+              after. Every prompt is ready to copy and paste.
             </p>
             <p>
-              <b>Two ways to get this.</b> Build it yourself with the prompts in this guide, free. Or install the pre-built kit
-              from the video: the router hook, the four helper agents and the <code>/jev</code> command. That comes with the
-              RoboNuggets community at <a href="https://www.skool.com/robonuggets">skool.com/robonuggets</a>.
+              <b>What you need.</b> An AI coding agent and a few cents of OpenRouter credit. Everything here is built from the
+              prompts, so there is nothing else to install.
             </p>
           </aside>
 
@@ -138,40 +130,40 @@ export default function JevClaude() {
               <span className="part-no">01</span> Get access
             </h2>
             <p className="part-intro">
-              Jev is open to everyone. The simplest way in is OpenRouter: one account and one key that reaches many AI models,
-              Jev included.
+              Anyone can use Jev. OpenRouter is the easiest way in: one account and one key for many AI models, Jev among
+              them.
             </p>
             <ol className="steps">
               <li>
-                <b>Make an OpenRouter account</b> at <a href="https://openrouter.ai">openrouter.ai</a>.
+                <b>Sign up</b> at <a href="https://openrouter.ai">openrouter.ai</a>.
               </li>
               <li>
-                <b>Add a little credit.</b> Jev is a paid model, but a tiny one. Our whole 100-email test in part 04 cost{" "}
+                <b>Top up a small amount.</b> Jev is paid, but only just: sorting all 100 emails in part 04 cost{" "}
                 <b>$0.0032</b>.
               </li>
               <li>
-                <b>Create an API key</b> at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> and copy it. An API
-                key is a password that lets Claude call Jev for you. Treat it like one.
+                <b>Make an API key</b> at <a href="https://openrouter.ai/keys">openrouter.ai/keys</a> and copy it. The key is
+                what lets Claude call Jev on your behalf, so guard it like a password.
               </li>
               <li>
-                <b>Keep it handy for part 02.</b> The prompt asks for it and keeps it somewhere safe on your computer. You set
-                nothing up by hand.
+                <b>Hold on to it for part 02.</b> The prompt asks you for it and stores it safely on your machine. There is no
+                manual setup.
               </li>
             </ol>
             <div className="specs">
               <div className="card">
                 <p className="label">Model ID</p>
                 <code className="spec-code">typesafe/jev-1.13</code>
-                <p className="card-b">The name Claude uses when it calls Jev through OpenRouter.</p>
+                <p className="card-b">What Claude calls Jev on OpenRouter.</p>
               </div>
               <div className="card">
                 <p className="label">Limits</p>
-                <p className="card-b">64K tokens per request, with 32K of that for your data. Text only. English works best.</p>
+                <p className="card-b">64K tokens per request, up to 32K of it your data. Text only, and best in English.</p>
               </div>
             </div>
 
-            <h3 className="mini-h">What it costs</h3>
-            <div className="scroll-x" role="region" aria-label="What it costs" tabIndex={0}>
+            <h3 className="mini-h">Price check</h3>
+            <div className="scroll-x" role="region" aria-label="Price check" tabIndex={0}>
               <table className="t">
                 <thead>
                   <tr>
@@ -200,7 +192,7 @@ export default function JevClaude() {
               </table>
             </div>
             <figure className="units">
-              <figcaption className="fine">Input price to scale. One square is Jev’s $0.042 per 1M tokens.</figcaption>
+              <figcaption className="fine">Input price to scale. Each square is Jev’s $0.042 per 1M tokens.</figcaption>
               {PRICES.map((p, i) => (
                 <div key={p.model} className={i ? "units-row" : "units-row is-jev"}>
                   <span className="units-k">{p.model}</span>
@@ -214,16 +206,15 @@ export default function JevClaude() {
               ))}
             </figure>
             <p className="fine">
-              List prices in USD, checked 21 September 2026. Prices move, so check the provider’s own page before you rely on
-              them.
+              USD list prices as of 21 September 2026. They change, so confirm on the provider’s page before you count on them.
             </p>
             <p className="fine">
-              Other ways in, if you already use them: Vercel AI Gateway (<code>typesafe-ai/jev</code>), Cloudflare Workers AI (
-              <code>typesafe/jev</code>), or TypeSafe direct (keys at <a href="https://console.typesafe.ai">console.typesafe.ai</a>
-              ). This guide uses OpenRouter throughout.
+              Already on another platform? Jev is also on Vercel AI Gateway (<code>typesafe-ai/jev</code>), Cloudflare Workers
+              AI (<code>typesafe/jev</code>) and TypeSafe itself (keys at{" "}
+              <a href="https://console.typesafe.ai">console.typesafe.ai</a>). Everything below assumes OpenRouter.
             </p>
 
-            <h3 className="mini-h">What one Jev call looks like</h3>
+            <h3 className="mini-h">Anatomy of one call</h3>
             <ol className="flow">
               <li className="card">
                 <p className="label">You send a state</p>
@@ -259,8 +250,8 @@ export default function JevClaude() {
               </li>
             </ol>
             <p className="fine">
-              A real call through OpenRouter, recorded 21 September 2026: 0.26 s (the middle of 3 runs) for $0.00002. The
-              prompt in part 02 runs this same test for you.
+              A live call through OpenRouter on 21 September 2026: 0.26 s (the median of 3 runs) for $0.00002. The prompt in
+              part 02 runs the same kind of test for you.
             </p>
           </section>
 
@@ -270,13 +261,13 @@ export default function JevClaude() {
               <span className="part-no">02</span> Wire it into your agent
             </h2>
             <p className="part-intro">
-              Open your AI agent in an empty folder or in your existing workspace and paste this whole prompt. We use Claude
-              Code in the video, and the prompt works in any agent that can run things on your computer. Your agent asks for
-              your key, makes one real test call so you can watch Jev answer, then saves it all as a reusable skill. Jev
-              launched after every model’s training data, which is why the prompt points at the public docs instead.
+              Open your coding agent, in a fresh folder or your usual workspace, and paste the prompt below. It is written with
+              Claude Code in mind, but any agent that can run commands on your machine will do. The agent asks for your key,
+              makes one live test call so you can watch Jev answer, and saves the setup as a reusable skill. Jev is newer than
+              every model’s training data, so the prompt sends your agent to the public docs first.
             </p>
             <CopyBlock file="main-prompt.txt" label="The main prompt" text={MAIN} />
-            <p className="fine">When your agent finishes, try it on any pile of text: “use Jev to sort these”.</p>
+            <p className="fine">Once it’s done, point it at any pile of text: “use Jev to sort these”.</p>
           </section>
 
           {/* ---------- 03 ---------- */}
@@ -285,62 +276,66 @@ export default function JevClaude() {
               <span className="part-no">03</span> Level 1: route every message
             </h2>
             <p className="part-intro">
-              Most messages do not need the biggest model. Jev reads each one and names the smallest Claude model that can do
-              it.
+              Most of what you ask Claude doesn’t need its biggest model. Jev reads each message and names the smallest model
+              that can handle it.
             </p>
             <ol className="flow flow-4">
               <li className="card">
                 <p className="label">Step 1</p>
                 <p className="card-t">You send a message</p>
-                <p className="card-b">Any normal message. Short replies and slash commands skip the router.</p>
+                <p className="card-b">Anything normal. Quick replies and slash commands bypass the router.</p>
               </li>
               <li className="card is-accent">
                 <p className="label">Step 2</p>
                 <p className="card-t">Jev sizes it</p>
-                <p className="card-b">A hook runs Jev first. About 0.3 s. Jev names a tier: haiku, sonnet, opus or fable.</p>
+                <p className="card-b">A hook calls Jev first, in about 0.3 s, and gets back a tier: haiku, sonnet, opus or fable.</p>
               </li>
               <li className="card">
                 <p className="label">Step 3</p>
                 <p className="card-t">Claude gets a note</p>
-                <p className="card-b">The hook hands over the verdict: “Jev sized this as SONNET, confidence 0.97”.</p>
+                <p className="card-b">The hook passes the verdict along, something like “Jev sized this as SONNET, confidence 0.97”.</p>
               </li>
               <li className="card">
                 <p className="label">Step 4</p>
                 <p className="card-t">A pinned helper works</p>
-                <p className="card-b">Claude passes self-contained work to a helper agent pinned to that model.</p>
+                <p className="card-b">Claude hands self-contained work to a helper agent locked to that model.</p>
               </li>
             </ol>
             <p className="note">
-              <b>The honest constraint.</b> Claude Code has no built-in per-message model switch, and a hook cannot change the
-              model. A hook can only add a note. So the router is a note plus four helper agents, each pinned to one model by
-              the <code>model:</code> line in its file. The prompt asks your agent to be honest about this, which stops it
-              inventing a setting that does not exist.
+              <b>The catch.</b> Claude Code can’t switch models per message, and a hook can’t change the model either. All a
+              hook can do is add a note. So the router is that note plus four helper agents, each locked to one model by the{" "}
+              <code>model:</code> line in its file. The prompt tells your agent to say this plainly instead of inventing a
+              setting that doesn’t exist.
+            </p>
+            <p className="aside">
+              You end up with three switches. Your agent chooses the exact words and tells you them at the end. They look
+              something like this:
             </p>
             <ul className="cmds">
               <li className="card is-accent">
                 <code className="cmd">/jev on</code>
-                <p className="card-b">Turns the router on. Every message goes to Jev first.</p>
+                <p className="card-b">Router on. Jev sees every message first.</p>
               </li>
               <li className="card">
                 <code className="cmd">/jev off</code>
-                <p className="card-b">Turns it off. It is OFF by default. Use this for private work.</p>
+                <p className="card-b">Router off. This is the default, and the right setting for private work.</p>
               </li>
               <li className="card">
                 <code className="cmd">/jev status</code>
-                <p className="card-b">Says ON or OFF, how many messages went to each tier, and the Jev cost so far.</p>
+                <p className="card-b">ON or OFF, how many messages went to each tier, and what Jev has cost so far.</p>
               </li>
             </ul>
             <p className="fine">
-              It never blocks a message, and it goes silent if Jev is slow or the key is missing. While it is on, your message
-              text goes to TypeSafe through OpenRouter. It works in the Claude Code VS Code extension, the terminal, and the
-              Code tab of the Claude desktop app.
+              It never holds a message up: if Jev is slow or the key is missing, it quietly steps aside. While it is on, your
+              messages travel through OpenRouter to TypeSafe. It works in Claude Code in the terminal, in the VS Code
+              extension and in the Code tab of the Claude desktop app.
             </p>
             <CopyBlock file="model-router.txt" label="The model router prompt" text={ROUTER} />
             <p className="aside">
-              <b>The skill router, same idea.</b> Jev reads the name and first line of every skill and returns the one to
-              load, with its confidence. Under 0.6, Claude picks. In our recorded run Jev chose the right skill 12 times out
-              of 14, from a list of 145. TypeSafe’s own cookbook test reports wrong-skill loads falling from 17% to 7.3% (182
-              skills, agent on Haiku 4.5). That is their number, not an independent one.
+              <b>The same trick for skills.</b> Give Jev the name and first line of every skill, and it returns the one to
+              load with a confidence. Below 0.6, Claude decides. In one recorded run it picked the right skill 12 times out of
+              14, from a list of 145. TypeSafe’s cookbook reports wrong-skill loads dropping from 17% to 7.3% (182 skills,
+              agent on Haiku 4.5), but that is their own test, not an independent one.
             </p>
           </section>
 
@@ -353,18 +348,18 @@ export default function JevClaude() {
               <div className="card">
                 <p className="label">Before</p>
                 <p className="card-b">
-                  A person opens every email, ticket or invoice, one at a time. Or you pay a big chat model to read the whole
-                  pile.
+                  Someone reads every email, ticket or invoice by hand. Or a big chat model reads the whole pile, at big-model
+                  prices.
                 </p>
               </div>
               <div className="card is-accent">
                 <p className="label">After</p>
-                <p className="card-b">Jev sorts the whole pile in seconds. Claude only writes the replies that matter.</p>
+                <p className="card-b">Jev sorts the pile in seconds. Claude writes only the replies worth writing.</p>
               </div>
             </div>
 
-            <h3 className="mini-h">What we measured: the same 100 emails, three models</h3>
-            <div className="scroll-x" role="region" aria-label="The same 100 emails, three models" tabIndex={0}>
+            <h3 className="mini-h">Same 100 emails, three models</h3>
+            <div className="scroll-x" role="region" aria-label="Same 100 emails, three models" tabIndex={0}>
               <table className="t bench">
                 <thead>
                   <tr>
@@ -405,11 +400,11 @@ export default function JevClaude() {
                 </tbody>
               </table>
             </div>
-            <p className="lead-line">Fable was the most accurate, Jev beat Haiku, and all three found all 15 hot leads.</p>
+            <p className="lead-line">Fable scored best, Jev beat Haiku, and every model caught all 15 hot leads.</p>
             <p className="fine">
-              100 made-up emails for a fictional agency. Same questions, 10 at a time, real calls through OpenRouter, recorded
-              21 September 2026. Cost is what OpenRouter billed. Also from the video: 27 questions about one support ticket,
-              answered in one pass in about 0.25 s for $0.00008.
+              100 invented emails for a made-up agency. Same questions, 10 emails per batch, live calls through OpenRouter on
+              21 September 2026. Cost is what OpenRouter billed. Separately, 27 questions about a single support ticket came
+              back in one pass in about 0.25 s, for $0.00008.
             </p>
             <CopyBlock file="sort-inbox.txt" label="Sort my inbox export by lead quality" text={INBOX} />
             <CopyBlock file="triage-tickets.txt" label="Triage support tickets by urgency and team" text={TICKETS} />
@@ -422,34 +417,34 @@ export default function JevClaude() {
               <span className="part-no">05</span> Level 3: what this unlocks
             </h2>
             <p className="part-intro">
-              Once a decision costs almost nothing and takes a third of a second, you can put one in places where a chat model
-              was always too slow. One real example is already out.
+              When a decision costs next to nothing and lands in a third of a second, you can put one where a chat model was
+              always too slow. There is already a real example.
             </p>
             <div className="box">
               <p className="label">Unclutter, in 5 lines</p>
               <ul className="squares">
                 <li>
-                  A free, open-source browser extension by Kitze that cleans up web pages:{" "}
+                  Kitze’s free, open-source browser extension that tidies up web pages:{" "}
                   <a href="https://github.com/kitze/unclutter">github.com/kitze/unclutter</a>
                 </li>
                 <li>
-                  Jev judges up to 60 page elements in one pass: keep it, or is it an ad, a promo, a newsletter box, a social
+                  One Jev pass judges up to 60 page elements: keep it, or is it an ad, a promo, a newsletter box, a social
                   widget or a cookie banner?
                 </li>
-                <li>It only hides what Jev is at least 0.9 sure about. Anything uncertain stays on the page.</li>
-                <li>It saves the rule per page type, so the next article on that site is cleaned with no new call.</li>
-                <li>It takes a Vercel AI Gateway key or a TypeSafe key, not an OpenRouter key.</li>
+                <li>It hides only what Jev is at least 0.9 sure of. Anything doubtful stays on the page.</li>
+                <li>It remembers the rule per page type, so the next article on that site gets cleaned without a new call.</li>
+                <li>It needs a Vercel AI Gateway or TypeSafe key. An OpenRouter key won’t work.</li>
               </ul>
             </div>
-            <h3 className="mini-h">When NOT to use Jev</h3>
+            <h3 className="mini-h">Where Jev is the wrong tool</h3>
             <ul className="chips">
               {["Writing", "Chat", "Reasoning", "Counting", "Maths", "Dates"].map((w) => (
                 <li key={w}>{w}</li>
               ))}
             </ul>
             <p className="fine">
-              This is TypeSafe’s own list of weak spots, plus long input full of irrelevant text. Give those jobs to Claude. The
-              rule from part 02 holds everywhere: Jev decides, Claude writes.
+              TypeSafe’s own list of weak spots, plus long inputs padded with irrelevant text. Hand these to Claude. The rule
+              from part 02 holds everywhere: Jev decides, Claude writes.
             </p>
           </section>
 
@@ -459,17 +454,17 @@ export default function JevClaude() {
               <span className="part-no">06</span> Where this goes next
             </h2>
             <p className="part-intro">
-              The easy part is wiring Jev in. One prompt does it. The skill that pays is spotting which decisions in a business
-              are worth handing to a fast, cheap model, then building the system around them.
+              Wiring Jev in is the easy part. One prompt does it. The real skill is spotting which decisions in a business
+              can go to a fast, cheap model, then building the system around them.
             </p>
             <p className="part-intro">
-              That is what we practise every week: building AI systems you can sell, and mastering Claude Code + Claude Design
-              along the way. The pre-built Jev kit from the video lives there too, ready to install.
+              Start small. Pick one pile you sort by hand every week, write three questions about it, and let Jev take the
+              first pass.
             </p>
             <p className="join">
-              <span className="label">The RoboNuggets community</span>
-              <span>join us at</span>
-              <a href="https://www.skool.com/robonuggets">skool.com/robonuggets</a>
+              <span className="label">More guides like this</span>
+              <span>follow along at</span>
+              <a href="https://www.instagram.com/devdrop.ai/">@devdrop.ai</a>
             </p>
           </section>
 
@@ -491,21 +486,16 @@ export default function JevClaude() {
                 <a href="https://console.typesafe.ai">console.typesafe.ai</a> · TypeSafe direct keys
               </li>
               <li>
-                <a href="https://www.skool.com/robonuggets">skool.com/robonuggets</a> · the kit and the community
+                <a href="https://www.instagram.com/devdrop.ai/">instagram.com/devdrop.ai</a> · more guides
               </li>
               <li>
-                Model id: <code>typesafe/jev-1.13</code>
+                Model ID: <code>typesafe/jev-1.13</code>
               </li>
             </ul>
             <div className="doc-end">
               <Link className="btn btn-solid" href="/guides">
                 All guides
               </Link>
-              {g.pdf && (
-                <a className="btn" href={g.pdf} download>
-                  Download the PDF
-                </a>
-              )}
             </div>
           </section>
         </article>

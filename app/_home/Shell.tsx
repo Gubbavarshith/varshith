@@ -95,7 +95,7 @@ function Listing({ list }: { list: Guide[] }) {
               <span className="shell-dir">{g.slug}/</span> <span className="shell-t">{g.title}</span>
             </span>
             <span className="shell-meta">
-              {g.parts} parts · {g.minutes} min · {g.tags.join(", ")} · {g.credit}
+              {g.parts} parts · {g.minutes} min · {g.tags.join(", ")}
             </span>
           </Link>
         </li>
