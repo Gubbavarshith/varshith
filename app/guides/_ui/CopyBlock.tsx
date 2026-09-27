@@ -2,7 +2,18 @@
 
 import { useRef, useState } from "react";
 
-export default function CopyBlock({ label, file, text }: { label: string; file: string; text: string }) {
+// noun names what gets copied: a prompt for the agent, or a command for the terminal
+export default function CopyBlock({
+  label,
+  file,
+  text,
+  noun = "prompt",
+}: {
+  label: string;
+  file: string;
+  text: string;
+  noun?: "prompt" | "command";
+}) {
   const pre = useRef<HTMLPreElement>(null);
   const [state, setState] = useState<"idle" | "copied" | "selected">("idle");
 
@@ -24,14 +35,14 @@ export default function CopyBlock({ label, file, text }: { label: string; file: 
         <span className="prompt-file">{file}</span>
         <span className="prompt-label">{label}</span>
         <button type="button" className="prompt-copy" onClick={copy}>
-          {state === "copied" ? "Copied" : state === "selected" ? "Selected, copy it" : "Copy prompt"}
+          {state === "copied" ? "Copied" : state === "selected" ? "Selected, copy it" : `Copy ${noun}`}
         </button>
       </figcaption>
       <pre ref={pre} className="prompt-body">
         {text}
       </pre>
       <span className="sr-only" role="status">
-        {state === "copied" ? "Prompt copied" : ""}
+        {state === "copied" ? `${noun === "prompt" ? "Prompt" : "Command"} copied` : ""}
       </span>
     </figure>
   );

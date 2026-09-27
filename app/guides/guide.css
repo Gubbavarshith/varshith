@@ -381,7 +381,7 @@
 .t .num {
   text-align: right;
 }
-.t .is-jev > :first-child {
+.t .is-key > :first-child {
   box-shadow: inset 4px 0 0 var(--g);
 }
 .t-note {
@@ -419,8 +419,8 @@
   border-radius: 0 3px 3px 0;
   background: color-mix(in srgb, var(--graphite) 55%, transparent);
 }
-.is-jev .bar-fill,
-.is-jev .units-sq i {
+.is-key .bar-fill,
+.is-key .units-sq i {
   background: var(--g);
 }
 
@@ -540,6 +540,31 @@
   line-height: 1.7;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
+}
+
+/* ---------- showcase video (media lives in public/guides/<slug>/) ---------- */
+
+/* a vertical video beside its caption, which sits at the video's foot */
+.showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 300px) minmax(0, 1fr);
+  align-items: end;
+  gap: 28px;
+  margin-top: 28px;
+}
+.showcase video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--ink);
+  border-radius: 8px;
+  background: var(--sunk);
+}
+.showcase figcaption {
+  max-width: 44ch;
+}
+.doc .showcase .label {
+  color: var(--g-ink);
 }
 
 /* ---------- level 3 & outro ---------- */
@@ -693,8 +718,12 @@
   .specs,
   .pair,
   .cmds,
+  .showcase,
   .doc .links {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .showcase video {
+    max-width: 300px;
   }
   .units-row {
     grid-template-columns: minmax(0, 1fr) auto;

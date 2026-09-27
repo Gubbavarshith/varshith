@@ -1,6 +1,6 @@
 # Every push and pull request: lint, test and build (the build also type-checks).
-# Pushes to main then deploy the exported site to Cloudflare Workers (wrangler.jsonc).
-# Needs one repo secret, CLOUDFLARE_API_TOKEN: a Cloudflare API token with Workers Scripts Edit on this account.
+# Pushes to main then deploy the exported site (out/) to Cloudflare Pages: https://gubbavarshith.pages.dev
+# Needs one repo secret, CLOUDFLARE_API_TOKEN: a Cloudflare API token with Account > Cloudflare Pages > Edit.
 name: CI/CD
 
 on:
@@ -27,13 +27,15 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
-      - name: Deploy to Cloudflare
+      - name: Deploy to Cloudflare Pages
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # not a secret: it names the account, the token is what grants access
+          CLOUDFLARE_ACCOUNT_ID: 41fa624f43e6c83beda50cf5730467ad
         run: |
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
             echo "::error::Missing repo secret CLOUDFLARE_API_TOKEN (Settings > Secrets and variables > Actions)"
             exit 1
           fi
-          npx --yes wrangler@4 deploy
+          npx --yes wrangler@4 pages deploy out --project-name gubbavarshith --branch main

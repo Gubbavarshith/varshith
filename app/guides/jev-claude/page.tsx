@@ -181,7 +181,7 @@ export default function JevClaude() {
                 </thead>
                 <tbody>
                   {PRICES.map((p, i) => (
-                    <tr key={p.model} className={i ? undefined : "is-jev"}>
+                    <tr key={p.model} className={i ? undefined : "is-key"}>
                       <th scope="row">{p.model}</th>
                       <td className="num">{p.input}</td>
                       <td className="num">{p.output}</td>
@@ -194,7 +194,7 @@ export default function JevClaude() {
             <figure className="units">
               <figcaption className="fine">Input price to scale. Each square is Jev’s $0.042 per 1M tokens.</figcaption>
               {PRICES.map((p, i) => (
-                <div key={p.model} className={i ? "units-row" : "units-row is-jev"}>
+                <div key={p.model} className={i ? "units-row" : "units-row is-key"}>
                   <span className="units-k">{p.model}</span>
                   <span className="units-v">{p.x}x</span>
                   <span className="units-sq" aria-hidden="true">
@@ -374,7 +374,7 @@ export default function JevClaude() {
                 </thead>
                 <tbody>
                   {RUNS.map((r, i) => (
-                    <tr key={r.model} className={i ? undefined : "is-jev"}>
+                    <tr key={r.model} className={i ? undefined : "is-key"}>
                       <th scope="row">
                         {r.model}
                         {r.note && <span className="t-note"> ({r.note})</span>}

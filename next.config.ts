@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Every route is static: `next build` writes plain files to out/, which Cloudflare serves (wrangler.jsonc).
+  // Every route is static: `next build` writes plain files to out/, which Cloudflare Pages serves
+  // (deployed by .github/workflows/deploy.yml).
   output: "export",
   // No image server on a static host. The only raster images (the hero portraits) ship pre-sized as WebP.
   images: { unoptimized: true },

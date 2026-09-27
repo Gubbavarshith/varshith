@@ -15,8 +15,21 @@ export type Guide = {
   ink: [string, string];
 };
 
-// Newest first. Each guide lives at app/guides/<slug>/page.tsx.
+// Newest first. Each guide lives at app/guides/<slug>/page.tsx; its images and videos go in public/guides/<slug>/.
 export const guides: Guide[] = [
+  {
+    slug: "brag",
+    no: "002",
+    title: "/brag: turn your project into a launch video",
+    summary:
+      "Install the /brag skill in your coding agent, run one command, and get a 20-second launch video of what you built, with music, a poster frame and a caption ready to post.",
+    tags: ["Claude Code", "Skills", "Video"],
+    parts: 6,
+    minutes: 8,
+    cover: ["/brag", "LAUNCH"],
+    accent: "#ff2e88",
+    ink: ["#be185d", "#ff6aa8"],
+  },
   {
     slug: "jev-claude",
     no: "001",
